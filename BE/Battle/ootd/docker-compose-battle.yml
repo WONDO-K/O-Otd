@@ -1,0 +1,31 @@
+services:
+  battle_db:
+      image: mysql:8.0
+      container_name: ootd-battle-mysql
+      environment:
+        MYSQL_ROOT_PASSWORD: 0oTd!
+        MYSQL_DATABASE: ootd
+      volumes:
+        # - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+        - ootd_battle_mysql_data:/var/lib/mysql
+      ports:
+        - "3308:3306"
+      networks:
+        - ootd-battle-Network
+        
+  battle_backend:
+    image: ohuggy/ootd-be-battle
+    container_name: ootd-be-battle
+    ports:
+      - "8083:8080"
+    depends_on:
+      - battle_db
+    networks:
+      - ootd-battle-Network
+
+volumes:
+  ootd_battle_mysql_data:
+
+networks:
+  ootd-battle-Network:
+    driver: bridge
