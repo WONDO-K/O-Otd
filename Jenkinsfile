@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         DOCKER_IMAGE_BE = "ohuggy/ootd-be" // Docker 이미지 이름 설정
+        ANDROID_HOME = "/opt/android-sdk"
+        PATH = "${env.ANDROID_HOME}/cmdline-tools/latest/bin:${env.ANDROID_HOME}/platform-tools:${env.PATH}"
     }
 
     stages {
@@ -14,34 +16,33 @@ pipeline {
             }
         }
 
-        // 에러가 있어 수정중
-        // stage('Install Dependencies for FE') {
-        //     steps {
-        //         dir("fe/ootd"){
-        //             // 프로젝트의 dependencies 설치
-        //             sh 'npm install'
-        //         }
-        //     }
-        // }
+        stage('Install Dependencies for FE') {
+            steps {
+                dir("fe/ootd"){
+                    // 프로젝트의 dependencies 설치
+                    sh 'npm install'
+                }
+            }
+        }
 
-        // stage("CI: Front Build"){
-        //     steps{
-        //         script{
-        //             dir("fe/ootd/android"){
-        //                sh './gradlew assembleRelease'
-        //             }
-        //         }
-        //     }
+        stage("CI: Front Build"){
+            steps{
+                script{
+                    dir("fe/ootd/android"){
+                        sh 'chmod 777 gradlew'
+                       sh './gradlew assembleRelease'
+                    }
+                }
+            }
 
-        // }
+        }
 
-        // stage('CI : Archive APK for FE') {
-        //     steps {
-        //         // 빌드된 APK 파일을 Jenkins에 아카이브
-        //         archiveArtifacts artifacts: 'android/app/build/outputs/apk/release/app-release.apk', allowEmptyArchive: false
-        //     }
-        // }
-
+        stage('CI : Archive APK for FE') {
+            steps {
+                // 빌드된 APK 파일을 Jenkins에 아카이브
+                archiveArtifacts artifacts: 'fe/ootd/android/app/build/outputs/apk/release/app-release.apk', fingerprint: true
+            }
+        }
 
         stage("CI: Determine Changed Services") {
             steps {
