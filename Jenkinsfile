@@ -62,15 +62,15 @@ pipeline {
                     for (service in changedServices) {
                         dir("be/${service}/ootd") {
                             // 설정 파일 복사
-                            // withCredentials([file(credentialsId: "ootd-be-${service}-properties", variable: 'properties')]) {
-                            //     echo "Copying application.properties for ${service}"
-                            //     sh 'pwd'
-                            //     sh 'ls'
-                            //     sh 'chmod +r $properties'
-                            //     sh 'chmod -R 777 src/main/resources'
-                            //     sh 'cp $properties src/main/resources/application.properties'
-                            //     sh 'ls'
-                            // }
+                            withCredentials([file(credentialsId: "ootd-be-${service}-properties", variable: 'properties')]) {
+                                echo "Copying application.properties for ${service}"
+                                sh 'pwd'
+                                sh 'ls'
+                                sh 'chmod +r $properties'
+                                sh 'chmod -R 777 src/main/resources'
+                                sh 'cp $properties src/main/resources/application.properties'
+                                sh 'ls'
+                            }
 
                             // 빌드
                             echo "Building ${service}"
