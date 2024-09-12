@@ -39,4 +39,4 @@ out/
 ### apprication.propertise ###
 
 ### application.propertise
-src/main/resources/application.properties
+application.properties
