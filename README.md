@@ -1,6 +1,6 @@
 ## OOTD 브랜치 전략
 - master
-    - develoop
+    - develop
         - fe
             - feature-fe/{기능}
         - be
