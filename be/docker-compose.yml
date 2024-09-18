@@ -1,0 +1,112 @@
+version: "3.8"
+
+x-environments: &default
+  env_file: .env  # 기본 환경 파일을 지정합니다.
+
+services:
+  apigateway:
+    build:
+      context: ./apigateway  # apigateway 서비스의 Dockerfile 경로
+      dockerfile: Dockerfile  # 사용할 Dockerfile
+    container_name: apigateway
+    ports:
+      - "8080:8080"  # API Gateway의 포트를 매핑
+    <<: *default
+    depends_on:
+      - mysql
+    networks:
+      - mynetwork
+
+  battle-service:
+    build:
+      context: ./battle-service  # battle-service 서비스의 Dockerfile 경로
+      dockerfile: Dockerfile
+    container_name: battle-service
+    expose:
+      - "8080"
+    <<: *default
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - mynetwork
+
+  gallery-service:
+    build:
+      context: ./gallery-service  # gallery-service 서비스의 Dockerfile 경로
+      dockerfile: Dockerfile
+    container_name: gallery-service
+    expose:
+      - "8080"
+    <<: *default
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - mynetwork
+
+  user-service:
+    build:
+      context: ./user-service  # user-service 서비스의 Dockerfile 경로
+      dockerfile: Dockerfile
+    container_name: user-service
+    expose:
+      - "8080"
+    <<: *default
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - mynetwork
+
+  mysql:
+    image: mysql:9.0
+    container_name: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    <<: *default
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - mynetwork
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -u${MYSQL_ROOT_USER} -p${MYSQL_ROOT_PASSWORD}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - "6379:6379"
+    command: redis-server /usr/local/etc/redis/redis.conf --requirepass ${REDIS_PASSWORD}
+    <<: *default
+    volumes:
+      - redis_data:/data
+      - ./redis_data/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - mynetwork
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  mynetwork:
+    external: true

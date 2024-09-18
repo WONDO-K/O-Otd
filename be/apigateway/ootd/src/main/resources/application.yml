@@ -1,0 +1,53 @@
+server:
+  port: ${SERVER_PORT:8080}  # .env?? API Gateway ??? ??
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/  # Eureka ??? ??
+    fetch-registry: true  # Eureka?? ??? ?? ????
+    register-with-eureka: true  # Eureka? Gateway ??? ??
+
+spring:
+  application:
+    name: apigateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: battle-service
+          uri: lb://BATTLE-SERVICE
+          predicates:
+            - Path=/battle-service/**
+          filters:
+            - RewritePath=/battle-service/(?<path>.*), /$\{path}
+        - id: gallery-service
+          uri: lb://GALLERY-SERVICE
+          predicates:
+            - Path=/gallery-service/**
+          filters:
+            - RewritePath=/gallery-service/(?<path>.*), /$\{path}
+        - id: user-service
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-service/**
+          filters:
+            - RewritePath=/user-service/(?<path>.*), /$\{path}
+        # OpenAPI ?? ??
+        - id: openapi
+          uri: http://localhost:${server.port}
+          predicates:
+            - Path=/v3/api-docs/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+
+springdoc:
+  swagger-ui:
+    urls[0]:
+      name: battle-service
+      url: http://localhost:${server.port}/v3/api-docs/battle-service
+    urls[1]:
+      name: gallery-service
+      url: http://localhost:${server.port}/v3/api-docs/gallery-service
+    urls[2]:
+      name: user-service
+      url: http://localhost:${server.port}/v3/api-docs/user-service
