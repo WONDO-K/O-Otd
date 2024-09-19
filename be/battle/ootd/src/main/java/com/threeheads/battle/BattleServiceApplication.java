@@ -1,13 +1,13 @@
-package com.threeheads.ootd;
+package com.threeheads.battle;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class OotdApplication {
+public class BattleServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(OotdApplication.class, args);
+		SpringApplication.run(BattleServiceApplication.class, args);
 	}
 
 }

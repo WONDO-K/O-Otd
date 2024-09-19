@@ -1,4 +1,4 @@
-package com.threeheads.ootd;
+package com.threeheads.apigateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
