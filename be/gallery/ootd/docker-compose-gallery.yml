@@ -3,7 +3,7 @@ version: "3.8"
 services:
   gallery_db:
     image: mysql:8.0
-    container_name: ${GALLERY_DB_CONTAINER_NAME}
+    container_name: gallery_db_container  # 직접 하드코딩
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -18,9 +18,9 @@ services:
     build:
       context: ./  # gallery Dockerfile 경로 설정
       dockerfile: Dockerfile
-    container_name: ${GALLERY_BACKEND_CONTAINER_NAME}
-    ports:
-      - "${GALLERY_BACKEND_PORT}:8080"
+    container_name: gallery_backend_container  # 직접 하드코딩
+    expose:
+      - "8080"  # 컨테이너 내부 포트만 노출
     depends_on:
       - gallery_db
     networks:
