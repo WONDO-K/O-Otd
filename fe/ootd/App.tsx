@@ -27,6 +27,8 @@ import {
 
 import Navbar from './components/Navbar'
 import Footerbar from './components/Footerbar'
+import Battle from './views/Battle'
+import Challenge from './views/Challenge'
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -62,7 +64,7 @@ function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
   const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    backgroundColor: 'black',
   };
 
   return (
@@ -72,32 +74,14 @@ function App(): React.JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      <ScrollView
+      {/* <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         style={backgroundStyle}
         contentContainerStyle={{ flexGrow: 1 }} // 스크롤 뷰가 화면을 덮도록
-      >
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
+      > */}
+        {/* <Battle/> */}
+        <Challenge/>
+      {/* </ScrollView> */}
       <Footerbar />
     </SafeAreaView>
   );
