@@ -25,6 +25,9 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import Navbar from './components/Navbar'
+import Footerbar from './components/Footerbar'
+
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
@@ -63,14 +66,17 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
+    <SafeAreaView style={[backgroundStyle, {flex: 1}]}>
+      <Navbar />
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
+        style={backgroundStyle}
+        contentContainerStyle={{ flexGrow: 1 }} // 스크롤 뷰가 화면을 덮도록
+      >
         <Header />
         <View
           style={{
@@ -92,6 +98,7 @@ function App(): React.JSX.Element {
           <LearnMoreLinks />
         </View>
       </ScrollView>
+      <Footerbar />
     </SafeAreaView>
   );
 }
