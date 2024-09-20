@@ -25,10 +25,11 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import SplashScreen from "react-native-splash-screen";
 import Navbar from './components/Navbar';
 import Footerbar from './components/Footerbar';
 import LoginView from './views/LoginView';
-import SplashScreen from "react-native-splash-screen";
+import MainView from './views/MainView';
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -75,7 +76,11 @@ function App(): React.JSX.Element {
   };
 
   return (
-    <LoginView />
+    <>
+      <Navbar />
+        <MainView />
+      <Footerbar />
+    </>
   );
 }
 

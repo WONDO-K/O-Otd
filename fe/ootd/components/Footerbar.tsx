@@ -17,8 +17,7 @@ const styles = StyleSheet.create({
     }
 })
 
-function Navbar(): React.JSX.Element {
-  
+function Footerbar(): React.JSX.Element {
     return (
         <View style={styles.container}>
             <Text style={styles.text}>홈</Text>
@@ -30,4 +29,4 @@ function Navbar(): React.JSX.Element {
     );
 }
 
-export default Navbar;
+export default Footerbar;
