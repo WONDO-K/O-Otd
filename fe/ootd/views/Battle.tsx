@@ -27,7 +27,7 @@ function Battle({ navigation }): React.JSX.Element {
             {/* 배틀 카테고리 */}
             <View style={styles.battleTab}>
                 <View style={styles.battleCategory}>
-                    <TouchableOpacity style={[
+                    {/* <TouchableOpacity style={[
                             styles.battleCategoryButton,
                             {
                                 backgroundColor: selectedCategory === '진행 중' ? 'white' : 'gray',
@@ -52,6 +52,32 @@ function Battle({ navigation }): React.JSX.Element {
                         <Text
                             style={[
                                 styles.battleCategoryButtonText
+                            ]}
+                        >결과</Text>
+                    </TouchableOpacity> */}
+                    <TouchableOpacity
+                        style={styles.battleCategoryButton}
+                        onPress={() => selectCategory('진행 중')}
+                    >
+                        <Text
+                            style={[
+                                styles.battleCategoryButtonText,
+                                {
+                                    color: selectedCategory === '진행 중' ? 'white' : 'gray',
+                                },
+                            ]}
+                        >진행 중</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity 
+                        style={styles.battleCategoryButton}
+                        onPress={() => selectCategory('결과')}
+                    >
+                        <Text
+                            style={[
+                                styles.battleCategoryButtonText,
+                                {
+                                    color: selectedCategory === '결과' ? 'white' : 'gray',
+                                },
                             ]}
                         >결과</Text>
                     </TouchableOpacity>
@@ -127,7 +153,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginTop: 30,
         borderBottomWidth: 1,
-        borderColor: 'white',
+        borderColor: 'gray',
     },
     battleCategory:{
         display: 'flex',
