@@ -64,6 +64,9 @@ function Battle({ navigation }): React.JSX.Element {
                                 styles.battleCategoryButtonText,
                                 {
                                     color: selectedCategory === '진행 중' ? 'white' : 'gray',
+                                    padding: selectedCategory === '진행 중' ? 5 : 0,
+                                    borderBottomWidth: selectedCategory === '진행 중' ? 3 : 0,
+                                    borderColor: selectedCategory === '진행 중' ? 'white' : 'transparent',
                                 },
                             ]}
                         >진행 중</Text>
@@ -77,6 +80,9 @@ function Battle({ navigation }): React.JSX.Element {
                                 styles.battleCategoryButtonText,
                                 {
                                     color: selectedCategory === '결과' ? 'white' : 'gray',
+                                    padding: selectedCategory === '결과' ? 5 : 0,
+                                    borderBottomWidth: selectedCategory === '결과' ? 3 : 0,
+                                    borderColor: selectedCategory === '결과' ? 'white' : 'transparent',
                                 },
                             ]}
                         >결과</Text>

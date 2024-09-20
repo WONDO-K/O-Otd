@@ -31,7 +31,7 @@ import {
 import Navbar from './components/Navbar'
 import Footerbar from './components/Footerbar'
 import Battle from './views/Battle'
-import Test from './views/test'
+import Notification from './views/Notification'
 import Challenge from './views/Challenge'
 
 type SectionProps = PropsWithChildren<{
@@ -87,17 +87,17 @@ function App(): React.JSX.Element {
       > */}
         {/* <Battle/> */}
         {/* <Challenge/> */}
-        {/* <Test/> */}
       {/* </ScrollView> */}
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Battle"
+          initialRouteName="Notification"
           screenOptions={{
             headerShown: false, // 모든 화면에서 헤더를 제거
             animationEnabled: false, // 모든 화면에서 전환 애니메이션 비활성화
           }}
         >
           <Stack.Screen name="Battle" component={Battle} />
+          <Stack.Screen name="Notification" component={Notification} />
           <Stack.Screen name="Challenge" component={Challenge} />
         </Stack.Navigator>
       </NavigationContainer>
