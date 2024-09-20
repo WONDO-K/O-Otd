@@ -1,10 +1,10 @@
 package com.threeheads.apigateway.redis.service.impl;
 
-import com.threeheads.apigateway.common.exception.CustomException;
-import com.threeheads.apigateway.common.exception.ErrorCode;
 import com.threeheads.apigateway.redis.domain.RefreshToken;
 import com.threeheads.apigateway.redis.repository.RefreshTokenRepository;
 import com.threeheads.apigateway.redis.service.RefreshTokenService;
+import com.threeheads.library.exception.CustomException;
+import com.threeheads.library.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
