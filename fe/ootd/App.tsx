@@ -17,6 +17,9 @@ import {
   View,
 } from 'react-native';
 
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
 import {
   Colors,
   DebugInstructions,
@@ -28,6 +31,7 @@ import {
 import Navbar from './components/Navbar'
 import Footerbar from './components/Footerbar'
 import Battle from './views/Battle'
+import Test from './views/test'
 import Challenge from './views/Challenge'
 
 type SectionProps = PropsWithChildren<{
@@ -60,6 +64,8 @@ function Section({children, title}: SectionProps): React.JSX.Element {
   );
 }
 
+const Stack = createStackNavigator();
+
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
 
@@ -80,8 +86,21 @@ function App(): React.JSX.Element {
         contentContainerStyle={{ flexGrow: 1 }} // 스크롤 뷰가 화면을 덮도록
       > */}
         {/* <Battle/> */}
-        <Challenge/>
+        {/* <Challenge/> */}
+        {/* <Test/> */}
       {/* </ScrollView> */}
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="Battle"
+          screenOptions={{
+            headerShown: false, // 모든 화면에서 헤더를 제거
+            animationEnabled: false, // 모든 화면에서 전환 애니메이션 비활성화
+          }}
+        >
+          <Stack.Screen name="Battle" component={Battle} />
+          <Stack.Screen name="Challenge" component={Challenge} />
+        </Stack.Navigator>
+      </NavigationContainer>
       <Footerbar />
     </SafeAreaView>
   );

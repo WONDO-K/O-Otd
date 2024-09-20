@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, Switch, StyleSheet, ScrollView } from 'react-native';
 
-function Battle(): React.JSX.Element {
+function Battle({ navigation }): React.JSX.Element {
 
     const [selectedCategory, setSelectedCategory] = useState('진행 중');
     const [selectedSort, setSelectedSort] = useState('최신순');
@@ -20,7 +20,7 @@ function Battle(): React.JSX.Element {
             {/* 배틀 헤더 */}
             <View style={styles.battleHeader}>
                 <Text style={styles.battleHeaderText}>패션 배틀</Text>
-                <TouchableOpacity style={styles.battleHeaderButton}>
+                <TouchableOpacity style={styles.battleHeaderButton} onPress={() => navigation.navigate('Challenge')}>
                     <Text style={styles.battleHeaderButtonText}>결투다!</Text>
                 </TouchableOpacity>
             </View>
