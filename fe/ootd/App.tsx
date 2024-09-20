@@ -5,7 +5,7 @@
  * @format
  */
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
@@ -25,8 +25,10 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
-import Navbar from './components/Navbar'
-import Footerbar from './components/Footerbar'
+import Navbar from './components/Navbar';
+import Footerbar from './components/Footerbar';
+import LoginView from './views/LoginView';
+import SplashScreen from "react-native-splash-screen";
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -60,46 +62,20 @@ function Section({children, title}: SectionProps): React.JSX.Element {
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+  SplashScreen.show();
+
+  useEffect(() => {
+    setTimeout(() => {
+      SplashScreen.hide(); // 스플래시 화면을 숨김
+    }, 1500); // 1초 후 스플래시 숨기기
+  }, []);
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
   return (
-    <SafeAreaView style={[backgroundStyle, {flex: 1}]}>
-      <Navbar />
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}
-        contentContainerStyle={{ flexGrow: 1 }} // 스크롤 뷰가 화면을 덮도록
-      >
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-      <Footerbar />
-    </SafeAreaView>
+    <LoginView />
   );
 }
 
