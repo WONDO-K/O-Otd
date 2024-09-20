@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class KafkaEntity {
     private String id;
     private String message;
+    // 필요시 추가
 }
