@@ -23,10 +23,18 @@ import org.springframework.context.annotation.Configuration;
 )
 public class SwaggerConfig {
     @Bean
-    public GroupedOpenApi publicApi() {
+    public GroupedOpenApi galleryServiceApi() {
         return GroupedOpenApi.builder()
-                .group("public")
-                .pathsToMatch("/**")
+                .group("gallery-service")
+                .pathsToMatch("/gallery-service/**") // Gateway를 통해 접근 가능한 gallery-service의 경로
+                .build();
+    }
+
+    @Bean
+    public GroupedOpenApi userServiceApi() {
+        return GroupedOpenApi.builder()
+                .group("user-service")
+                .pathsToMatch("/user-service/**") // 다른 서비스 경로도 추가
                 .build();
     }
 }

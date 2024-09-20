@@ -1,0 +1,33 @@
+services:
+  zookeeper-0:  # Zookeeper 설정
+    image: bitnami/zookeeper:3.9.2  # 사용되는 Zookeeper 이미지
+    container_name: zookeeper-0  # 컨테이너 이름 설정
+    ports:
+      - 2181:2181  # Zookeeper가 사용하는 기본 포트 2181을 호스트와 컨테이너에 매핑
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181  # Zookeeper 클라이언트 포트 설정
+      ALLOW_ANONYMOUS_LOGIN: yes  # 익명 로그인을 허용 (개발 환경에서 간편하게 사용할 수 있음)
+
+  kafka-0:  # Kafka 브로커 설정
+    image: bitnami/kafka:3.7.0  # Kafka 이미지로 3.7.0 버전 사용
+    container_name: kafka-0  # 컨테이너 이름 설정
+    ports:
+      - 9094:9094  # Kafka의 외부 포트 매핑 (클라이언트에서 접근 시 사용)
+    environment:
+      ALLOW_PLAINTEXT_LISTENER: yes  # 암호화되지 않은 통신을 허용 (테스트/개발 환경에서 주로 사용)
+      KAFKA_ENABLE_KRAFT: no  # 주키퍼 모드를 사용 (Kafka 3.7.0은 KRaft 모드도 지원하지만 주키퍼를 사용함)
+      KAFKA_CFG_ZOOKEEPER_CONNECT: zookeeper-0:2181  # Kafka가 주키퍼에 연결할 때 사용할 주소
+      KAFKA_CFG_LISTENERS: PLAINTEXT://:9092,EXTERNAL://:9094  # Kafka 내부 및 외부 리스너 설정
+      KAFKA_CFG_ADVERTISED_LISTENERS: PLAINTEXT://kafka-0:9092,EXTERNAL://localhost:9094  # 클라이언트가 Kafka에 접근할 수 있는 주소 (외부용)
+      KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT  # 리스너별 보안 프로토콜 맵핑
+
+  kafka-ui:  # Kafka UI 설정
+    image: provectuslabs/kafka-ui:v0.7.2  # Kafka UI 이미지
+    container_name: kafka-ui  # 컨테이너 이름 설정
+    depends_on:
+      - kafka-0  # Kafka 브로커가 먼저 실행된 후 UI 실행
+    ports:
+      - 9095:8080  # Kafka UI의 내부 8080 포트를 외부의 9095로 매핑
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local  # Kafka UI에서 표시할 클러스터 이름 설정
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka-0:9092  # Kafka UI가 Kafka 클러스터에 연결할 부트스트랩 서버 주소

@@ -25,6 +25,12 @@ dependencies {
 	// Spring Cloud Gateway (WebFlux 기반)
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
 	// Eureka Client (API Gateway는 Eureka 서버와 통신해야 함)
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
@@ -34,6 +40,13 @@ dependencies {
 
 	// Spring Boot Test
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+	// JWT
+	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
+
+
 }
 
 dependencyManagement {

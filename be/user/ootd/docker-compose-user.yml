@@ -1,18 +1,18 @@
 version: "3.8"
 
 services:
-  gallery_db:
+  user_db:
     image: mysql:8.0
-    container_name: gallery_db_container  # 직접 하드코딩
+    container_name: user_db_container  # 직접 하드코딩
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
     volumes:
-      - ootd_gallery_mysql_data:/var/lib/mysql
+      - ootd_user_mysql_data:/var/lib/mysql
     ports:
-      - "${GALLERY_DB_PORT}:3306"
+      - "${USER_DB_PORT}:3306"
     networks:
-      - ootd-gallery-network
+      - ootd-user-network
 
   # gallery_backend:
   #   build:
@@ -27,8 +27,8 @@ services:
   #     - ootd-gallery-network
 
 volumes:
-  ootd_gallery_mysql_data:
+  ootd_user_mysql_data:
 
 networks:
-  ootd-gallery-network:
+  ootd-user-network:
     driver: bridge
