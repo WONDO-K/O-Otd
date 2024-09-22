@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.threeheads.apigateway.auth.jwt.GeneratedToken;
 import com.threeheads.apigateway.auth.jwt.JwtUtil;
 import com.threeheads.apigateway.auth.service.AuthService;
+import com.threeheads.apigateway.auth.service.UserService;
 import com.threeheads.apigateway.feign.UserFeignClient;
 import com.threeheads.apigateway.redis.domain.RefreshToken;
 import com.threeheads.apigateway.redis.repository.RefreshTokenRepository;
@@ -20,13 +21,13 @@ import com.threeheads.library.entity.User;
 import com.threeheads.library.enums.Role;
 import com.threeheads.library.exception.CustomException;
 import com.threeheads.library.exception.ErrorCode;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.*;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,7 +53,10 @@ public class AuthServiceImpl implements AuthService {
     private final JwtUtil jwtUtil;
 
     //private final UserRepository userRepository;
-    private final UserFeignClient userFeignClient;  // UserFeignClient 주입
+    //private final UserFeignClient userFeignClient;  // UserFeignClient 주입
+    private final UserService userService;
+
+
 
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
@@ -61,19 +65,20 @@ public class AuthServiceImpl implements AuthService {
     private final ObjectMapper objectMapper;
     private final TokenBlacklistService tokenBlacklistService;
 
-    @Value("${kakao.client-id}")
+
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String clientId;
 
-    @Value("${kakao.redirect-uri}")
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String redirectUri;
 
-    @Value("${kakao.token-uri}")
+    @Value("${spring.security.oauth2.client.provider.kakao.token-uri}")
     private String tokenUri;
 
-    @Value("${kakao.user-info-uri}")
+    @Value("${spring.security.oauth2.client.provider.kakao.user-info-uri}")
     private String userInfoUri;
 
-    @Value("${kakao.client-secret}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-secret}")
     private String clientSecret;
 
     @Override
@@ -144,8 +149,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<Map<String, String>> originLogin(OriginLoginRequestDto loginRequestDto, HttpServletResponse response) {
-        Optional<User> user = Optional.ofNullable(userFeignClient.findByEmail(loginRequestDto.getUserId()));
+    public ResponseEntity<Map<String, String>> originLogin(OriginLoginRequestDto loginRequestDto, ServerHttpResponse response) {
+        Optional<User> user = Optional.ofNullable(userService.findByEmail(loginRequestDto.getUserId()));
 
         if (user.isEmpty()) {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
@@ -166,12 +171,14 @@ public class AuthServiceImpl implements AuthService {
         GeneratedToken token = jwtUtil.generateToken(loginRequestDto.getUserId(), user.get().getRole());
         log.info("Generated Token: {}", token);
 
-        // 리프레시 토큰을 쿠키에 저장 (1시간 동안 유효)
-        Cookie refreshTokenCookie = new Cookie("refreshToken", token.getRefreshToken());
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(24 * 60 * 60); // 24시간
-        response.addCookie(refreshTokenCookie);
+        // 리프레시 토큰을 쿠키에 저장
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
+                .httpOnly(true)
+                .path("/")
+                .maxAge(24 * 60 * 60) // 24시간
+                .build();
+        response.getHeaders().add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+
 
         Map<String, String> responseMap = new HashMap<>();
         responseMap.put("message", "Login successful! Here is your access token.");
@@ -228,7 +235,7 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public User kakaoRegisterOrLoginUser(String userEmail) {
         try {
-            Optional<User> userOptional = Optional.ofNullable(userFeignClient.findByEmail(userEmail));
+            Optional<User> userOptional = Optional.ofNullable(userService.findByEmail(userEmail));
 
             User user;
             if (userOptional.isPresent()) {
@@ -246,7 +253,7 @@ public class AuthServiceImpl implements AuthService {
                         .attributeKey("")
                         .createdAt(LocalDateTime.now())
                         .build();
-                userFeignClient.registerUser(user);
+                userService.registerUser(user);
                 log.info("회원가입 처리: {}", user);
             }
 
@@ -259,17 +266,17 @@ public class AuthServiceImpl implements AuthService {
     }
     // 쿠키에 리프레시 토큰 저장
     @Override
-    public GeneratedToken handleKakaoLoginSuccess(String email, HttpServletResponse response) {
+    public GeneratedToken handleKakaoLoginSuccess(String email, ServerHttpResponse response) {
         User user = kakaoRegisterOrLoginUser(email);
         GeneratedToken token = jwtUtil.generateToken(user.getEmail(), user.getRole());
 
-        // 리프레시 토큰을 쿠키에 저장 (1시간 동안 유효)
-        Cookie refreshTokenCookie = new Cookie("refreshToken", token.getRefreshToken());
-        refreshTokenCookie.setHttpOnly(true);
-        refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(24 * 60 * 60); // 24시간
-        response.addCookie(refreshTokenCookie);
-
+        // 리프레시 토큰을 쿠키에 저장
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
+                .httpOnly(true)
+                .path("/")
+                .maxAge(24 * 60 * 60) // 24시간
+                .build();
+        response.getHeaders().add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
         return token;
     }
 

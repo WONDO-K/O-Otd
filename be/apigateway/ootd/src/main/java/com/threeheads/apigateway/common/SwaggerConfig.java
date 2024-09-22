@@ -1,4 +1,4 @@
-package com.threeheads.apigateway.auth.config;
+package com.threeheads.apigateway.common;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;

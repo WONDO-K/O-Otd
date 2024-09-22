@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.threeheads.library.dto.auth.StatusResponseDto;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.core.io.buffer.DataBuffer;
@@ -11,20 +13,26 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.WebFilter;
+import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class JwtExceptionFilter implements GatewayFilter {
+public class JwtExceptionFilter implements WebFilter {
 
     private final ObjectMapper objectMapper;
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
-    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
+    public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         return chain.filter(exchange).onErrorResume(e -> {
             if (e instanceof JwtException) {
+
+                log.error("JWT 예외 발생: {}", e.getMessage());
+
                 // JWT 예외가 발생했을 때 401 응답 반환
                 exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
                 exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
@@ -44,4 +52,6 @@ public class JwtExceptionFilter implements GatewayFilter {
             return Mono.error(e); // 다른 예외는 다시 던짐
         });
     }
+
+
 }

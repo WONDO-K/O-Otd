@@ -1,16 +1,33 @@
 server:
-  port: ${SERVER_PORT:8080}  # .env?? API Gateway ??? ??
+  port: ${SERVER_PORT:8080}  # .env에서 서버 포트 설정
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka/  # Eureka ??? ??
-    fetch-registry: true  # Eureka?? ??? ?? ????
-    register-with-eureka: true  # Eureka? Gateway ??? ??
+      defaultZone: http://localhost:8761/eureka/  # Eureka 서버 주소
+    fetch-registry: true  # Eureka에서 레지스트리 가져오기
+    register-with-eureka: true  # Eureka에 등록하기
 
 spring:
+  main:
+    web-application-type: reactive  # 리액티브 애플리케이션으로 설정
   application:
     name: api-gateway
+    datasource:
+      url: none
+      driver-class-name: none
+    jpa:
+      hibernate:
+        ddl-auto: none
+  data:
+    redis:
+      host: localhost  # Redis 호스트 주소
+      port: 6379  # Redis 포트 번호
+      password: ootd201104  # Redis 비밀번호 (필요시)
+
+  profiles:
+    active: oauth  # 활성화할 Spring 프로파일 설정
+
   cloud:
     gateway:
       routes:
@@ -32,9 +49,8 @@ spring:
             - Path=/user-service/**
           filters:
             - RewritePath=/user-service/(?<path>.*), /$\{path}
-        # OpenAPI ?? ??
+        # OpenAPI 경로 설정
         - id: openapi
-          #uri: http://localhost:${server.port}
           uri: http://localhost:8080
           predicates:
             - Path=/v3/api-docs/**
@@ -42,16 +58,25 @@ spring:
             - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
 
 springdoc:
+  api-docs:
+    enabled: true # API 문서 생성 활성화
   swagger-ui:
+    enabled: true # Swagger UI 활성화
+    path: /swagger-ui/index.html # Swagger UI 접근 경로 설정
     urls[0]:
       name: user-service
       url: http://localhost:8080/v3/api-docs/user-service
     urls[1]:
       name: gallery-service
-      #url: http://localhost:${server.port}/v3/api-docs/gallery-service
       url: http://localhost:8080/v3/api-docs/gallery-service
 #    urls[2]:
 #      name: battle-service
 #      url: http://localhost:8080/v3/api-docs/battle-service
 
+jwt:
+  secret: e13af114d471424d6c9f2b7d03c3e25e630f269fbb3587f35068cb7d253150f568812b114afd8fd6941a005cdcf64b8b8baec4ce9de512b6aaad9ba732c6eee4  # JWT 비밀 키
+  expiration: 1296000000  # JWT 만료 시간 (밀리초 단위)
 
+#logging:
+#  level:
+#    org.springframework: DEBUG

@@ -7,8 +7,9 @@ import com.threeheads.library.dto.auth.kakao.KakaoUserInfoDto;
 import com.threeheads.library.dto.auth.login.reqeust.OriginLoginRequestDto;
 import com.threeheads.library.dto.auth.login.response.TokenResponseStatus;
 import com.threeheads.library.entity.User;
-import jakarta.servlet.http.HttpServletResponse;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 
 import java.util.Map;
 
@@ -16,9 +17,9 @@ public interface AuthService {
 
     ResponseEntity<StatusResponseDto> logout(String accessToken);
     ResponseEntity<TokenResponseStatus> refresh(String accessToken, String refreshToken);
-    ResponseEntity<Map<String, String>> originLogin(OriginLoginRequestDto loginRequestDto, HttpServletResponse response);
+    ResponseEntity<Map<String, String>> originLogin(OriginLoginRequestDto loginRequestDto, ServerHttpResponse response);
     KakaoUserInfoDto requestAccessTokenAndUserInfo(String code);
-    GeneratedToken handleKakaoLoginSuccess(String email, HttpServletResponse response);
+    GeneratedToken handleKakaoLoginSuccess(String email, ServerHttpResponse response);
     User kakaoRegisterOrLoginUser(String userEmail);
 
 }

@@ -1,5 +1,6 @@
 package com.threeheads.apigateway.util;
 
+import com.threeheads.apigateway.auth.service.UserService;
 import com.threeheads.apigateway.feign.UserFeignClient;
 import com.threeheads.library.dto.user.UserDto;
 import com.threeheads.library.entity.User;
@@ -17,11 +18,12 @@ import java.util.Collections;
 @AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserFeignClient userFeignClient;  // UserFeignClient 주입
+    //private final UserFeignClient userFeignClient;  // UserFeignClient 주입
+    private final UserService userService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userFeignClient.findByEmail(email); // UserDto를 직접 받음
+        User user = userService.findByEmail(email); // UserDto를 직접 받음
 
         if (user == null) {
             throw new UsernameNotFoundException(email + " -> DB에서 찾을 수 없습니다.");

@@ -1,26 +1,19 @@
 version: "3.8"
 
 services:
-  apigateway:
-    build:
-      context: ./path_to_apigateway  # API Gateway의 Dockerfile 경로 설정
-      dockerfile: Dockerfile
-    container_name: apigateway_container 
+  redis:
+    image: redis:latest
+    command: redis-server --requirepass ootd201104
+    container_name: redis_container
     ports:
-      - "8080:8080"  # 호스트 포트를 고정으로 설정
-    depends_on:
-      - eureka-server
-      - gallery_backend  # gallery 서비스와의 의존성 설정
+      - "6379:6379"
     networks:
-      - ootd-gateway-network
-
-  eureka-server:
-    image: your-eureka-server-image
-    container_name: eureka_server_container  # 컨테이너 이름 추가
-    ports:
-      - "8761:8761"  # Eureka Server 포트
-    networks:
-      - ootd-gateway-network
+      - ootd-gateway-network  # 네트워크 설정 추가
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "ootd201104", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
 
 networks:
   ootd-gateway-network:
