@@ -33,6 +33,7 @@ import Footerbar from './components/Footerbar'
 import Battle from './views/Battle'
 import Notification from './views/Notification'
 import Challenge from './views/Challenge'
+import ChallengeDetail from './views/ChallengeDetail'
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -91,6 +92,7 @@ function App(): React.JSX.Element {
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName="Notification"
+          // initialRouteName="Battle"
           screenOptions={{
             headerShown: false, // 모든 화면에서 헤더를 제거
             animationEnabled: false, // 모든 화면에서 전환 애니메이션 비활성화
@@ -99,6 +101,7 @@ function App(): React.JSX.Element {
           <Stack.Screen name="Battle" component={Battle} />
           <Stack.Screen name="Notification" component={Notification} />
           <Stack.Screen name="Challenge" component={Challenge} />
+          <Stack.Screen name="ChallengeDetail" component={ChallengeDetail} />
         </Stack.Navigator>
       </NavigationContainer>
       <Footerbar />

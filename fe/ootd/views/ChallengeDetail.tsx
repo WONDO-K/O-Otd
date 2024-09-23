@@ -1,26 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView, FlatList } from 'react-native';
 import axios from 'axios';
 import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
 import GalleryButton from '../components/GalleryButton';
 
-function Challenge({ navigation }): React.JSX.Element {
+function ChallengeDetail({ navigation, route }): React.JSX.Element {
 
-    const [searchId, setSearchId] = useState('');
-    const [searchResult, setSearchResult] = useState<string[]>([]);
+    const { item } = route.params;
+
     const [selectedUser, setSelectedUser] = useState('');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-    const getSearch = (searchId : string) => {
-        // axios.get(`https://api.example.com/users/${searchId}`)
-        // .then(response => {
-        //     setSearchResult(response.data);
-        // }).catch(error => {
-        //     console.log(error);
-        // })
-        const data = ['키무라', '키무라기무동현', '키무라김기무동현'];
-        setSearchResult(data);
-    };
+    useEffect(() => {
+        if (item && item.senderUserName) {
+            setSelectedUser(item.senderUserName);
+        }
+    }, [item]);
 
     const battleRequest = (selectedUser : string, selectedImage : string) => {
         // axios.post('https://api.example.com/battle', {
@@ -57,64 +52,12 @@ function Challenge({ navigation }): React.JSX.Element {
     return (
         <View style={styles.container}>
             <ScrollView contentContainerStyle={styles.scrollContainer}>
-                {selectedUser ? (
-                    <View style={styles.selectedSection}>
-                        <TouchableOpacity style={styles.selectedBar} onPress={() => setSelectedUser('')}>
-                            <Text style={styles.selectedText}>{selectedUser}</Text>
-                        </TouchableOpacity>
+                <View style={styles.selectedSection}>
+                    <View style={styles.selectedBar}>
+                        <Text style={styles.selectedText}>{selectedUser}</Text>
                     </View>
-                ) : (
-                    <View style={styles.searchSection}>
-                        <View style={styles.searchBar}>
-                            <Image 
-                                source={require('../assets/images/searchIcon.png')}
-                                style={styles.searchIcon}
-                            />
-                            <TextInput
-                                style={styles.searchInput}
-                                maxLength={30}
-                                placeholder='대전 상대 검색'
-                                placeholderTextColor='gray'
-                                value={searchId}
-                                onChangeText={(input) => {
-                                    if (input.length <= 15) {
-                                    setSearchId(input);
-                                    }
-                                
-                                    if (input.length > 0 && input.length <= 15) {
-                                    getSearch(input);
-                                    } else {
-                                    setSearchResult([]);
-                                    }
-                                }}
-                            />
-                        </View>
-                        {searchResult.length > 0 && (
-                            <FlatList
-                                data={searchResult}
-                                keyExtractor={(item, index) => index.toString()}
-                                renderItem={({ item }) => (
-                                    <TouchableOpacity style={styles.resultItem} onPress={() => setSelectedUser(item)}>
-                                        <Text style={styles.resultText}>{item}</Text>
-                                    </TouchableOpacity>
-                                )}
-                                style={styles.resultList}
-                            />
-                        )}
-                    </View>
-                )}
+                </View>
                 <GalleryButton selectedImage={selectedImage} onPress={selectImage} />
-                {/* <View style={styles.gallery}>
-                    {selectedImage ? (
-                        <TouchableOpacity onPress={selectImage}>
-                            <Image source={{ uri: selectedImage }} style={styles.image} />
-                        </TouchableOpacity>
-                    ) : (
-                        <TouchableOpacity onPress={selectImage} style={styles.galleryButton}>
-                            <Image source={require('../assets/images/chooseIcon.png')} style={{ width: 100, height: 100 }} />
-                        </TouchableOpacity>
-                    )}
-                </View> */}
             </ScrollView>
             <View style={styles.buttonSection}>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
@@ -276,4 +219,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Challenge;
+export default ChallengeDetail;

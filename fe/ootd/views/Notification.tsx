@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView, FlatList } from 'react-native';
+import { Text, View, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import axios from 'axios';
 
 function Notification({ navigation }): React.JSX.Element {
@@ -81,10 +81,16 @@ function Notification({ navigation }): React.JSX.Element {
                 data={notifications}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
-                    <View style={styles.notificationItem}>
+                    <TouchableOpacity style={styles.notificationItem}
+                        onPress={() => {
+                            setTimeout(() => {
+                                navigation.navigate('ChallengeDetail', { item });
+                            }, 0);  // 렌더링 후에 navigation 호출
+                        }}
+                    >
                         <Text style={styles.notificationText}>{item.message}</Text>
                         <Text style={styles.notificationTime}>{timeSince(item.createdAt)}</Text>
-                    </View>
+                    </TouchableOpacity>
                 )}
             />
         </View>
@@ -102,8 +108,6 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
         alignItems: 'center',
         padding: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
     },
     notificationText: {
         width: '70%',
