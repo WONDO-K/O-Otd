@@ -17,7 +17,7 @@ public class UserDto {
     private String phone;
     private Role role;
     private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
+    private LocalDateTime deletedAt;
     private String socialType;
     private String attributeKey;
 
@@ -30,7 +30,7 @@ public class UserDto {
         this.phone = user.getPhone();
         this.role = user.getRole();
         this.createdAt = user.getCreatedAt();
-        this.updatedAt = user.getUpdatedAt();
+        this.deletedAt = user.getDeletedAt();
         this.socialType = user.getSocialType();
         this.attributeKey = user.getAttributeKey();
     }

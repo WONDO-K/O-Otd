@@ -14,18 +14,6 @@ services:
     networks:
       - ootd-user-network
 
-  # gallery_backend:
-  #   build:
-  #     context: ./  # gallery Dockerfile 경로 설정
-  #     dockerfile: Dockerfile
-  #   container_name: gallery_backend_container  # 직접 하드코딩
-  #   expose:
-  #     - "8080"  # 컨테이너 내부 포트만 노출
-  #   depends_on:
-  #     - gallery_db
-  #   networks:
-  #     - ootd-gallery-network
-
 volumes:
   ootd_user_mysql_data:
 

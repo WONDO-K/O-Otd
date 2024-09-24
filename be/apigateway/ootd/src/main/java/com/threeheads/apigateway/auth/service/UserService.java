@@ -4,20 +4,29 @@ import com.threeheads.apigateway.feign.UserFeignClient;
 import com.threeheads.library.entity.User;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Service
 public class UserService {
-    private final UserFeignClient userFeignClient;
+    private final WebClient webClient;
 
-    public UserService(UserFeignClient userFeignClient) {
-        this.userFeignClient = userFeignClient;
+    public UserService(WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder.baseUrl("http://user-service-url").build();
     }
 
-    public User findByEmail(String email) {
-        return userFeignClient.findByEmail(email);
+    public Mono<User> findByEmail(String email) {
+        return webClient.get()
+                .uri("/user/findByEmail?email={email}", email)
+                .retrieve()
+                .bodyToMono(User.class);
     }
 
-    public User registerUser(User user) {
-        return userFeignClient.registerUser(user);
+    public Mono<Void> registerUser(User user) {
+        return webClient.post()
+                .uri("/user/register")
+                .bodyValue(user)
+                .retrieve()
+                .bodyToMono(Void.class);
     }
 }

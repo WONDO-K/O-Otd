@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
                 contact = @Contact(name = "201104", email = "your.email@example.com")
         ),
         servers = @Server(
-                url = "http://localhost:8080/user-service", // API Gateway에서 gallery 서비스로 라우팅된 경로
+                url = "http://localhost:8080/user-service", // API Gateway에서 user 서비스로 라우팅된 경로
                 description = "API Gateway URL for Gallery Service"
         )
 )

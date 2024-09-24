@@ -15,6 +15,7 @@ public enum ErrorCode {
     INVALID_PARAMETER(400, "U005", "잘못된 요청입니다."),
     POST_NOT_FOUND(404, "U006", "게시글이 존재하지 않습니다."),
     PHONE_DUPLICATION(400, "U007", "이미 존재하는 전화번호입니다."),
+    USER_REGISTRATION_FAILED(400, "U008", "회원 가입 중에 오류가 발생했습니다."),
 
     // 카카오 로그인 관련 에러 코드
     KAKAO_TOKEN_PARSING_FAILED(500, "K001", "카카오 액세스 토큰 또는 사용자 정보 파싱 실패"),

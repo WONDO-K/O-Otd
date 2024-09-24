@@ -14,5 +14,5 @@ public interface UserFeignClient {
     User findByEmail(@RequestParam String email);
 
     @PostMapping("/user/register") // 사용자 등록 메서드 추가
-    User registerUser(@RequestBody User user);
+    void registerUser(@RequestBody User user);
 }

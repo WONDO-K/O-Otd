@@ -42,9 +42,8 @@ public class SecurityConfig {
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable)  // 폼 로그인 비활성화
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()  // Swagger UI 접근 허용
-                        .pathMatchers("/api/auth/token/refresh").permitAll()
-                        .pathMatchers("/api/auth/**").permitAll()
-                        .pathMatchers("/api/session/**").permitAll()
+                        .pathMatchers("/auth/token/refresh").permitAll()
+                        .pathMatchers("/auth/**").permitAll()
                         .anyExchange().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, SecurityWebFiltersOrder.AUTHORIZATION)  // JWT 필터 추가

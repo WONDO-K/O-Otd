@@ -39,7 +39,7 @@ public class JwtAuthFilter  implements WebFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
         String accessToken = resolveToken(exchange);
-        log.info("Access Token: " + accessToken);
+        log.info("Access Token: {}", accessToken);
 
         if (!StringUtils.hasText(accessToken)) {
             log.info("Access Token이 없습니다.");
@@ -56,28 +56,26 @@ public class JwtAuthFilter  implements WebFilter {
             return unauthorizedResponse(exchange);
         }
 
-        try {
-            String email = jwtUtil.getUid(accessToken);
-            User findUser = userService.findByEmail(email);
-            if (findUser == null) {
-                throw new JwtException("유효하지 않은 사용자입니다.");
-            }
+        String email = jwtUtil.getUid(accessToken);
+        return userService.findByEmail(email) // 비동기 처리
+                .flatMap(findUser -> {
+                    if (findUser == null) {
+                        throw new JwtException("유효하지 않은 사용자입니다.");
+                    }
 
-            SecurityUserDto userDto = SecurityUserDto.builder()
-                    .id(findUser.getId())
-                    .email(findUser.getEmail())
-                    .username(findUser.getUsername())
-                    .role(findUser.getRole())
-                    .build();
+                    SecurityUserDto userDto = SecurityUserDto.builder()
+                            .id(findUser.getId())
+                            .email(findUser.getEmail())
+                            .username(findUser.getUsername())
+                            .role(findUser.getRole())
+                            .build();
 
-            Authentication auth = new UsernamePasswordAuthenticationToken(userDto, null, userDto.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(auth);
-            log.info("SecurityContext에 인증 객체 등록 완료");
-        } catch (Exception e) {
-            return unauthorizedResponse(exchange);
-        }
-
-        return chain.filter(exchange);
+                    Authentication auth = new UsernamePasswordAuthenticationToken(userDto, null, userDto.getAuthorities());
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                    log.info("SecurityContext에 인증 객체 등록 완료");
+                    return chain.filter(exchange); // 다음 필터로 진행
+                })
+                .onErrorResume(e -> unauthorizedResponse(exchange)); // 오류 처리
     }
 
     private String resolveToken(ServerWebExchange exchange) {

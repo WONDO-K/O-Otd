@@ -18,39 +18,45 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+    @Column(name = "user_id")  // DB에서는 user_id로, 자바에서는 id로 사용
     private Long id;
 
-    @Column(name = "username", nullable = false, length = 50)
+    @Column(name = "user_name", length = 30)
     private String username;
-
-    @Column(name = "realname", length = 50)
-    private String nickname;
-
-    @Column(name = "email", nullable = false, length = 255)
-    private String email;
-
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
-
-    @Column(name = "phone", length = 50)
-    private String phone;
 
     @Column(name = "role", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @Column(name = "created_at")
+    @Column(name = "user_email", length = 255)
+    private String email;
+
+    @Column(name = "user_phonenumber", length = 20)
+    private String phone;
+
+    @Column(name = "create_date", nullable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    @Column(name = "delete_date")
+    private LocalDateTime deletedAt;
 
-    @Column(name = "social_type")
+    @Column(name = "nickname", length = 20, nullable = false)
+    private String nickname;
+
+    @Column(name = "user_battle", nullable = false, columnDefinition = "int default 0")
+    private int userBattle;
+
+    @Column(name = "user_win", nullable = false, columnDefinition = "int default 0")
+    private int userWin;
+
+    @Column(name = "social_type", length = 255, nullable = false)
     private String socialType;
 
     @Column(name = "attribute_key")
     private String attributeKey;
+
+    @Column(name = "user_pw", length = 30, nullable = false)
+    private String passwordHash;
 
 
     public void changePhone(String phone) {
