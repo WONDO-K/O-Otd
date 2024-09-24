@@ -9,6 +9,8 @@ import {
   ImageBackground,
 } from 'react-native';
 
+import { BlurView } from '@react-native-community/blur';
+
 const windowWidth = Dimensions.get('window').width;
 const margin = 24;
 const cardSize = { width: windowWidth - 48 * 2, height: 400 };
@@ -56,14 +58,14 @@ export default function Carousel() {
   }, [infiniteData]);
 
   // 3. 컴포넌트가 마운트된 후에 FlatList를 첫 번째 실제 항목으로 스크롤
-  useEffect(() => {
-    if (flatListRef.current) {
-      flatListRef.current.scrollToOffset({
-        offset: offset,
-        animated: false,
-      });
-    }
-  }, [offset]);
+  // useEffect(() => {
+  //   if (flatListRef.current) {
+  //     flatListRef.current.scrollToOffset({
+  //       offset: offset,
+  //       animated: false,
+  //     });
+  //   }
+  // }, [offset]);
 
   // 4. 스크롤 끝 처리 방어 코드 추가
   const handleScrollEnd = (e) => {
@@ -88,49 +90,61 @@ export default function Carousel() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>금주의 스타일</Text>
-      <View style={styles.carouselContainer}>
-        <FlatList
-          ref={flatListRef}
-          data={infiniteData}
-          snapToOffsets={snapToOffsets}
-          horizontal
-          pagingEnabled
-          onMomentumScrollEnd={handleScrollEnd}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 48 }}
-          renderItem={({ item }) => (
-            <TouchableOpacity style={{ marginRight: margin }}>
-              <ImageBackground style={cardSize} source={item.carouselImageUrl} />
-            </TouchableOpacity>
-          )}
-          keyExtractor={(_, index) => String(index)}
-          getItemLayout={(data, index) => ({
-            length: offset,
-            offset: offset * index,
-            index,
-          })}
-          initialScrollIndex={1}
-        />
-      </View>
-    </View>
+    <>
+      <BlurView
+        blurType="light"
+        blurAmount={2}
+        style={styles.blurView}
+      >
+        <View style={styles.container}>
+          <Text style={styles.title}>금주의 스타일</Text>
+          <View style={{ marginBottom: 10 }} />
+          <FlatList
+            ref={flatListRef}
+            data={infiniteData}
+            snapToOffsets={snapToOffsets}
+            horizontal
+            pagingEnabled
+            onMomentumScrollEnd={handleScrollEnd}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 48 }}
+            style={{ height: cardSize.height }} // 높이 설정
+            renderItem={({ item }) => (
+              <TouchableOpacity style={{ marginRight: margin }}>
+                <ImageBackground style={cardSize} source={item.carouselImageUrl} />
+              </TouchableOpacity>
+            )}
+            keyExtractor={(_, index) => String(index)}
+            getItemLayout={(data, index) => ({
+              length: offset,
+              offset: offset * index,
+              index,
+            })}
+            initialScrollIndex={1}
+          />
+        </View>
+      </BlurView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     width: windowWidth,
+    height: cardSize.height + 100, // cardSize에 맞춰 높이 설정
     paddingBottom: 10,
   },
   title: {
     fontSize: 40,
     textAlign: 'center',
-    marginBottom: 20,
-    color: '#fff',
+    color: '#ffffff',
   },
-  carouselContainer: {
-    height: "auto",
+  blurView: {
+    borderRadius: 20,
+    overflow: 'hidden',
+    elevation: 50, // 그림자 높이 조정
   },
 });

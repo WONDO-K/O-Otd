@@ -63,7 +63,7 @@ function App(): React.JSX.Element {
 
       {/* 스크롤 가능한 콘텐츠 영역에 배경 이미지 적용 */}
       <ImageBackground
-        source={require('./assets/BackgroundImg.png')} // 배경 이미지 경로
+        source={require('./assets/Images/BackgroundImg.png')} // 배경 이미지 경로
         style={styles.backgroundImage} // 배경 이미지 스타일 적용
         resizeMode="cover" // 이미지 크기를 화면에 맞게 조정
       >
@@ -88,9 +88,8 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     flexGrow: 1, // 스크롤 뷰의 내용을 화면에 맞게 확장
-    // justifyContent: 'center', // 가운데 정렬 (필요에 따라 조정 가능)
     alignContent: 'center', //
-    padding: 20, // 스크롤 가능한 콘텐츠에 패딩 추가 (선택 사항)
+    marginTop: 10, //
   },
   sectionContainer: {
     marginTop: 32,

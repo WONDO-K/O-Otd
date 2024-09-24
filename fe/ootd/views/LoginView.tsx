@@ -13,25 +13,25 @@ function LoginScreen(): React.JSX.Element {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Image source={require('../assets/ootd_logo.png')} style={styles.ootdLogo} />
+        <Image source={require('../assets/Images/ootd_logo.png')} style={styles.ootdLogo} />
         <Text style={styles.loginText}>로그인</Text>
       </View>
       <View style={styles.body}>
         {/* Kakao 로그인 버튼 */}
         <TouchableOpacity style={styles.kakaoButton}>
-          <Image source={require('../assets/kakao.png')} style={styles.btnLogo} />
+          <Image source={require('../assets/Images/kakao.png')} style={styles.btnLogo} />
           <Text style={styles.kakaoButtonText}>카카오로 로그인</Text>
         </TouchableOpacity>
 
         {/* Google 로그인 버튼 */}
         <TouchableOpacity style={styles.googleButton}>
-          <Image source={require('../assets/google.png')} style={styles.btnLogo} />
+          <Image source={require('../assets/Images/google.png')} style={styles.btnLogo} />
           <Text style={styles.googleButtonText}>Google로 로그인</Text>
         </TouchableOpacity>
 
         {/* Naver 로그인 버튼 */}
         <TouchableOpacity style={styles.naverButton}>
-          <Image source={require('../assets/naver.png')} style={styles.btnLogo} />
+          <Image source={require('../assets/Images/naver.png')} style={styles.btnLogo} />
           <Text style={styles.naverButtonText}>Naver로 로그인</Text>
         </TouchableOpacity>
       </View>

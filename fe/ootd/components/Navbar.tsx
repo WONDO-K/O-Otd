@@ -1,5 +1,8 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
+
+import LogoIcon from '../assets/Icons/OOTD_Icon.svg';
+import NoticeIcon from '../assets/Icons/Notice_Icon.svg';
 
 const styles = StyleSheet.create({
     container: {
@@ -9,7 +12,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 30,
+        paddingHorizontal: 10,
     },
     text: {
         color: 'white',
@@ -18,11 +21,10 @@ const styles = StyleSheet.create({
 })
 
 function Navbar(): React.JSX.Element {
-  
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>로고</Text>
-            <Text style={styles.text}>알림</Text>
+            <LogoIcon width={120} height={60} />
+            <NoticeIcon width={50} height={50} />
         </View>
     );
 }
