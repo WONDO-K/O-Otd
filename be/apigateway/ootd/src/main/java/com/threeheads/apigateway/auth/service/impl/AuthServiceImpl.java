@@ -31,6 +31,7 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,6 +39,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import reactor.core.publisher.Mono;
+
+import org.springframework.security.core.GrantedAuthority;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -58,7 +62,7 @@ public class AuthServiceImpl implements AuthService {
 
 
 
-    private final UserDetailsService userDetailsService;
+    private final ReactiveUserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final RestTemplate restTemplate = new RestTemplate(); // RestTemplate 빈 초기화
@@ -148,44 +152,92 @@ public class AuthServiceImpl implements AuthService {
         }
     }
 
-    @Override
-    public ResponseEntity<Map<String, String>> originLogin(OriginLoginRequestDto loginRequestDto, ServerHttpResponse response) {
-        Optional<User> user = Optional.ofNullable(userService.findByEmail(loginRequestDto.getUserId()));
+//    @Override
+//    public ResponseEntity<Map<String, String>> originLogin(OriginLoginRequestDto loginRequestDto, ServerHttpResponse response) {
+//        Optional<User> user = Optional.ofNullable(userService.findByEmail(loginRequestDto.getUserId()));
+//
+//        if (user.isEmpty()) {
+//            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+//        }
+//
+//        if (!loginRequestDto.getPasswordHash().equals(user.get().getPasswordHash())) {
+//            log.error("비밀번호가 올바르지 않습니다.");
+//            throw new BadCredentialsException("비밀번호가 올바르지 않습니다.");
+//        }
+//
+//        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequestDto.getUserId());
+//        UsernamePasswordAuthenticationToken authenticationToken =
+//                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+//        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+//
+//        log.info("Authentication successful: {}", authenticationToken);
+//
+//        GeneratedToken token = jwtUtil.generateToken(loginRequestDto.getUserId(), user.get().getRole());
+//        log.info("Generated Token: {}", token);
+//
+//        // 리프레시 토큰을 쿠키에 저장
+//        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
+//                .httpOnly(true)
+//                .path("/")
+//                .maxAge(24 * 60 * 60) // 24시간
+//                .build();
+//        response.getHeaders().add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+//
+//
+//        Map<String, String> responseMap = new HashMap<>();
+//        responseMap.put("message", "Login successful! Here is your access token.");
+//        responseMap.put("accessToken", token.getAccessToken());
+//
+//        return ResponseEntity.ok(responseMap);
+//    }
 
-        if (user.isEmpty()) {
-            throw new CustomException(ErrorCode.USER_NOT_FOUND);
-        }
 
-        if (!loginRequestDto.getPasswordHash().equals(user.get().getPasswordHash())) {
-            log.error("비밀번호가 올바르지 않습니다.");
-            throw new BadCredentialsException("비밀번호가 올바르지 않습니다.");
-        }
+@Override
+public ResponseEntity<Map<String, String>> originLogin(OriginLoginRequestDto loginRequestDto, ServerHttpResponse response) {
+    // 사용자 이메일로 UserDetails를 비동기적으로 조회
+    Mono<UserDetails> userDetailsMono = userDetailsService.findByUsername(loginRequestDto.getUserId());
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(loginRequestDto.getUserId());
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+    return userDetailsMono.flatMap(userDetails -> {
+                // 비밀번호 확인
+                if (!passwordEncoder.matches(loginRequestDto.getPasswordHash(), userDetails.getPassword())) {
+                    log.error("비밀번호가 올바르지 않습니다.");
+                    throw new BadCredentialsException("비밀번호가 올바르지 않습니다.");
+                }
 
-        log.info("Authentication successful: {}", authenticationToken);
+                // 인증 토큰 생성 및 SecurityContext에 설정
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
-        GeneratedToken token = jwtUtil.generateToken(loginRequestDto.getUserId(), user.get().getRole());
-        log.info("Generated Token: {}", token);
+                log.info("Authentication successful: {}", authenticationToken);
 
-        // 리프레시 토큰을 쿠키에 저장
-        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
-                .httpOnly(true)
-                .path("/")
-                .maxAge(24 * 60 * 60) // 24시간
-                .build();
-        response.getHeaders().add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+                // JWT 토큰 생성
+                Role role = userDetails.getAuthorities().stream()
+                        .map(GrantedAuthority::getAuthority) // GrantedAuthority를 String으로 변환
+                        .map(Role::valueOf) // String을 Role로 변환 (enum으로 변환)
+                        .findFirst()
+                        .orElseThrow(() -> new BadCredentialsException("권한이 없습니다."));
 
+                GeneratedToken token = jwtUtil.generateToken(loginRequestDto.getUserId(), role);
 
-        Map<String, String> responseMap = new HashMap<>();
-        responseMap.put("message", "Login successful! Here is your access token.");
-        responseMap.put("accessToken", token.getAccessToken());
+                // 리프레시 토큰을 쿠키에 저장
+                ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
+                        .httpOnly(true)
+                        .path("/")
+                        .maxAge(24 * 60 * 60) // 24시간
+                        .build();
+                response.getHeaders().add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 
-        return ResponseEntity.ok(responseMap);
-    }
+                // 응답 생성
+                Map<String, String> responseMap = new HashMap<>();
+                responseMap.put("message", "Login successful! Here is your access token.");
+                responseMap.put("accessToken", token.getAccessToken());
+
+                return Mono.just(ResponseEntity.ok(responseMap));
+            }).switchIfEmpty(Mono.error(new CustomException(ErrorCode.USER_NOT_FOUND))) // 사용자 없음 처리
+            .block(); // Mono를 차단하여 동기식으로 결과를 가져옴
+}
+
 
     @Override
     public KakaoUserInfoDto requestAccessTokenAndUserInfo(String code) {

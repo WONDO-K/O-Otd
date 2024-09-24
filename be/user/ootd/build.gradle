@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.3.3'
+	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
 }
 
@@ -21,6 +21,10 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven {
+		// common-library JAR 파일이 저장된 경로
+		url = uri("${projectDir}/../../shared-repo")
+	}
 }
 
 dependencyManagement {
@@ -30,6 +34,12 @@ dependencyManagement {
 }
 
 dependencies {
+	// 공통 라이브러리 의존성 추가
+	implementation 'com.threeheads:common-library:0.0.1-SNAPSHOT'
+
+	// Feign 의존성 추가
+	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+
 	// Spring Boot 기본 의존성
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'

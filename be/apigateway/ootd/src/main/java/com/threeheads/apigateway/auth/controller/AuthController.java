@@ -22,7 +22,7 @@ import java.util.Map;
 //@CrossOrigin(origins = "*")
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @Tag(name = "AuthController", description = "인증 관련 API")
 public class AuthController {
 
