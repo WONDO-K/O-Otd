@@ -42,8 +42,8 @@ function Battle({ navigation }): React.JSX.Element {
         // 남은 시간을 시(hour)와 분(minute) 단위로 변환
         const remainingHours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
         const remainingMinutes = Math.floor((remainingTime / (1000 * 60)) % 60);
-    
-        return `${remainingHours}시간 ${remainingMinutes}분`;
+        // ${remainingMinutes}m
+        return `${remainingHours} 시간`;
     };
   
     const selectCategory = (category: string) => {
@@ -71,7 +71,7 @@ function Battle({ navigation }): React.JSX.Element {
                         "title": "Summer Fashion Battle",
                         "participantCount": 2,
                         "status": "IN_PROGRESS",
-                        "startedAt": "2024-09-23T14:00:00",
+                        "startedAt": "2024-09-23T22:00:00",
                         "leftImage": "https://placekitten.com/200/300",
                         "rightImage": "https://placedog.net/500",
                         "myPick": null,
@@ -83,7 +83,7 @@ function Battle({ navigation }): React.JSX.Element {
                         "title": "Autumn Collection Showdown",
                         "participantCount": 2,
                         "status": "IN_PROGRESS",
-                        "startedAt": "2024-09-23T12:00:00",
+                        "startedAt": "2024-09-24T12:00:00",
                         "leftImage": "https://picsum.photos/400/400",
                         "rightImage": "https://picsum.photos/200/300",
                         "myPick": "left",
@@ -191,7 +191,7 @@ function Battle({ navigation }): React.JSX.Element {
                     </TouchableOpacity>
                 </View>
                 <View style={styles.myBattle}>
-                    <Text style={styles.switchText}>내 대전 보기</Text>
+                    <Text style={styles.switchText}>My    </Text>
                     <Switch
                         trackColor={{ false: "#767577", true: "#81b0ff" }} // 트랙 색상 설정
                         thumbColor={isEnabled ? "#ffffff" : "#ffffff"} // 스위치 원 색상 설정
@@ -249,7 +249,10 @@ function Battle({ navigation }): React.JSX.Element {
                 data={battleList}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.battleItem}>
+                    <TouchableOpacity
+                        style={styles.battleItem}
+                        onPress={() => navigation.navigate('BattleDetail', item)}
+                    >
                         <View style={styles.battleTitle}>
                             <Text style={styles.battleNameText}>{nameSlice(item.leftName)}</Text>
                             <Text style={styles.battleTimeText}>{calculateRemainingTime(item.startedAt)}</Text>
@@ -276,6 +279,7 @@ function Battle({ navigation }): React.JSX.Element {
                     </TouchableOpacity>
                 )}
                 style={styles.battleList}
+                nestedScrollEnabled={true}
             />
         </ScrollView>
     );
@@ -342,8 +346,8 @@ const styles = StyleSheet.create({
     battleSortButton: {
         margin: 10,
         borderRadius: 10,
-        width: 100,
-        height: 40,
+        width: 80,
+        height: 32,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',

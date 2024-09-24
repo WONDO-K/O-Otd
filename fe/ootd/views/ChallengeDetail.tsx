@@ -1,21 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView, FlatList } from 'react-native';
+import { Text, View, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView } from 'react-native';
 import axios from 'axios';
 import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
 import GalleryButton from '../components/GalleryButton';
+import MyFashionButton from '../components/MyFashionButton';
 
 function ChallengeDetail({ navigation, route }): React.JSX.Element {
 
     const { item } = route.params;
+    const selectedSrc = route.params?.selectedImage;
 
     const [selectedUser, setSelectedUser] = useState('');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    const nameSlice = (name: string) => {
+        if (name.length > 6) {
+            return name.slice(0, 6) + '...';
+        } else {
+            return name;
+        }
+    }
 
     useEffect(() => {
         if (item && item.senderUserName) {
             setSelectedUser(item.senderUserName);
         }
     }, [item]);
+
+    useEffect(() => {
+        if (selectedSrc) {
+            setSelectedImage(selectedSrc);
+        }
+    }, [selectedSrc]);
 
     const battleRequest = (selectedUser : string, selectedImage : string) => {
         // axios.post('https://api.example.com/battle', {
@@ -51,14 +67,16 @@ function ChallengeDetail({ navigation, route }): React.JSX.Element {
 
     return (
         <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.scrollContainer}>
                 <View style={styles.selectedSection}>
-                    <View style={styles.selectedBar}>
-                        <Text style={styles.selectedText}>{selectedUser}</Text>
-                    </View>
+                    {/* <View style={styles.selectedBar}> */}
+                        <Text style={styles.selectedText}>{selectedUser} 님이 </Text>
+                        <Text style={styles.selectedText}> 대전을 신청하셨습니다.</Text>
+                    {/* </View> */}
                 </View>
-                <GalleryButton selectedImage={selectedImage} onPress={selectImage} />
-            </ScrollView>
+                {/* <GalleryButton selectedImage={selectedImage} onPress={selectImage} /> */}
+                <MyFashionButton selectedImage={selectedImage} onPress={() => navigation.navigate('MyFashion', { returnScreen: 'ChallengeDetail' })} />
+            </View>
             <View style={styles.buttonSection}>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
                     <Text style={styles.buttonText}>Decline</Text>
@@ -89,18 +107,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginVertical: 40,
     },
-    selectedBar: {
-        backgroundColor: 'white',
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: 350,
-        height: 60,
-        borderRadius: 20,
-        padding: 10,
-    },
     selectedText: {
-        color: 'black',
+        paddingHorizontal: 40,
+        color: '#C8D3F1',
         fontSize: 20,
         fontWeight: 'bold',
     },

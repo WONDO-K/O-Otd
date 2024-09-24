@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView, FlatList } from 'react-native';
 import axios from 'axios';
 import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
 import GalleryButton from '../components/GalleryButton';
+import MyFashionButton from '../components/MyFashionButton';
 
-function Challenge({ navigation }): React.JSX.Element {
+function Challenge({ navigation, route }): React.JSX.Element {
+    const selectedSrc = route.params?.selectedImage;
 
     const [searchId, setSearchId] = useState('');
     const [searchResult, setSearchResult] = useState<string[]>([]);
     const [selectedUser, setSelectedUser] = useState('');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (selectedSrc) {
+            setSelectedImage(selectedSrc);
+        }
+    }, [selectedSrc]);
 
     const getSearch = (searchId : string) => {
         // axios.get(`https://api.example.com/users/${searchId}`)
@@ -34,25 +42,25 @@ function Challenge({ navigation }): React.JSX.Element {
         navigation.navigate('Battle');
     };
 
-    const selectImage = () => {
-        const options: ImageLibraryOptions = {
-            mediaType: 'photo', // 'photo', 'video', 또는 'mixed'
-            quality: 1,
-          };
+    // const selectImage = () => {
+    //     const options: ImageLibraryOptions = {
+    //         mediaType: 'photo', // 'photo', 'video', 또는 'mixed'
+    //         quality: 1,
+    //       };
     
-        launchImageLibrary(options, (response) => {
-            if (response.didCancel) {
-                console.log('사용자가 취소했습니다.');
-            } else if (response.errorMessage) {
-                console.log('에러:', response.errorMessage);
-            } else if (response.assets && response.assets.length > 0) {
-                const selectedImageUri = response.assets[0].uri; // 선택된 이미지의 URI
-                if (selectedImageUri) { // undefined가 아닌 경우에만 상태를 업데이트
-                    setSelectedImage(selectedImageUri); // string | null 타입만 할당
-                }
-            }
-        });
-    };
+    //     launchImageLibrary(options, (response) => {
+    //         if (response.didCancel) {
+    //             console.log('사용자가 취소했습니다.');
+    //         } else if (response.errorMessage) {
+    //             console.log('에러:', response.errorMessage);
+    //         } else if (response.assets && response.assets.length > 0) {
+    //             const selectedImageUri = response.assets[0].uri; // 선택된 이미지의 URI
+    //             if (selectedImageUri) { // undefined가 아닌 경우에만 상태를 업데이트
+    //                 setSelectedImage(selectedImageUri); // string | null 타입만 할당
+    //             }
+    //         }
+    //     });
+    // };
 
     return (
         <View style={styles.container}>
@@ -103,7 +111,8 @@ function Challenge({ navigation }): React.JSX.Element {
                         )}
                     </View>
                 )}
-                <GalleryButton selectedImage={selectedImage} onPress={selectImage} />
+                {/* <GalleryButton selectedImage={selectedImage} onPress={selectImage} /> */}
+                <MyFashionButton selectedImage={selectedImage} onPress={() => navigation.navigate('MyFashion', { returnScreen: 'Challenge' })} />
                 {/* <View style={styles.gallery}>
                     {selectedImage ? (
                         <TouchableOpacity onPress={selectImage}>
