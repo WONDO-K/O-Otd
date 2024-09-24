@@ -1,18 +1,16 @@
 package com.threeheads.apigateway.auth.service;
 
-import com.threeheads.apigateway.feign.UserFeignClient;
 import com.threeheads.library.entity.User;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 @Service
-public class UserService {
+public class UserClient {
     private final WebClient webClient;
 
-    public UserService(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("http://user-service-url").build();
+    public UserClient(WebClient.Builder webClientBuilder) {
+        this.webClient = webClientBuilder.baseUrl("http://localhost:8081").build();
     }
 
     public Mono<User> findByEmail(String email) {

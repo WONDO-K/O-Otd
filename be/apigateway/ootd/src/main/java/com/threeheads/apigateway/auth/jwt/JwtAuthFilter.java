@@ -1,10 +1,9 @@
 package com.threeheads.apigateway.auth.jwt;
 
 
-import com.threeheads.apigateway.auth.service.UserService;
+import com.threeheads.apigateway.auth.service.UserClient;
 import com.threeheads.apigateway.redis.service.TokenBlacklistService;
 import com.threeheads.library.dto.auth.security.SecurityUserDto;
-import com.threeheads.library.entity.User;
 import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -30,7 +29,7 @@ public class JwtAuthFilter  implements WebFilter {
     private final JwtUtil jwtUtil;
     private final TokenBlacklistService tokenBlacklistService;
     //private final UserFeignClient userFeignClient;  // UserFeignClient 주입
-    private final UserService userService;
+    private final UserClient userClient;
 
     public static class Config {
         // 필요한 경우 설정 추가 가능
@@ -57,7 +56,7 @@ public class JwtAuthFilter  implements WebFilter {
         }
 
         String email = jwtUtil.getUid(accessToken);
-        return userService.findByEmail(email) // 비동기 처리
+        return userClient.findByEmail(email) // 비동기 처리
                 .flatMap(findUser -> {
                     if (findUser == null) {
                         throw new JwtException("유효하지 않은 사용자입니다.");
