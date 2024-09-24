@@ -23,15 +23,19 @@ public class KafkaProducerCluster {
 
     // Kafka 토픽 이름을 application.properties에서 가져와 사용
     // TODO: 토픽이름 수정
-    @Value("${spring.kafka.template.test-topic}")
-    private String topicName;
+    @Value("${spring.kafka.template.from-battle-to-user}")
+    private String toUser;
 
-    // Kafka에 메시지를 전송하는 메서드
-    public void sendMessageTest(KafkaEntity kafkaEntity){
+    @Value("${spring.kafka.template.from-battle-to-gallery}")
+    private String toGallery;
+
+    // Kafkad를 통해 from-battle-to-user에게 메시지를 전송하는 메서드
+
+    public void sendMessageUser(KafkaEntity kafkaEntity){
         // 메시지 객체를 생성, payload로 KafkaEntity를 설정하고, 헤더에 토픽 이름을 설정
         Message<KafkaEntity> message = MessageBuilder
                 .withPayload(kafkaEntity)
-                .setHeader(KafkaHeaders.TOPIC, topicName)
+                .setHeader(KafkaHeaders.TOPIC, toUser)
                 .build();
 
         // 메시지를 Kafka로 비동기 전송, 결과를 나타내는 CompletableFuture 반환
@@ -41,13 +45,38 @@ public class KafkaProducerCluster {
         future.whenComplete((result, ex) -> {
             if (ex == null) {
                 // 성공적으로 전송된 경우, 메시지와 오프셋 정보 로깅
-                log.info("producer: success >>> message: {}, offset: {}",
+                log.info("producer: toUser_success >>> message: {}, offset: {}",
                         result.getProducerRecord().value().toString(),
                         result.getRecordMetadata().offset());
             } else {
                 // 전송 실패한 경우, 예외 메시지 로깅
-                log.info("producer: failure >>> message: {}", ex.getMessage());
+                log.info("producer: toUser_failure >>> message: {}", ex.getMessage());
             }
         });
-    }
+    }//sendMessageUser
+
+    public void sendMessageGallery(KafkaEntity kafkaEntity){
+        // 메시지 객체를 생성, payload로 KafkaEntity를 설정하고, 헤더에 토픽 이름을 설정
+        Message<KafkaEntity> message = MessageBuilder
+                .withPayload(kafkaEntity)
+                .setHeader(KafkaHeaders.TOPIC, toGallery)
+                .build();
+
+        // 메시지를 Kafka로 비동기 전송, 결과를 나타내는 CompletableFuture 반환
+        CompletableFuture<SendResult<String, KafkaEntity>> future = kafkaTemplate.send(message);
+
+        // 메시지 전송 완료 후 콜백 처리
+        future.whenComplete((result, ex) -> {
+            if (ex == null) {
+                // 성공적으로 전송된 경우, 메시지와 오프셋 정보 로깅
+                log.info("producer: toGallery_success >>> message: {}, offset: {}",
+                        result.getProducerRecord().value().toString(),
+                        result.getRecordMetadata().offset());
+            } else {
+                // 전송 실패한 경우, 예외 메시지 로깅
+                log.info("producer: toGallery_failure >>> message: {}", ex.getMessage());
+            }
+        });
+    }//sendMessageUser
+
 }
