@@ -6,27 +6,15 @@
  */
 
 import React from 'react';
-import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
-  ScrollView,
   StatusBar,
   StyleSheet,
-  Text,
   useColorScheme,
-  View,
 } from 'react-native';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 
 import Navbar from './components/Navbar'
 import Footerbar from './components/Footerbar'
@@ -36,36 +24,6 @@ import Notification from './views/Notification'
 import Challenge from './views/Challenge'
 import ChallengeDetail from './views/ChallengeDetail'
 import MyFashion from './views/MyFashion';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
 
 const Stack = createStackNavigator();
 
@@ -78,23 +36,14 @@ function App(): React.JSX.Element {
 
   return (
     <SafeAreaView style={[backgroundStyle, {flex: 1}]}>
-      <Navbar />
       <StatusBar
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-      {/* <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}
-        contentContainerStyle={{ flexGrow: 1 }} // 스크롤 뷰가 화면을 덮도록
-      > */}
-        {/* <Battle/> */}
-        {/* <Challenge/> */}
-      {/* </ScrollView> */}
       <NavigationContainer>
+        <Navbar />
         <Stack.Navigator
           initialRouteName="Notification"
-          // initialRouteName="Battle"
           screenOptions={{
             headerShown: false, // 모든 화면에서 헤더를 제거
             animationEnabled: false, // 모든 화면에서 전환 애니메이션 비활성화
@@ -107,8 +56,8 @@ function App(): React.JSX.Element {
           <Stack.Screen name="Challenge" component={Challenge} />
           <Stack.Screen name="ChallengeDetail" component={ChallengeDetail} />
         </Stack.Navigator>
+        <Footerbar />
       </NavigationContainer>
-      <Footerbar />
     </SafeAreaView>
   );
 }

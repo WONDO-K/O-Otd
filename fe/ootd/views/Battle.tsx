@@ -43,7 +43,11 @@ function Battle({ navigation }): React.JSX.Element {
         const remainingHours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
         const remainingMinutes = Math.floor((remainingTime / (1000 * 60)) % 60);
         // ${remainingMinutes}m
-        return `${remainingHours} 시간`;
+        if (remainingHours > 0) {
+            return `${remainingHours} 시간`;
+        } else {
+            return `${remainingMinutes} 분`;
+        }
     };
   
     const selectCategory = (category: string) => {
@@ -71,7 +75,7 @@ function Battle({ navigation }): React.JSX.Element {
                         "title": "Summer Fashion Battle",
                         "participantCount": 2,
                         "status": "IN_PROGRESS",
-                        "startedAt": "2024-09-23T22:00:00",
+                        "startedAt": "2024-09-25T01:00:00",
                         "leftImage": "https://placekitten.com/200/300",
                         "rightImage": "https://placedog.net/500",
                         "myPick": null,
@@ -83,7 +87,7 @@ function Battle({ navigation }): React.JSX.Element {
                         "title": "Autumn Collection Showdown",
                         "participantCount": 2,
                         "status": "IN_PROGRESS",
-                        "startedAt": "2024-09-24T12:00:00",
+                        "startedAt": "2024-09-25T00:00:00",
                         "leftImage": "https://picsum.photos/400/400",
                         "rightImage": "https://picsum.photos/200/300",
                         "myPick": "left",
@@ -222,29 +226,6 @@ function Battle({ navigation }): React.JSX.Element {
                 </TouchableOpacity>
             </View>
             {/* 배틀 목록 */}
-            {/* <TouchableOpacity style={styles.battleItem}>
-                <View style={styles.battleTitle}>
-                    <Text style={styles.battleNameText}>아니</Text>
-                    <Text style={styles.battleTimeText}>아니</Text>
-                    <Text style={styles.battleNameText}>아니</Text>
-                </View>
-                <View style={styles.battleContent}>
-                    <Image 
-                        style={[
-                            styles.battleImage,
-                            styles.pickedImage
-                        ]} 
-                        source={require('../assets/images/image_90.png')}
-                    />
-                    <Image 
-                        style={[
-                            styles.battleImage,
-                            styles.unPickedImage,
-                        ]} 
-                        source={require('../assets/images/image_112.jpeg')}
-                    />
-                </View>
-            </TouchableOpacity> */}
             <FlatList
                 data={battleList}
                 keyExtractor={(item, index) => index.toString()}

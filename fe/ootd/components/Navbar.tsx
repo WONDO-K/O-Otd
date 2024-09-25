@@ -1,5 +1,9 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { View, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+
+import LogoIcon from '../assets/Icons/OOTD_Icon.svg';
+import NoticeIcon from '../assets/Icons/Notice_Icon.svg';
 
 const styles = StyleSheet.create({
     container: {
@@ -9,7 +13,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        paddingHorizontal: 30,
+        paddingHorizontal: 10,
     },
     text: {
         color: 'white',
@@ -18,11 +22,13 @@ const styles = StyleSheet.create({
 })
 
 function Navbar(): React.JSX.Element {
-  
+    const navigation = useNavigation();
     return (
         <View style={styles.container}>
-            <Text style={styles.text}>로고</Text>
-            <Text style={styles.text}>알림</Text>
+            <LogoIcon width={120} height={60} />
+            <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
+                <NoticeIcon width={50} height={50} />
+            </TouchableOpacity>
         </View>
     );
 }
