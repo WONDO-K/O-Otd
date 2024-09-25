@@ -24,57 +24,29 @@ public class KafkaConsumerConfigCluster {
     // Kafka 소비자 그룹 ID를 애플리케이션 설정 파일에서 가져와서 변수에 저장
 
     // user가 battle에서 메시지를 받아올 때 사용하는 그룹
-    @Value("${spring.kafka.consumer.group-id-battle-user}")
-    private String userbattle;
-
-    // user가 gallery에서 메시지를 받아올 때 사용하는 그룹
-    @Value("${spring.kafka.consumer.group-id-battle-gallery}")
-    private String usergallery;
+    @Value("${spring.kafka.consumer.group-user}")
+    private String userGroup;
 
     // KafkaEntity 타입의 메시지를 소비하기 위한 ConsumerFactory를 생성하는 Bean
     @Bean
-    public ConsumerFactory<String, KafkaEntity> pushEntityUserBattleConsumerFactory() {
+    public ConsumerFactory<String, KafkaEntity> pushEntityConsumerFactory() {
         // KafkaEntity를 역직렬화하는 데 사용할 JsonDeserializer 객체를 생성
         JsonDeserializer<KafkaEntity> deserializer = gcmPushEntityJsonDeserializer();
         // 생성한 JsonDeserializer와 설정값들을 사용해 DefaultKafkaConsumerFactory 객체를 반환
         return new DefaultKafkaConsumerFactory<>(
-                consumerUserBattleFactoryConfig(deserializer),
-                new StringDeserializer(), // 키를 위한 디시리얼라이저 (String 타입)
-                deserializer);            // 값을 위한 디시리얼라이저 (KafkaEntity 타입)
-    }
-    @Bean
-    public ConsumerFactory<String, KafkaEntity> pushEntityUserGalleryConsumerFactory() {
-        // KafkaEntity를 역직렬화하는 데 사용할 JsonDeserializer 객체를 생성
-        JsonDeserializer<KafkaEntity> deserializer = gcmPushEntityJsonDeserializer();
-        // 생성한 JsonDeserializer와 설정값들을 사용해 DefaultKafkaConsumerFactory 객체를 반환
-        return new DefaultKafkaConsumerFactory<>(
-                consumerUserGalleryFactoryConfig(deserializer),
+                userConsumerFactoryConfig(deserializer),
                 new StringDeserializer(), // 키를 위한 디시리얼라이저 (String 타입)
                 deserializer);            // 값을 위한 디시리얼라이저 (KafkaEntity 타입)
     }
 
-
     // ConsumerFactory를 구성하는 설정값들을 Map으로 반환하는 메서드
-    private Map<String, Object> consumerUserBattleFactoryConfig(JsonDeserializer<KafkaEntity> deserializer) {
+    // User->battle
+    private Map<String, Object> userConsumerFactoryConfig(JsonDeserializer<KafkaEntity> deserializer) {
         Map<String, Object> props = new HashMap<>();
         // Kafka 서버 주소 설정
         props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
         // Kafka 소비자 그룹 ID 설정
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, userbattle);
-        // 메시지 키를 직렬화/역직렬화하는 클래스 설정 (String 타입)
-        props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
-        // 메시지 값을 직렬화/역직렬화하는 클래스 설정 (KafkaEntity 타입)
-        props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, deserializer);
-        return props;
-    }
-
-    // ConsumerFactory를 구성하는 설정값들을 Map으로 반환하는 메서드
-    private Map<String, Object> consumerUserGalleryFactoryConfig(JsonDeserializer<KafkaEntity> deserializer) {
-        Map<String, Object> props = new HashMap<>();
-        // Kafka 서버 주소 설정
-        props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-        // Kafka 소비자 그룹 ID 설정
-        props.put(ConsumerConfig.GROUP_ID_CONFIG, usergallery);
+        props.put(ConsumerConfig.GROUP_ID_CONFIG, userGroup);
         // 메시지 키를 직렬화/역직렬화하는 클래스 설정 (String 타입)
         props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
         // 메시지 값을 직렬화/역직렬화하는 클래스 설정 (KafkaEntity 타입)
@@ -98,24 +70,12 @@ public class KafkaConsumerConfigCluster {
     // Kafka 메시지를 처리하는 Listener 컨테이너 팩토리를 생성하는 Bean
     @Bean
     public ConcurrentKafkaListenerContainerFactory<String, KafkaEntity>
-    userBattleKafkaListenerContainerFactory() {
+    kafkaListenerContainerFactory() {
         // 새로운 ConcurrentKafkaListenerContainerFactory 객체 생성
         ConcurrentKafkaListenerContainerFactory<String, KafkaEntity> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
         // 위에서 생성한 ConsumerFactory를 사용하도록 설정
-        factory.setConsumerFactory(pushEntityUserBattleConsumerFactory());
+        factory.setConsumerFactory(pushEntityConsumerFactory());
         return factory;
     }
-    @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, KafkaEntity>
-    userGalleryKafkaListenerContainerFactory() {
-        // 새로운 ConcurrentKafkaListenerContainerFactory 객체 생성
-        ConcurrentKafkaListenerContainerFactory<String, KafkaEntity> factory =
-                new ConcurrentKafkaListenerContainerFactory<>();
-        // 위에서 생성한 ConsumerFactory를 사용하도록 설정
-        factory.setConsumerFactory(pushEntityUserGalleryConsumerFactory());
-        return factory;
-    }
-
-
 }
