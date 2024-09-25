@@ -27,7 +27,7 @@ function Navbar(): React.JSX.Element {
         <View style={styles.container}>
             <LogoIcon width={120} height={60} />
             <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
-                <NoticeIcon width={50} height={50} />
+                <NoticeIcon width={35} height={35} />
             </TouchableOpacity>
         </View>
     );

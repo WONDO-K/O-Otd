@@ -19,6 +19,11 @@ function BattleDetail({ navigation, route }): React.JSX.Element {
         rightName: ''
     });
 
+    const voteItem = (name : string) => {
+        // axios.post('XXXXXXXXXXXXXXXXXXXXXXXXXX', { battleId: battleItem.battleId, name: name });
+        navigation.navigate('Battle');
+    };
+
     useEffect(() => {
         if (item) {
             setBattleItem(item);
@@ -28,14 +33,20 @@ function BattleDetail({ navigation, route }): React.JSX.Element {
     return (
         <View style={styles.container}>
             <View style={styles.battleItem}>
-                <TouchableOpacity style={styles.leftSide}>
+                <TouchableOpacity
+                    style={styles.leftSide}
+                    onPress={()=>{voteItem(item.leftName)}}
+                >
                     <Text style={styles.userNameText}>{battleItem.leftName}</Text>
                     <Image
                         style={styles.image}
                         source={{ uri: item.leftImage }}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.rightSide}>
+                <TouchableOpacity 
+                    style={styles.rightSide}
+                    onPress={()=>{voteItem(item.rightName)}}
+                >
                     <Text style={styles.userNameText}>{battleItem.rightName}</Text>
                     <Image
                         style={styles.image}

@@ -117,8 +117,8 @@ function Battle({ navigation }): React.JSX.Element {
                         "myPick": "right",
                         "leftName": "유저네임5",
                         "rightName": "유저네임6",
-                        "leftVote": 45,
-                        "rightVote": 55,
+                        "leftVote": 78,
+                        "rightVote": 49,
                         "winner": "right",
                     },
                     {
