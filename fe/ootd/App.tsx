@@ -7,12 +7,19 @@ import {
   Text,
   useColorScheme,
   View,
-  ImageBackground,
 } from 'react-native';
 import SplashScreen from 'react-native-splash-screen';
 import Navbar from './components/Navbar';
 import Footerbar from './components/Footerbar';
 import MainView from './views/MainView';
+import LoginView from './views/LoginView';
+import AIView from './views/AIView.tsx';
+
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+
+const Stack = createStackNavigator();
 
 type SectionProps = PropsWithChildren<{
   title: string;
@@ -59,24 +66,25 @@ function App(): React.JSX.Element {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <Navbar />
-
-      {/* 스크롤 가능한 콘텐츠 영역에 배경 이미지 적용 */}
-      <ImageBackground
-        source={require('./assets/Images/BackgroundImg.png')} // 배경 이미지 경로
-        style={styles.backgroundImage} // 배경 이미지 스타일 적용
-        resizeMode="cover" // 이미지 크기를 화면에 맞게 조정
-      >
-        {/* 스크롤 가능한 영역 */}
-        <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <MainView />
-        </ScrollView>
-      </ImageBackground>
-
-      <Footerbar />
+        <NavigationContainer>
+          <Navbar />
+          <Stack.Navigator
+            initialRouteName="MainView"
+            screenOptions={{
+              headerShown: false, // 모든 화면에서 헤더를 제거
+              animationEnabled: false, // 모든 화면에서 전환 애니메이션 비활성화
+            }}
+          >
+            <Stack.Screen name="MainView" component={MainView} />
+            <Stack.Screen name="LoginView" component={LoginView} />
+            <Stack.Screen name="AIView" component={AIView} />
+          </Stack.Navigator>
+          <Footerbar />
+        </NavigationContainer>
     </SafeAreaView>
   );
 }
+
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -85,11 +93,6 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     flex: 1, // 화면 전체를 덮도록 설정
-  },
-  scrollViewContent: {
-    flexGrow: 1, // 스크롤 뷰의 내용을 화면에 맞게 확장
-    alignContent: 'center', //
-    marginTop: 10, //
   },
   sectionContainer: {
     marginTop: 32,

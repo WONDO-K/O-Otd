@@ -1,11 +1,15 @@
 import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 import HomeIcon from '../assets/Icons/House_Icon.svg';
 import StyleIcon from '../assets/Icons/Style_Icon.svg';
 import AIIcon from '../assets/Icons/AI_Icon.svg';
 import BattleIcon from '../assets/Icons/VS_Icon.svg';
 import ProfileIcon from '../assets/Icons/Profile_Icon.svg';
+
+import MainView from '../views/MainView.tsx';
+import AIView from '../views/AIView.tsx';
 
 const styles = StyleSheet.create({
     container: {
@@ -31,20 +35,25 @@ const styles = StyleSheet.create({
 })
 
 function Footerbar(): React.JSX.Element {
+    const navigation = useNavigation();
     return (
         <View style={styles.container}>
-            <View style={styles.icon}>
-                <HomeIcon width={30} height={30} />
-                <Text style={styles.text}>Home</Text>
-            </View>
+            <TouchableOpacity onPress={() => navigation.navigate('MainView')}>
+                <View style={styles.icon}>
+                    <HomeIcon width={30} height={30} />
+                    <Text style={styles.text}>Home</Text>
+                </View>
+            </TouchableOpacity>
             <View style={styles.icon}>
                 <StyleIcon width={40} height={35} />
                 <Text style={styles.text}>Style</Text>
             </View>
-            <View style={styles.icon}>
-            <AIIcon width={30} height={30} />
-                <Text style={styles.text}>AI</Text>
-            </View>
+            <TouchableOpacity onPress={() => navigation.navigate('AIView')}>
+                <View style={styles.icon}>
+                <AIIcon width={30} height={30} />
+                    <Text style={styles.text}>AI</Text>
+                </View>
+            </TouchableOpacity>
             <View style={styles.icon}>
             <BattleIcon width={30} height={30} />
                 <Text style={styles.text}>BTU</Text>

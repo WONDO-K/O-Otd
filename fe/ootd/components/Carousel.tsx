@@ -92,8 +92,9 @@ export default function Carousel() {
   return (
     <>
       <BlurView
-        blurType="light"
-        blurAmount={2}
+        blurType="dark"
+        blurAmount={10}
+        overlayColor="rgba(255, 255, 255, 0.1)"
         style={styles.blurView}
       >
         <View style={styles.container}>
@@ -134,15 +135,20 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     width: windowWidth,
-    height: cardSize.height + 100, // cardSize에 맞춰 높이 설정
+    height: cardSize.height + 80,
     paddingBottom: 10,
+    zIndex: 1,
+    // backgroundColor: 'rgba(128, 128, 128, 0.25)',
   },
   title: {
     fontSize: 40,
     textAlign: 'center',
     color: '#ffffff',
+    zIndex: 2,
   },
   blurView: {
+    borderColor: '#ffffff',
+    borderWidth: 3,
     borderRadius: 20,
     overflow: 'hidden',
     elevation: 50, // 그림자 높이 조정
