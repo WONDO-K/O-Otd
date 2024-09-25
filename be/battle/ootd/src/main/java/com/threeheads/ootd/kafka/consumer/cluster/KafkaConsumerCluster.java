@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class KafkaConsumerCluster {
     // User가 보내는 메세지 모두 듣기
-    @KafkaListener(topics = "${spring.kafka.template.from-user-to-battle}",groupId = "${spring.kafka.consumer.group-id-battle-user}")
+    @KafkaListener(topics = "${spring.kafka.template.from-user-to-battle}",groupId = "${spring.kafka.consumer.group-battle}")
     public void fromUser(@Payload KafkaEntity message, @Headers MessageHeaders messageHeaders){
         log.info("from_user_consumer:seccess >> message:{},headers:{}",message.toString(),messageHeaders);
         // TODO: 여기서 필요한 service 주입 받아 사용
     }
     // Gallery가 보내는 메세지 모두 듣기
-    @KafkaListener(topics = "${spring.kafka.template.from-gallery-to-battle}",groupId = "${spring.kafka.consumer.group-id-battle-gallery}")
+    @KafkaListener(topics = "${spring.kafka.template.from-gallery-to-battle}",groupId = "${spring.kafka.consumer.group-battle}")
     public void fromGallery(@Payload KafkaEntity message, @Headers MessageHeaders messageHeaders){
         log.info("from_user_consumer:seccess >> message:{},headers:{}",message.toString(),messageHeaders);
         // TODO: 여기서 필요한 service 주입 받아 사용
