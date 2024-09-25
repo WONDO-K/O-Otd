@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 public class KafkaConsumerCluster {
     //TODO : 토픽명, 소비자그룹 명 설정
-    @KafkaListener(topics = "${spring.kafka.template.from_battle_to_user}",groupId = "${user_battle}")
+    @KafkaListener(topics = "${spring.kafka.template.from_battle_to_user}",groupId = "${spring.kafka.consumer.group-user}")
     public void fromBattle(@Payload KafkaEntity message, @Headers MessageHeaders messageHeaders){
         log.info("from Battle to User consumer:seccess >> message:{},headers:{}",message.toString(),messageHeaders);
         // TODO: 여기서 필요한 service 주입 받아 사용
     }
 
-    @KafkaListener(topics = "${spring.kafka.template.from_gallery_to_user}",groupId = "${spring.kafka.consumer.group-id-battle-gallery}")
+    @KafkaListener(topics = "${spring.kafka.template.from_gallery_to_user}",groupId = "${spring.kafka.consumer.group-user}")
     public void fromGallery(@Payload KafkaEntity message, @Headers MessageHeaders messageHeaders){
         log.info("from Gallery to User consumer:seccess >> message:{},headers:{}",message.toString(),messageHeaders);
         // TODO: 여기서 필요한 service 주입 받아 사용
