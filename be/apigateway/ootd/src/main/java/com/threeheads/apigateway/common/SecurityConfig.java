@@ -25,6 +25,8 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
@@ -53,8 +55,8 @@ public class SecurityConfig {
                         .anyExchange().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, SecurityWebFiltersOrder.AUTHORIZATION)  // JWT 필터 추가
-                .addFilterBefore(jwtExceptionFilter, SecurityWebFiltersOrder.AUTHORIZATION);  // 예외 필터 추가
-
+                .addFilterBefore(jwtExceptionFilter, SecurityWebFiltersOrder.AUTHORIZATION)  // 예외 필터 추가
+                .cors(withDefaults());
         return http.build();
     }
     @Bean
@@ -68,17 +70,4 @@ public class SecurityConfig {
         };
     }
 
-    // CORS 설정 추가
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("*"); // 모든 출처 허용
-        config.addAllowedHeader("*"); // 모든 헤더 허용
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 모든 메소드 허용
-        config.setExposedHeaders(List.of("Authorization", "refreshToken")); // 노출할 헤더 설정
-        source.registerCorsConfiguration("/**", config); // 모든 URL 패턴에 대해 위의 CORS 설정을 적용
-        return source;
-    }
 }

@@ -61,12 +61,13 @@ public class JwtAuthFilter  implements WebFilter {
         }
 
         String email = jwtUtil.getUid(accessToken);
-        return userClient.findByEmail(email) // 비동기 처리
+        return userClient.findByEmail(email)
+                .doOnSuccess(user -> log.info("User found: {}", user))
+                .doOnError(error -> log.error("Error fetching user by email", error))
                 .flatMap(findUser -> {
                     if (findUser == null) {
                         throw new JwtException("유효하지 않은 사용자입니다.");
                     }
-
                     SecurityUserDto userDto = SecurityUserDto.builder()
                             .id(findUser.getId())
                             .email(findUser.getEmail())
@@ -77,9 +78,9 @@ public class JwtAuthFilter  implements WebFilter {
                     Authentication auth = new UsernamePasswordAuthenticationToken(userDto, null, userDto.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(auth);
                     log.info("SecurityContext에 인증 객체 등록 완료");
-                    return chain.filter(exchange); // 다음 필터로 진행
+                    return chain.filter(exchange);
                 })
-                .onErrorResume(e -> unauthorizedResponse(exchange)); // 오류 처리
+                .onErrorResume(e -> unauthorizedResponse(exchange));
     }
 
     private String resolveToken(ServerWebExchange exchange) {

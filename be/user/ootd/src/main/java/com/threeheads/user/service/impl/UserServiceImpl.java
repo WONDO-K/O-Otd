@@ -1,8 +1,8 @@
 package com.threeheads.user.service.impl;
 
+import com.threeheads.library.entity.User;
 import com.threeheads.library.exception.CustomException;
 import com.threeheads.library.exception.ErrorCode;
-import com.threeheads.user.entity.User;
 import com.threeheads.user.repository.UserRepository;
 import com.threeheads.user.service.UserService;
 import lombok.RequiredArgsConstructor;

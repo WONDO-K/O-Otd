@@ -40,13 +40,13 @@ public class User {
     @Column(name = "delete_date")
     private LocalDateTime deletedAt;
 
-    @Column(name = "nickname", length = 20, nullable = false)
+    @Column(name = "nickname", length = 20)
     private String nickname;
 
-    @Column(name = "user_battle", nullable = false, columnDefinition = "int default 0")
+    @Column(name = "user_battle", columnDefinition = "int default 0")
     private int userBattle;
 
-    @Column(name = "user_win", nullable = false, columnDefinition = "int default 0")
+    @Column(name = "user_win", columnDefinition = "int default 0")
     private int userWin;
 
     @Column(name = "social_type", length = 255, nullable = false)
@@ -55,7 +55,8 @@ public class User {
     @Column(name = "attribute_key")
     private String attributeKey;
 
-    @Column(name = "user_pw", length = 30, nullable = false)
+    // 해쉬처리 되었을때 약 60자 이상이 될 수도 있어서 약 85자 정도 허용할 수 있는 길이로 설정
+    @Column(name = "user_pw", length = 255, nullable = false)
     private String passwordHash;
 
 

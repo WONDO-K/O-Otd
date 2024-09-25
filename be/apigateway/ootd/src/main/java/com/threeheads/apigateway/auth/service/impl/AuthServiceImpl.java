@@ -246,27 +246,21 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Mono<User> kakaoRegisterOrLoginUser(String userEmail) {
         return userClient.findByEmail(userEmail)
-                .flatMap(user -> {
-                    if (user != null) {
-                        // 로그인 처리
-                        log.info("로그인 처리: {}", user);
-                        return Mono.just(user); // 로그인한 사용자 반환
-                    } else {
-                        // 회원가입 처리
-                        User newUser = User.builder()
-                                .email(userEmail)
-                                .username(userEmail)
-                                .passwordHash(passwordEncoder.encode(GenerateRandomPassword.createRandomPassword())) // 소셜 로그인에서는 사용하지 않는 값 -> 랜덤 값 삽입
-                                .role(Role.USER)
-                                .socialType("kakao")
-                                .attributeKey("")
-                                .createdAt(LocalDateTime.now())
-                                .build();
-                        log.info("회원가입 처리 user: {}", newUser);
-                        return userClient.registerUser(newUser)
-                                .then(Mono.just(newUser)); // 사용자 등록 후 사용자 반환
-                    }
-                })
+                .doOnNext(user -> log.info("findByEmail 결과: {}", user))
+                .switchIfEmpty(Mono.defer(() -> {
+                    log.info("회원가입 필요, 새로운 사용자 생성");
+                    User newUser = User.builder()
+                            .email(userEmail)
+                            .username(userEmail)
+                            .passwordHash(passwordEncoder.encode(GenerateRandomPassword.createRandomPassword()))
+                            .role(Role.USER)
+                            .socialType("kakao")
+                            .attributeKey("")
+                            .createdAt(LocalDateTime.now())
+                            .build();
+                    return userClient.registerUser(newUser)
+                            .then(Mono.just(newUser));
+                }))
                 .onErrorResume(e -> {
                     log.error("회원가입 또는 로그인 처리 중 오류 발생", e);
                     return Mono.error(new CustomException(ErrorCode.LOGIN_OR_REGISTER_FAILED));
@@ -274,12 +268,31 @@ public class AuthServiceImpl implements AuthService {
     }
 
     // 쿠키에 리프레시 토큰 저장
+//    @Override
+//    public Mono<GeneratedToken> handleKakaoLoginSuccess(String email, ServerHttpResponse response) {
+//        return kakaoRegisterOrLoginUser(email)
+//                .flatMap(user -> {
+//                    GeneratedToken token = jwtUtil.generateToken(user.getEmail(), user.getRole());
+//                    log.info("생성된 토큰 : {}",token);
+//                    // 리프레시 토큰을 쿠키에 저장
+//                    ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
+//                            .httpOnly(true)
+//                            .path("/")
+//                            .maxAge(24 * 60 * 60) // 24시간
+//                            .build();
+//                    response.getHeaders().add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+//
+//                    return Mono.just(token);
+//                });
+//    }
     @Override
     public Mono<GeneratedToken> handleKakaoLoginSuccess(String email, ServerHttpResponse response) {
         return kakaoRegisterOrLoginUser(email)
+                .doOnNext(user -> log.info("사용자 정보: {}", user)) // 사용자가 정상적으로 반환되었는지 로그
                 .flatMap(user -> {
                     GeneratedToken token = jwtUtil.generateToken(user.getEmail(), user.getRole());
-                    log.info("생성된 토큰 : {}",token);
+                    log.info("생성된 토큰 : {}", token);
+
                     // 리프레시 토큰을 쿠키에 저장
                     ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
                             .httpOnly(true)
@@ -289,7 +302,8 @@ public class AuthServiceImpl implements AuthService {
                     response.getHeaders().add(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
 
                     return Mono.just(token);
-                });
+                })
+                .doOnError(e -> log.error("로그인 처리 중 오류 발생: {}", e.getMessage())); // 오류 발생시 로그
     }
 
 

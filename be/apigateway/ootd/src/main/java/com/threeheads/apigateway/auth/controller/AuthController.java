@@ -85,19 +85,52 @@ public class AuthController {
         return authService.refresh(accessToken, refreshToken);
     }
 
-    // 카카오 로그인 처리 메서드
+//    // 카카오 로그인 처리 메서드
+//    @GetMapping("/kakao/login")
+//    @Operation(summary = "카카오 로그인", description = "카카오 인가 코드를 받아 로그인 처리")
+//    public Mono<ResponseEntity<Map<String, String>>> kakaoLogin(@RequestParam String code, ServerHttpResponse response) {
+//        return authService.requestAccessTokenAndUserInfo(code)
+//                .flatMap(kakaoUserInfoDto -> {
+//                    if (kakaoUserInfoDto == null || kakaoUserInfoDto.getKakaoAccount().getEmail() == null) {
+//                        log.error("카카오 사용자 정보를 가져오는 데 실패했습니다.");
+//                        return Mono.just(ResponseEntity.status(400).body(Map.of("error", "카카오 사용자 정보를 가져오는 데 실패했습니다.")));
+//                    }
+//
+//                    // 사용자 등록 또는 로그인 처리
+//                    return authService.handleKakaoLoginSuccess(kakaoUserInfoDto.getKakaoAccount().getEmail(), response)
+//                            .map(token -> {
+//                                // 액세스 토큰을 응답으로 반환
+//                                Map<String, String> responseBody = new HashMap<>();
+//                                responseBody.put("accessToken", token.getAccessToken());
+//                                return ResponseEntity.ok(responseBody);
+//                            });
+//                })
+//                .onErrorResume(e -> {
+//                    log.error("카카오 로그인 처리 중 오류 발생", e);
+//                    return Mono.just(ResponseEntity.status(500).body(Map.of("error", "카카오 로그인 처리 중 오류 발생")));
+//                });
+//    }
     @GetMapping("/kakao/login")
     @Operation(summary = "카카오 로그인", description = "카카오 인가 코드를 받아 로그인 처리")
     public Mono<ResponseEntity<Map<String, String>>> kakaoLogin(@RequestParam String code, ServerHttpResponse response) {
+        log.info("카카오 로그인 요청 처리 중, 인가 코드: {}", code);
+
         return authService.requestAccessTokenAndUserInfo(code)
                 .flatMap(kakaoUserInfoDto -> {
-                    if (kakaoUserInfoDto == null || kakaoUserInfoDto.getKakaoAccount().getEmail() == null) {
-                        log.error("카카오 사용자 정보를 가져오는 데 실패했습니다.");
+                    if (kakaoUserInfoDto == null) {
+                        log.error("카카오 사용자 정보 DTO가 null입니다.");
                         return Mono.just(ResponseEntity.status(400).body(Map.of("error", "카카오 사용자 정보를 가져오는 데 실패했습니다.")));
                     }
 
-                    // 사용자 등록 또는 로그인 처리
+                    if (kakaoUserInfoDto.getKakaoAccount().getEmail() == null) {
+                        log.error("카카오 계정에서 이메일을 가져오는 데 실패했습니다. 사용자 정보: {}", kakaoUserInfoDto);
+                        return Mono.just(ResponseEntity.status(400).body(Map.of("error", "카카오 사용자 정보를 가져오는 데 실패했습니다.")));
+                    }
+
+                    log.info("카카오 사용자 정보 조회 성공: {}", kakaoUserInfoDto);
+
                     return authService.handleKakaoLoginSuccess(kakaoUserInfoDto.getKakaoAccount().getEmail(), response)
+                            .doOnNext(token -> log.info("사용자 {} 로그인 성공, 발급된 토큰: {}", kakaoUserInfoDto.getKakaoAccount().getEmail(), token.getAccessToken()))
                             .map(token -> {
                                 // 액세스 토큰을 응답으로 반환
                                 Map<String, String> responseBody = new HashMap<>();

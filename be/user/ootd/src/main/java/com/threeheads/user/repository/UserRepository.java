@@ -1,6 +1,6 @@
 package com.threeheads.user.repository;
 
-import com.threeheads.user.entity.User;
+import com.threeheads.library.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
