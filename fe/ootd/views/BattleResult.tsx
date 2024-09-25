@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Image, View, Text, StyleSheet, Touchable, TouchableOpacity } from 'react-native';
 
-function BattleDetail({ navigation, route }): React.JSX.Element {
+function BattleResult({ navigation, route }): React.JSX.Element {
     
     const item = route.params;
 
@@ -16,7 +16,10 @@ function BattleDetail({ navigation, route }): React.JSX.Element {
         rightImage: '',
         myPick: null,
         leftName: '',
-        rightName: ''
+        rightName: '',
+        leftVote: 0,
+        rightVote: 0,
+        winner: '',
     });
 
     useEffect(() => {
@@ -28,20 +31,22 @@ function BattleDetail({ navigation, route }): React.JSX.Element {
     return (
         <View style={styles.container}>
             <View style={styles.battleItem}>
-                <TouchableOpacity style={styles.leftSide}>
-                    <Text style={styles.userNameText}>{battleItem.leftName}</Text>
+                <View style={styles.leftSide}>
                     <Image
                         style={styles.image}
                         source={{ uri: item.leftImage }}
                     />
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.rightSide}>
-                    <Text style={styles.userNameText}>{battleItem.rightName}</Text>
+                </View>
+                <View style={styles.rightSide}>
                     <Image
                         style={styles.image}
                         source={{ uri: item.rightImage }}
                     />
-                </TouchableOpacity>
+                </View>
+            </View>
+            <View style={styles.battleResult}>
+                <View></View>
+                <View></View>
             </View>
         </View>
     );
@@ -77,9 +82,13 @@ const styles = StyleSheet.create({
     },
     image: {
         width: '100%',
-        height: 350,
+        height: 300,
+        borderRadius: 20,
+    },
+    battleResult:{
+        backgroundColor: '2C2F33',
         borderRadius: 20,
     }
 });
 
-export default BattleDetail;
+export default BattleResult;

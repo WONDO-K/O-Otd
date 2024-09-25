@@ -55,7 +55,7 @@ function MyFashion({ navigation, route }): React.JSX.Element {
                 style={styles.imageIconBox}
                 onPress={() => navigation.goBack()}
             >
-                <Image source={require('../assets/images/chooseIcon.png')} style={styles.imageIcon} />
+                <Image source={require('../assets/Images/chooseIcon.png')} style={styles.imageIcon} />
             </TouchableOpacity>
             <FlatList
                 data={myFashion}

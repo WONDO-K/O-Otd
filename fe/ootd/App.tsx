@@ -20,6 +20,7 @@ import Navbar from './components/Navbar'
 import Footerbar from './components/Footerbar'
 import Battle from './views/Battle'
 import BattleDetail from './views/BattleDetail'
+import BattleResult from './views/BattleResult'
 import Notification from './views/Notification'
 import Challenge from './views/Challenge'
 import ChallengeDetail from './views/ChallengeDetail'
@@ -52,6 +53,7 @@ function App(): React.JSX.Element {
           <Stack.Screen name="MyFashion" component={MyFashion}/>
           <Stack.Screen name="Battle" component={Battle} />
           <Stack.Screen name="BattleDetail" component={BattleDetail} />
+          <Stack.Screen name="BattleResult" component={BattleResult} />
           <Stack.Screen name="Notification" component={Notification} />
           <Stack.Screen name="Challenge" component={Challenge} />
           <Stack.Screen name="ChallengeDetail" component={ChallengeDetail} />

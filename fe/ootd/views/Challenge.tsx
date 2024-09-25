@@ -75,7 +75,7 @@ function Challenge({ navigation, route }): React.JSX.Element {
                     <View style={styles.searchSection}>
                         <View style={styles.searchBar}>
                             <Image 
-                                source={require('../assets/images/searchIcon.png')}
+                                source={require('../assets/Images/searchIcon.png')}
                                 style={styles.searchIcon}
                             />
                             <TextInput
@@ -120,7 +120,7 @@ function Challenge({ navigation, route }): React.JSX.Element {
                         </TouchableOpacity>
                     ) : (
                         <TouchableOpacity onPress={selectImage} style={styles.galleryButton}>
-                            <Image source={require('../assets/images/chooseIcon.png')} style={{ width: 100, height: 100 }} />
+                            <Image source={require('../assets/Images/chooseIcon.png')} style={{ width: 100, height: 100 }} />
                         </TouchableOpacity>
                     )}
                 </View> */}

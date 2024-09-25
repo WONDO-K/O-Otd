@@ -15,7 +15,7 @@ const GalleryButton: React.FC<GalleryButtonProps> = ({ selectedImage, onPress })
                 </TouchableOpacity>
             ) : (
                 <TouchableOpacity onPress={onPress} style={styles.galleryButton}>
-                    <Image source={require('../assets/images/chooseIcon.png')} style={{ width: 100, height: 100 }} />
+                    <Image source={require('../assets/Images/chooseIcon.png')} style={{ width: 100, height: 100 }} />
                 </TouchableOpacity>
             )}
         </View>

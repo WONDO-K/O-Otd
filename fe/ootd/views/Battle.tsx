@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Switch, StyleSheet, ScrollView, Image } from 'react-native'; 
 import { FlatList } from 'react-native-gesture-handler';
+import LinearGradient from 'react-native-linear-gradient';
 import axios from 'axios';
+
+import BattleItemProgress from '../components/BattleItemProgress';
+import BattleItemComplete from '../components/BattleItemComplete';
 
 type Battle = {
     battleId: number;
@@ -108,11 +112,14 @@ function Battle({ navigation }): React.JSX.Element {
                         "status": "COMPLETED",
                         "startedAt": "2024-08-01T10:00:00",
                         "endedAt": "2024-08-10T18:00:00",
-                        "leftImage": "https://example.com/uploads/left-image3.jpg",
-                        "rightImage": "https://example.com/uploads/right-image3.jpg",
+                        "leftImage": "https://picsum.photos/400/400",
+                        "rightImage": "https://picsum.photos/200/300",
                         "myPick": "right",
                         "leftName": "유저네임5",
-                        "rightName": "유저네임6"
+                        "rightName": "유저네임6",
+                        "leftVote": 45,
+                        "rightVote": 55,
+                        "winner": "right",
                     },
                     {
                         "battleId": 4,
@@ -121,11 +128,14 @@ function Battle({ navigation }): React.JSX.Element {
                         "status": "COMPLETED",
                         "startedAt": "2024-07-01T09:00:00",
                         "endedAt": "2024-07-07T17:00:00",
-                        "leftImage": "https://example.com/uploads/left-image4.jpg",
-                        "rightImage": "https://example.com/uploads/right-image4.jpg",
+                        "leftImage": "https://placekitten.com/200/300",
+                        "rightImage": "https://placedog.net/500",
                         "myPick": null,
                         "leftName": "유저네임7",
-                        "rightName": "유저네임8"
+                        "rightName": "유저네임8",
+                        "leftVote": 35,
+                        "rightVote": 15,
+                        "winner": "left",
                     }
                 ]
             }
@@ -230,34 +240,21 @@ function Battle({ navigation }): React.JSX.Element {
                 data={battleList}
                 keyExtractor={(item, index) => index.toString()}
                 renderItem={({ item }) => (
-                    <TouchableOpacity
-                        style={styles.battleItem}
-                        onPress={() => navigation.navigate('BattleDetail', item)}
-                    >
-                        <View style={styles.battleTitle}>
-                            <Text style={styles.battleNameText}>{nameSlice(item.leftName)}</Text>
-                            <Text style={styles.battleTimeText}>{calculateRemainingTime(item.startedAt)}</Text>
-                            <Text style={styles.battleNameText}>{nameSlice(item.rightName)}</Text>
-                        </View>
-                        <View style={styles.battleContent}>
-                            <Image 
-                                style={[
-                                    styles.battleImage,
-                                    item.myPick === 'left' && styles.pickedImage,
-                                    item.myPick === 'right' && styles.unPickedImage
-                                ]} 
-                                source={{ uri: item.leftImage }} 
-                            />
-                            <Image 
-                                style={[
-                                    styles.battleImage,
-                                    item.myPick === 'left' && styles.unPickedImage,
-                                    item.myPick === 'right' && styles.pickedImage
-                                ]} 
-                                source={{ uri: item.rightImage }} 
-                            />
-                        </View>
-                    </TouchableOpacity>
+                    selectedCategory === '진행 중' ? (
+                        <BattleItemProgress
+                            item={item}
+                            onPress={() => navigation.navigate('BattleDetail', item)}
+                            calculateRemainingTime={calculateRemainingTime}
+                            nameSlice={nameSlice}
+                        />
+                    ) : (
+                        <BattleItemComplete
+                            item={item}
+                            onPress={() => navigation.navigate('BattleResult', item)}
+                            calculateRemainingTime={calculateRemainingTime}
+                            nameSlice={nameSlice}
+                        />
+                    )
                 )}
                 style={styles.battleList}
                 nestedScrollEnabled={true}
@@ -354,96 +351,6 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         alignContent: 'center',
     },
-    battleItem: {
-        display: 'flex',
-        backgroundColor: '#2C2F33',
-        borderRadius: 10,
-        borderColor: '#949494',
-        borderWidth: 2,
-        margin: 10,
-    },
-    battleNameText:{
-        color: '#C8D3F1',
-        width: '38%',
-        textAlign: 'center',
-        fontSize:20,
-    },
-    battleTimeText:{
-        color: '#C8D3F1',
-        width: '24%',
-        textAlign: 'center',
-    },
-    battleTitle: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginHorizontal:10,
-        marginTop: '2%',
-    },
-    battleContent: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
-        width: '94%',
-        margin: '3%'
-    },
-    battleImage: {
-        width: '50%',
-        height: 300,
-    },
-    pickedImage: {
-        // width: '60%',
-        // height: 200,
-        // 별로래
-        // borderColor: '#CA4A8A',
-        // borderColor: '#CA4A4A',
-        // borderColor: '#6A4BC9',
-        // borderColor: '#C9774B',
-        // borderColor: '#7F70AF',
-        // borderColor: '#4B82C9',
-        // borderColor: '#6CCA4A',
-        // borderColor: '#CACA4A',
-        // borderColor: '#4ACACA', 
-        // borderColor: '#B4B2B0',  
-        // borderColor: '#4ACA8A',
-        borderColor: '#ABDEE6',
-        // borderColor: '#CBAACB',
-        // borderColor: '#FFFFB5',
-        // borderColor: '#FFCCB6',
-        // borderColor: '#F3B0C3',
-        // -----------------------
-        // borderColor: '#C6DBDA',
-        // borderColor: '#FEE1E8',
-        // borderColor: '#FED7C3',
-        // borderColor: '#F6EAC2',
-        // borderColor: '#ECD5E3',
-        // -----------------------
-        // borderColor: '#FF968A',
-        // borderColor: '#FFAEA5',
-        // borderColor: '#FFC5BF',
-        // borderColor: '#FFD8BE',
-        // borderColor: '#FFC8A2',
-        // -----------------------
-        // borderColor: '#D4F0F0',
-        // borderColor: '#8FCACA',
-        // borderColor: '#CCE2CB',
-        // borderColor: '#B6CFB6',
-        // borderColor: '#97C1A9',
-        // -----------------------
-        // borderColor: '#FCB9AA',
-        // borderColor: '#FFDBCC',
-        // borderColor: '#ECEAE4',
-        // borderColor: '#A2E1DB',
-        // borderColor: '#55CBCD',
-
-        borderWidth: 3,
-    },
-    unPickedImage: {
-        // width: '40%',
-        // height: 200,
-        opacity: 0.3,
-    }
 });
 
 export default Battle;
