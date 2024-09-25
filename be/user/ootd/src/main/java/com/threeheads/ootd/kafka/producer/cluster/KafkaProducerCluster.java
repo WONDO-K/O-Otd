@@ -55,7 +55,7 @@ public class KafkaProducerCluster {
     }
 
     // Gallery에 메시지를 전송하는 메서드
-    public void sendMessage(KafkaEntity kafkaEntity){
+    public void sendMessageGallery(KafkaEntity kafkaEntity){
         // 메시지 객체를 생성, payload로 KafkaEntity를 설정하고, 헤더에 토픽 이름을 설정
         Message<KafkaEntity> message = MessageBuilder
                 .withPayload(kafkaEntity)
