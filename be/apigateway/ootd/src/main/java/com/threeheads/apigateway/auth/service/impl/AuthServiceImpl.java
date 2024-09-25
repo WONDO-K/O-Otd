@@ -246,15 +246,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public Mono<User> kakaoRegisterOrLoginUser(String userEmail) {
         return userClient.findByEmail(userEmail)
-                .flatMap(userOptional -> {
-                    User user;
-                    if (userOptional != null) {
+                .flatMap(user -> {
+                    if (user != null) {
                         // 로그인 처리
-                        user = userOptional;
                         log.info("로그인 처리: {}", user);
+                        return Mono.just(user); // 로그인한 사용자 반환
                     } else {
                         // 회원가입 처리
-                        user = User.builder()
+                        User newUser = User.builder()
                                 .email(userEmail)
                                 .username(userEmail)
                                 .passwordHash(passwordEncoder.encode(GenerateRandomPassword.createRandomPassword())) // 소셜 로그인에서는 사용하지 않는 값 -> 랜덤 값 삽입
@@ -263,11 +262,10 @@ public class AuthServiceImpl implements AuthService {
                                 .attributeKey("")
                                 .createdAt(LocalDateTime.now())
                                 .build();
-
-                        return userClient.registerUser(user)
-                                .then(Mono.just(user)); // 사용자 등록 후 사용자 반환
+                        log.info("회원가입 처리 user: {}", newUser);
+                        return userClient.registerUser(newUser)
+                                .then(Mono.just(newUser)); // 사용자 등록 후 사용자 반환
                     }
-                    return Mono.just(user); // 로그인한 사용자 반환
                 })
                 .onErrorResume(e -> {
                     log.error("회원가입 또는 로그인 처리 중 오류 발생", e);
@@ -281,7 +279,7 @@ public class AuthServiceImpl implements AuthService {
         return kakaoRegisterOrLoginUser(email)
                 .flatMap(user -> {
                     GeneratedToken token = jwtUtil.generateToken(user.getEmail(), user.getRole());
-
+                    log.info("생성된 토큰 : {}",token);
                     // 리프레시 토큰을 쿠키에 저장
                     ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", token.getRefreshToken())
                             .httpOnly(true)

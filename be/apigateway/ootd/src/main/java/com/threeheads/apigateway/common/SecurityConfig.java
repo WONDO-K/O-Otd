@@ -18,7 +18,12 @@ import org.springframework.security.core.userdetails.ReactiveUserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsConfigurationSource;
+import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import reactor.core.publisher.Mono;
+
+import java.util.List;
 
 @Configuration
 @EnableWebFluxSecurity
@@ -34,6 +39,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
         http
@@ -43,7 +49,7 @@ public class SecurityConfig {
                 .authorizeExchange(exchange -> exchange
                         .pathMatchers("/v3/api-docs/**", "/swagger-ui/**").permitAll()  // Swagger UI 접근 허용
                         .pathMatchers("/auth/token/refresh").permitAll()
-                        .pathMatchers("/auth/**").permitAll()
+                        .pathMatchers("/auth/**","/user-client/**").permitAll()
                         .anyExchange().authenticated()
                 )
                 .addFilterBefore(jwtAuthFilter, SecurityWebFiltersOrder.AUTHORIZATION)  // JWT 필터 추가
@@ -60,5 +66,19 @@ public class SecurityConfig {
                         .map(userDetails -> new UsernamePasswordAuthenticationToken(userDetails, authentication.getCredentials(), userDetails.getAuthorities()));
             }
         };
+    }
+
+    // CORS 설정 추가
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOriginPattern("*"); // 모든 출처 허용
+        config.addAllowedHeader("*"); // 모든 헤더 허용
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS")); // 모든 메소드 허용
+        config.setExposedHeaders(List.of("Authorization", "refreshToken")); // 노출할 헤더 설정
+        source.registerCorsConfiguration("/**", config); // 모든 URL 패턴에 대해 위의 CORS 설정을 적용
+        return source;
     }
 }

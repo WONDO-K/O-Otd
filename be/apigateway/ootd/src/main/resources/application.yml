@@ -49,6 +49,12 @@ spring:
             - Path=/user-service/**
           filters:
             - RewritePath=/user-service/(?<path>.*), /$\{path}
+        - id: user-client
+          uri: lb://USER-SERVICE
+          predicates:
+            - Path=/user-client/**
+          filters:
+            - RewritePath=/user-client/(?<path>.*), /$\{path}
         # OpenAPI 경로 설정
         - id: openapi
           uri: http://localhost:8080

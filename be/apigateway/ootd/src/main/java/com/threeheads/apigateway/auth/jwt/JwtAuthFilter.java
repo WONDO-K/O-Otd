@@ -37,6 +37,11 @@ public class JwtAuthFilter  implements WebFilter {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
+        String path = exchange.getRequest().getURI().getPath();
+        if (path.startsWith("/user-client") || path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui")) {
+            return chain.filter(exchange);
+        }
+
         String accessToken = resolveToken(exchange);
         log.info("Access Token: {}", accessToken);
 

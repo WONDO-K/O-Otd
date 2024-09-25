@@ -62,7 +62,7 @@ public class SwaggerConfig {
     public GroupedOpenApi userServiceApi() {
         return GroupedOpenApi.builder()
                 .group("user-service")
-                .pathsToMatch("/user-service/**")
+                .pathsToMatch("/user-service/**", "/user-client/**")  // 경로 확인
                 .build();
     }
 

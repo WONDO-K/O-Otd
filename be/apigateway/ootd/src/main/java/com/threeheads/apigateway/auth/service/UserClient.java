@@ -10,19 +10,22 @@ public class UserClient {
     private final WebClient webClient;
 
     public UserClient(WebClient.Builder webClientBuilder) {
-        this.webClient = webClientBuilder.baseUrl("http://localhost:8081").build();
+        // API Gateway를 통해 요청을 보냄
+        this.webClient = webClientBuilder.baseUrl("http://localhost:8080") // API Gateway 주소
+                .build();
     }
 
     public Mono<User> findByEmail(String email) {
+        // user-client를 user-service 경로로 변경
         return webClient.get()
-                .uri("/user/findByEmail?email={email}", email)
+                .uri("/user-client/findByEmail?email={email}", email) // Gateway 라우팅 경로
                 .retrieve()
                 .bodyToMono(User.class);
     }
 
     public Mono<Void> registerUser(User user) {
         return webClient.post()
-                .uri("/user/register")
+                .uri("/user-client/register") // Gateway 라우팅 경로
                 .bodyValue(user)
                 .retrieve()
                 .bodyToMono(Void.class);
