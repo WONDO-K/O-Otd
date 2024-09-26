@@ -29,4 +29,16 @@ public class UserServiceImpl implements UserService {
             throw new CustomException(ErrorCode.USER_REGISTRATION_FAILED);
         }
     }
+
+    @Override
+    public void updateNickname(String userEmail, String newNickname) {
+
+        // 사용자 조회
+        User user = userRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+
+        // 닉네임 변경
+        user.setNickname(newNickname);
+        userRepository.save(user);
+    }
 }

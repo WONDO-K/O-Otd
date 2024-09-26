@@ -45,24 +45,32 @@ spring:
           predicates:
             - Path=/battle-service/**
           filters:
+            - RemoveRequestHeader=Cookie
+            - AddRequestHeader=Authorization, "Bearer {jwt}"  # JWT 헤더 추가
             - RewritePath=/battle-service/(?<path>.*), /$\{path}
         - id: gallery-service
           uri: lb://GALLERY-SERVICE
           predicates:
             - Path=/gallery-service/**
           filters:
+            - RemoveRequestHeader=Cookie
+            - AddRequestHeader=Authorization, "Bearer {jwt}"  # JWT 헤더 추가
             - RewritePath=/gallery-service/(?<path>.*), /$\{path}
         - id: user-service
           uri: lb://USER-SERVICE
           predicates:
             - Path=/user-service/**
           filters:
+            - RemoveRequestHeader=Cookie
+            - AddRequestHeader=Authorization, "Bearer {jwt}"  # JWT 헤더 추가
             - RewritePath=/user-service/(?<path>.*), /$\{path}
         - id: user-client
           uri: lb://USER-SERVICE
           predicates:
             - Path=/user-client/**
           filters:
+            - RemoveRequestHeader=Cookie
+            - AddRequestHeader=Authorization, "Bearer {jwt}"  # JWT 헤더 추가
             - RewritePath=/user-client/(?<path>.*), /$\{path}
         # OpenAPI 경로 설정
         - id: openapi
@@ -73,6 +81,8 @@ spring:
             - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
 
 springdoc:
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
   api-docs:
     enabled: true # API 문서 생성 활성화
   swagger-ui:
@@ -80,10 +90,10 @@ springdoc:
     path: /swagger-ui/index.html # Swagger UI 접근 경로 설정
     urls[0]:
       name: user-service
-      url: http://localhost:8080/v3/api-docs/user-service
+      url: http://localhost:8081/v3/api-docs
     urls[1]:
       name: gallery-service
-      url: http://localhost:8080/v3/api-docs/gallery-service
+      url: http://localhost:8082/v3/api-docs
 #    urls[2]:
 #      name: battle-service
 #      url: http://localhost:8080/v3/api-docs/battle-service

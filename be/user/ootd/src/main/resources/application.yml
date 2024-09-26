@@ -16,6 +16,8 @@ spring:
       format_sql: true
 
   doc:
+    default-consumes-media-type: application/json
+    default-produces-media-type: application/json
     api-docs:
       path: /v3/api-docs
     swagger-ui:
@@ -34,3 +36,7 @@ eureka:
 
 server:
   port: 8081
+
+jwt:
+  secret: e13af114d471424d6c9f2b7d03c3e25e630f269fbb3587f35068cb7d253150f568812b114afd8fd6941a005cdcf64b8b8baec4ce9de512b6aaad9ba732c6eee4  # JWT ?? ?
+  expiration: 1296000000  # JWT ?? ?? (??? ??)

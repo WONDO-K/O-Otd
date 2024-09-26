@@ -7,4 +7,6 @@ public interface UserService {
     Mono<User> findByEmail(String email);
 
     void registerUser(User user);
+
+    void updateNickname(String userEmail, String newNickname);
 }
