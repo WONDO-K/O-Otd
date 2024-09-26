@@ -18,4 +18,13 @@ public class TestController {
         message.setId("user");
         producer.sendMessageGallery(message);
     }
+
+
+    @PostMapping("/user/battle")
+    public void sendMessageBattle(){
+        KafkaEntity message = new KafkaEntity();
+        message.setMessage("user to battle");
+        message.setId("user");
+        producer.sendMessageBattle(message);
+    }
 }
