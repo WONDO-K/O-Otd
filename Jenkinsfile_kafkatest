@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage("CI: Checkout") {
             steps {
-                git branch: 'feature-be/battle/kafka_pub_sub',
+                git branch: "feature-be/${user}}/kafka_pub_sub",
                     url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21E104.git',
                     credentialsId: "ootd"
             }
