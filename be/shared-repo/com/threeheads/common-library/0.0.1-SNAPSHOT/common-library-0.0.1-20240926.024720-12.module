@@ -1,0 +1,85 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.threeheads",
+    "module": "common-library",
+    "version": "0.0.1-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.10.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "common-library-0.0.1-SNAPSHOT-plain.jar",
+          "url": "common-library-0.0.1-SNAPSHOT-plain.jar",
+          "size": 28779,
+          "sha512": "cb2e9477e524976cd92e1903c477b4f325fb281a159e4f7e9a89d1f041efe215c26a31e8f37787498ddd7c4296b90019b69263a05b44d28ffa5e52fca75487b4",
+          "sha256": "b1cce6f9a393ca6183553b9152cf4d060362291f3e243b22c21f6110805bf2ce",
+          "sha1": "a228124a06455e688476ffe951855c56ee8c9c8c",
+          "md5": "e02fa2876248e22a6fd3fd02f538d30d"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-security"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-validation"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-data-jpa"
+        },
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-databind",
+          "version": {
+            "requires": "2.17.1"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "common-library-0.0.1-SNAPSHOT-plain.jar",
+          "url": "common-library-0.0.1-SNAPSHOT-plain.jar",
+          "size": 28779,
+          "sha512": "cb2e9477e524976cd92e1903c477b4f325fb281a159e4f7e9a89d1f041efe215c26a31e8f37787498ddd7c4296b90019b69263a05b44d28ffa5e52fca75487b4",
+          "sha256": "b1cce6f9a393ca6183553b9152cf4d060362291f3e243b22c21f6110805bf2ce",
+          "sha1": "a228124a06455e688476ffe951855c56ee8c9c8c",
+          "md5": "e02fa2876248e22a6fd3fd02f538d30d"
+        }
+      ]
+    }
+  ]
+}

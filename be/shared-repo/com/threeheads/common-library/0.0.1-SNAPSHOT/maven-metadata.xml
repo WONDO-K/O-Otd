@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata modelVersion="1.1.0">
+  <groupId>com.threeheads</groupId>
+  <artifactId>common-library</artifactId>
+  <versioning>
+    <lastUpdated>20240926024727</lastUpdated>
+    <snapshot>
+      <timestamp>20240926.024727</timestamp>
+      <buildNumber>13</buildNumber>
+    </snapshot>
+    <snapshotVersions>
+      <snapshotVersion>
+        <extension>pom</extension>
+        <value>0.0.1-20240926.024727-13</value>
+        <updated>20240926024727</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <classifier>plain</classifier>
+        <extension>jar</extension>
+        <value>0.0.1-20240926.024727-13</value>
+        <updated>20240926024727</updated>
+      </snapshotVersion>
+      <snapshotVersion>
+        <extension>module</extension>
+        <value>0.0.1-20240926.024727-13</value>
+        <updated>20240926024727</updated>
+      </snapshotVersion>
+    </snapshotVersions>
+  </versioning>
+  <version>0.0.1-SNAPSHOT</version>
+</metadata>
