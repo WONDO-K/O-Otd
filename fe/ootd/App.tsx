@@ -1,55 +1,28 @@
 import React, {useEffect} from 'react';
-import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
-  Text,
   useColorScheme,
-  View,
 } from 'react-native';
-import SplashScreen from 'react-native-splash-screen';
 import Navbar from './components/Navbar';
 import Footerbar from './components/Footerbar';
 import MainView from './views/MainView';
 import LoginView from './views/LoginView';
 import AIView from './views/AIView.tsx';
-
+import Battle from './views/Battle'
+import BattleDetail from './views/BattleDetail'
+import BattleResult from './views/BattleResult'
+import Notification from './views/Notification'
+import Challenge from './views/Challenge'
+import ChallengeDetail from './views/ChallengeDetail'
+import MyFashion from './views/MyFashion';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? 'white' : 'black',
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? 'lightgray' : 'darkgray',
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -78,6 +51,13 @@ function App(): React.JSX.Element {
             <Stack.Screen name="MainView" component={MainView} />
             <Stack.Screen name="LoginView" component={LoginView} />
             <Stack.Screen name="AIView" component={AIView} />
+            <Stack.Screen name="MyFashion" component={MyFashion}/>
+            <Stack.Screen name="Battle" component={Battle} />
+            <Stack.Screen name="BattleDetail" component={BattleDetail} />
+            <Stack.Screen name="BattleResult" component={BattleResult} />
+            <Stack.Screen name="Notification" component={Notification} />
+            <Stack.Screen name="Challenge" component={Challenge} />
+            <Stack.Screen name="ChallengeDetail" component={ChallengeDetail} />
           </Stack.Navigator>
           <Footerbar />
         </NavigationContainer>

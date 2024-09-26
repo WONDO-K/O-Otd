@@ -28,12 +28,24 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: '60%',
     },
+    icon: {
+        display: 'flex',
+        flexDirection: 'column', // 아이콘과 텍스트를 세로로 배치
+        justifyContent: 'space-between', // 아이콘과 텍스트 간 간격 추가
+        alignItems: 'center',
+        height: '60%',
+    },
     text: {
+        color: 'white', // 글자 색상을 흰색으로 설정
+        fontSize: 12,   // 글자 크기 설정
+    },
         color: 'white', // 글자 색상을 흰색으로 설정
         fontSize: 12,   // 글자 크기 설정
     },
 })
 
+function Footerbar(): React.JSX.Element {
+    const navigation = useNavigation();
 function Footerbar(): React.JSX.Element {
     const navigation = useNavigation();
     return (
@@ -66,4 +78,5 @@ function Footerbar(): React.JSX.Element {
     );
 }
 
+export default Footerbar;
 export default Footerbar;

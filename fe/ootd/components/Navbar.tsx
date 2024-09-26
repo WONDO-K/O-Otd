@@ -30,7 +30,7 @@ function Navbar(): React.JSX.Element {
             <TouchableOpacity onPress={() => navigation.navigate('MainView')}>
                 <LogoIcon width={120} height={60} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('LoginView')}>
+            <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
                 <NoticeIcon width={40} height={40} />
             </TouchableOpacity>
         </View>
