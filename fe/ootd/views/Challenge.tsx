@@ -73,7 +73,7 @@ function Challenge({ navigation, route }): React.JSX.Element {
                     </View>
                 ) : (
                     <View style={styles.searchSection}>
-                        <View style={styles.searchBar}>
+                        <View style={[styles.searchBar, searchResult.length > 0 ? { borderTopLeftRadius: 20, borderTopRightRadius: 20 } : { borderRadius: 20 }]}>
                             <Image 
                                 source={require('../assets/Images/searchIcon.png')}
                                 style={styles.searchIcon}
@@ -98,16 +98,19 @@ function Challenge({ navigation, route }): React.JSX.Element {
                             />
                         </View>
                         {searchResult.length > 0 && (
-                            <FlatList
-                                data={searchResult}
-                                keyExtractor={(item, index) => index.toString()}
-                                renderItem={({ item }) => (
-                                    <TouchableOpacity style={styles.resultItem} onPress={() => setSelectedUser(item)}>
+                            <View style={styles.resultList}>
+                                {searchResult.slice(0, 3).map((item, index) => (
+                                    <TouchableOpacity
+                                        key={index}
+                                        style={[
+                                            styles.resultItem
+                                        ]}
+                                        onPress={() => setSelectedUser(item)}
+                                    >
                                         <Text style={styles.resultText}>{item}</Text>
                                     </TouchableOpacity>
-                                )}
-                                style={styles.resultList}
-                            />
+                                ))}
+                            </View>
                         )}
                     </View>
                 )}
@@ -182,7 +185,6 @@ const styles = StyleSheet.create({
         width: 350,
         height: 60,
         backgroundColor: '#262626',
-        borderRadius: 20,
         padding: 10,
     },
     searchIcon: {
@@ -199,12 +201,13 @@ const styles = StyleSheet.create({
     resultList: {
         width: 350,
         backgroundColor: '#262626',
-        // borderBottomStartRadius: 10,
-        // borderBottomEndRadius: 10,
         marginTop: 10,
         position: 'absolute',
         zIndex: 1,
         top: 50,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+        overflow: 'hidden',
     },
     resultItem: {
         paddingVertical: 15,
