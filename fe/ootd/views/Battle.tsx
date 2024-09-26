@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Switch, StyleSheet, ScrollView, Image } from 'react-native'; 
 import { FlatList } from 'react-native-gesture-handler';
 import LinearGradient from 'react-native-linear-gradient';
+import BattleIcon from '../assets/Icons/Battle_Icon.svg';
 import axios from 'axios';
 
 import BattleItemProgress from '../components/BattleItemProgress';
@@ -117,8 +118,8 @@ function Battle({ navigation }): React.JSX.Element {
                         "myPick": "right",
                         "leftName": "유저네임5",
                         "rightName": "유저네임6",
-                        "leftVote": 78,
-                        "rightVote": 49,
+                        "leftVote": 49,
+                        "rightVote": 78,
                         "winner": "right",
                     },
                     {
@@ -163,9 +164,13 @@ function Battle({ navigation }): React.JSX.Element {
         <ScrollView style={styles.container}>
             {/* 배틀 헤더 */}
             <View style={styles.battleHeader}>
-                <Text style={styles.battleHeaderText}>패션 배틀</Text>
+                <Text style={styles.battleHeaderText}>
+                    BTU
+                    <Text style={{fontSize:16}}>(Better Than U)</Text>
+                </Text>
                 <TouchableOpacity style={styles.battleHeaderButton} onPress={() => navigation.navigate('Challenge')}>
-                    <Text style={styles.battleHeaderButtonText}>결투다!</Text>
+                    {/* <Text style={styles.battleHeaderButtonText}>결투다!</Text> */}
+                    <BattleIcon/>
                 </TouchableOpacity>
             </View>
             {/* 배틀 카테고리 */}
@@ -282,7 +287,7 @@ const styles = StyleSheet.create({
     battleHeaderButton: {
         backgroundColor: 'white',
         borderRadius: 10,
-        width: 100,
+        width: 80,
         height: 40,
         justifyContent: 'center',
         alignItems: 'center',
@@ -335,6 +340,7 @@ const styles = StyleSheet.create({
         color: 'black',
         fontWeight: 'bold',
         textAlign: 'center',
+        marginBottom: 2,
     },
     switchText: {
         color: 'white',
