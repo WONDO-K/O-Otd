@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        services = "battle"
+        service = "battle"
         DOCKER_IMAGE_BE = "ohuggy/ootd-be" // Docker 이미지 이름 설정
         ANDROID_HOME = "/opt/android-sdk"
         PATH = "${env.ANDROID_HOME}/cmdline-tools/latest/bin:${env.ANDROID_HOME}/platform-tools:${env.PATH}"
