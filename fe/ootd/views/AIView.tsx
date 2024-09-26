@@ -16,8 +16,6 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
-import { BlurView } from '@react-native-community/blur';
-
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
 import CameraIcon from '../assets/Icons/Camera_Icon.svg';
 
