@@ -24,6 +24,6 @@ public class TestController {
         KafkaEntity message = new KafkaEntity();
         message.setMessage("gallery to battle");
         message.setId("gallery");
-        producer.sendMessageUser(message);
+        producer.sendMessageBattle(message);
     }
 }
