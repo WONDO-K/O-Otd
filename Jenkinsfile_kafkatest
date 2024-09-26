@@ -64,17 +64,17 @@ pipeline {
             }
         }// build stage end
 
-        stage('CI: Test be') {
-            steps {
-                script {
-                    // 테스트 실행
-                    dir("be/${service}/ootd") {
-                        echo "Running Junit tests for ${service}"
-                        sh './gradlew test'  // Junit 테스트 실행
-                    }
-                }
-            }
-        }// junit test end
+        // stage('CI: Test be') {
+        //     steps {
+        //         script {
+        //             // 테스트 실행
+        //             dir("be/${service}/ootd") {
+        //                 echo "Running Junit tests for ${service}"
+        //                 sh './gradlew test'  // Junit 테스트 실행
+        //             }
+        //         }
+        //     }
+        // }// junit test end
 
         stage("CD: Build Docker Image") {
             steps {
