@@ -1,0 +1,85 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.threeheads",
+    "module": "ootd",
+    "version": "0.0.1-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.10.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "ootd-0.0.1-SNAPSHOT-plain.jar",
+          "url": "ootd-0.0.1-SNAPSHOT-plain.jar",
+          "size": 28819,
+          "sha512": "e4f6c9cac07b49aaba98a5b1ddbc9e73086469f7dc7fe29a473cf1d3c42ab18cfcf3b502ab5f5e985957737c710685b91cf368519451d2331bbc03c598e1ad92",
+          "sha256": "8e443a8e85da35302c4ed0e6e8b7a2e0bb6c049e79d7fafccbfd0ccb887a51aa",
+          "sha1": "4d0da1ce89b40ab443b0ac3b6eb806cf72c9d81e",
+          "md5": "a7b3101410cbbc598a7492d046336897"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-security"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-validation"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-data-jpa"
+        },
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-databind",
+          "version": {
+            "requires": "2.17.1"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "ootd-0.0.1-SNAPSHOT-plain.jar",
+          "url": "ootd-0.0.1-SNAPSHOT-plain.jar",
+          "size": 28819,
+          "sha512": "e4f6c9cac07b49aaba98a5b1ddbc9e73086469f7dc7fe29a473cf1d3c42ab18cfcf3b502ab5f5e985957737c710685b91cf368519451d2331bbc03c598e1ad92",
+          "sha256": "8e443a8e85da35302c4ed0e6e8b7a2e0bb6c049e79d7fafccbfd0ccb887a51aa",
+          "sha1": "4d0da1ce89b40ab443b0ac3b6eb806cf72c9d81e",
+          "md5": "a7b3101410cbbc598a7492d046336897"
+        }
+      ]
+    }
+  ]
+}
