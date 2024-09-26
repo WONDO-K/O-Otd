@@ -17,6 +17,7 @@ import Notification from './views/Notification'
 import Challenge from './views/Challenge'
 import ChallengeDetail from './views/ChallengeDetail'
 import MyFashion from './views/MyFashion';
+import SplashScreen from 'react-native-splash-screen';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
