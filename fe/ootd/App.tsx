@@ -9,6 +9,7 @@ import Navbar from './components/Navbar';
 import Footerbar from './components/Footerbar';
 import MainView from './views/MainView';
 import LoginView from './views/LoginView';
+import StyleView from './views/StyleView';
 import AIView from './views/AIView.tsx';
 import Battle from './views/Battle'
 import BattleDetail from './views/BattleDetail'
@@ -51,6 +52,7 @@ function App(): React.JSX.Element {
           >
             <Stack.Screen name="MainView" component={MainView} />
             <Stack.Screen name="LoginView" component={LoginView} />
+            <Stack.Screen name="StyleView" component={StyleView} />
             <Stack.Screen name="AIView" component={AIView} />
             <Stack.Screen name="MyFashion" component={MyFashion}/>
             <Stack.Screen name="Battle" component={Battle} />
