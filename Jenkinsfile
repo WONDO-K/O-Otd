@@ -20,7 +20,6 @@ pipeline {
             steps {
                 script {
                     // getChangedServices를 한 번만 호출하여 전역 변수에 저장
-
                     isChangeFe = getChangedFe()
                     echo "Changed Fe: ${isChangeFe}"
                 }
@@ -28,11 +27,13 @@ pipeline {
         }
         stage('Install Dependencies for FE') {
             steps {
-                if(isChangeFe){
-                    dir("fe/ootd"){
-                        // 프로젝트의 dependencies 설치
-                        echo 'npm install'
-                        sh 'npm install'
+                script{
+                    if(isChangeFe){
+                        dir("fe/ootd"){
+                            // 프로젝트의 dependencies 설치
+                            echo 'npm install'
+                            sh 'npm install'
+                        }
                     }
                 }
             }
@@ -57,9 +58,11 @@ pipeline {
 
         stage('CI : Archive APK for FE') {
             steps {
-                if(isChangeFe){
-                    // 빌드된 APK 파일을 Jenkins에 아카이브
-                    archiveArtifacts artifacts: 'fe/ootd/android/app/build/outputs/apk/release/app-release.apk', fingerprint: true
+                script{
+                    if(isChangeFe){
+                        // 빌드된 APK 파일을 Jenkins에 아카이브
+                        archiveArtifacts artifacts: 'fe/ootd/android/app/build/outputs/apk/release/app-release.apk', fingerprint: true
+                    }
                 }
             }
         }
