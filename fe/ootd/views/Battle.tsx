@@ -166,7 +166,7 @@ function Battle({ navigation }): React.JSX.Element {
             <View style={styles.battleHeader}>
                 <Text style={styles.battleHeaderText}>
                     BTU
-                    <Text style={{fontSize:16}}>(Better Than U)</Text>
+                    <Text style={{fontSize:24}}>(Better Than U)</Text>
                 </Text>
                 <TouchableOpacity style={styles.battleHeaderButton} onPress={() => navigation.navigate('Challenge')}>
                     {/* <Text style={styles.battleHeaderButtonText}>결투다!</Text> */}
@@ -281,7 +281,7 @@ const styles = StyleSheet.create({
     },
     battleHeaderText: {
         color: 'white',
-        fontSize: 30,
+        fontSize: 40,
         fontWeight: 'bold',
     },
     battleHeaderButton: {

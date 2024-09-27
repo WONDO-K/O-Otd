@@ -51,7 +51,7 @@ function Footerbar(): React.JSX.Element {
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('StyleView')}>
                 <View style={styles.icon}>
-                    <StyleIcon width={24} height={24} />
+                    <StyleIcon width={20} height={20} />
                     <Text style={styles.text}>Style</Text>
                 </View>
             </TouchableOpacity>

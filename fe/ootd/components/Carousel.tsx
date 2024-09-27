@@ -100,10 +100,12 @@ export default function Carousel() {
         <View style={styles.container}>
           <Text style={styles.title}>금주의 스타일</Text>
           <View style={{ marginBottom: 10 }} />
-          <FlatList
+          {/* <FlatList
             ref={flatListRef}
             data={infiniteData}
             snapToOffsets={snapToOffsets}
+            snapToInterval={offset}
+            decelerationRate="fast"
             horizontal
             pagingEnabled
             onMomentumScrollEnd={handleScrollEnd}
@@ -121,6 +123,40 @@ export default function Carousel() {
               offset: offset * index,
               index,
             })}
+            initialScrollIndex={1}
+          /> */}
+          <FlatList
+            ref={flatListRef}
+            data={infiniteData}
+            horizontal
+            snapToOffsets={snapToOffsets} // 아이템 간격에 따라 스냅
+            decelerationRate="fast"  // 스크롤 속도 제어
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 48 }}
+            style={{ height: cardSize.height }} // 높이 설정
+            renderItem={({ item }) => (
+              <TouchableOpacity style={{ marginRight: margin }}>
+                <ImageBackground style={cardSize} source={item.carouselImageUrl} />
+              </TouchableOpacity>
+            )}
+            keyExtractor={(_, index) => String(index)}
+            getItemLayout={(data, index) => ({
+              length: offset,
+              offset: offset * index,
+              index,
+            })}
+            onScrollEndDrag={(e) => {
+              const contentOffsetX = e.nativeEvent.contentOffset.x;
+              const currentIndex = Math.round(contentOffsetX / offset);
+              if (flatListRef.current) {
+                flatListRef.current.scrollToOffset({
+                  offset: currentIndex * offset,
+                  animated: true,  // 애니메이션 추가
+                });
+              }
+            }}
+            onMomentumScrollEnd={handleScrollEnd}
+            scrollEventThrottle={16}  // 스크롤 이벤트 주기 조정
             initialScrollIndex={1}
           />
         </View>
