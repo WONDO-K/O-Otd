@@ -74,7 +74,6 @@ function ChallengeDetail({ navigation, route }): React.JSX.Element {
                         <Text style={styles.selectedText}> 대전을 신청하셨습니다.</Text>
                     {/* </View> */}
                 </View>
-                {/* <GalleryButton selectedImage={selectedImage} onPress={selectImage} /> */}
                 <MyFashionButton selectedImage={selectedImage} onPress={() => navigation.navigate('MyFashion', { returnScreen: 'ChallengeDetail' })} />
             </View>
             <View style={styles.buttonSection}>
