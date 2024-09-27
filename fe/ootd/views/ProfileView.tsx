@@ -31,6 +31,7 @@ function ProfileView(): React.JSX.Element {
 
   const selectCategory = (category: string) => {
     setSelectedCategory(category);
+    setSelectedSort('최신순');
 };
 const selectSort = (sort: string) => {
     setSelectedSort(sort);
@@ -142,9 +143,9 @@ const getPictureList = (category: string, sort: string) => {
                 <View
                     style={[
                         {
-                            padding: selectedCategory === '마이 패션' ? 5 : 0,
-                            borderBottomWidth: selectedCategory === '마이 패션' ? 3 : 0,
-                            borderColor: selectedCategory === '마이 패션' ? 'white' : 'transparent',
+                          padding: selectedCategory === '마이 패션' ? 5 : 0,
+                          borderBottomWidth: selectedCategory === '마이 패션' ? 3 : 0,
+                          borderColor: selectedCategory === '마이 패션' ? 'white' : 'transparent',
                         },
                     ]}
                 >
