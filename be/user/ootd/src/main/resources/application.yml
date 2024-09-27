@@ -40,3 +40,8 @@ server:
 jwt:
   secret: e13af114d471424d6c9f2b7d03c3e25e630f269fbb3587f35068cb7d253150f568812b114afd8fd6941a005cdcf64b8b8baec4ce9de512b6aaad9ba732c6eee4  # JWT ?? ?
   expiration: 1296000000  # JWT ?? ?? (??? ??)
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework: DEBUG

@@ -98,11 +98,23 @@ springdoc:
 #      name: battle-service
 #      url: http://localhost:8080/v3/api-docs/battle-service
 
+#springdoc:
+#  swagger-ui:
+#    enabled: true
+#    path: /swagger-ui/index.html
+#    urls:
+#      - name: user-service
+#        url: /user-service/v3/api-docs
+#      - name: gallery-service
+#        url: /gallery-service/v3/api-docs
+#      - name: battle-service
+#        url: /battle-service/v3/api-docs
+
 jwt:
   secret: e13af114d471424d6c9f2b7d03c3e25e630f269fbb3587f35068cb7d253150f568812b114afd8fd6941a005cdcf64b8b8baec4ce9de512b6aaad9ba732c6eee4  # JWT 비밀 키
   expiration: 1296000000  # JWT 만료 시간 (밀리초 단위)
 
-#logging:
-#  level:
-#    org.springframework.security: DEBUG
-##    org.springframework: DEBUG
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework: DEBUG

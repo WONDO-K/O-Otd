@@ -21,9 +21,13 @@ public class UserController {
     private final JwtTokenProvider jwtTokenProvider;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @PutMapping("/update/nickname")
+    @PostMapping("/update/nickname")
     public ResponseEntity<?> updateNickname(@RequestHeader("Authorization") String token,
                                             @RequestBody UpdateNicknameRequestDto request){
+
+        log.info("닉네임 업데이트 요청이 들어왔습니다.");  // 요청이 컨트롤러에 도달했는지 확인
+
+
         // JWT 토큰에서 사용자 이름 추출
         String userEmail = jwtTokenProvider.getClaimsFromToken(token.replace("Bearer ", "")).getSubject();  // JWT 토큰의 subject에서 username 추출
         log.info("새로운 닉네임 : {}", request.getNewNickname());
