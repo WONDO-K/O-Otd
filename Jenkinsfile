@@ -10,31 +10,17 @@ pipeline {
     stages {
         stage("CI: Checkout") {
             steps {
-                git branch: 'fe',
+                git branch: 'master',
                     url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21E104.git',
                     credentialsId: "ootd"
             }
         }
 
-        stage("CI: Determine Changed FE") {
-            steps {
-                script {
-                    // getChangedServices를 한 번만 호출하여 전역 변수에 저장
-                    isChangeFe = getChangedFe()
-                    echo "Changed Fe: ${isChangeFe}"
-                }
-            }
-        }
         stage('Install Dependencies for FE') {
             steps {
-                script{
-                    if(isChangeFe){
-                        dir("fe/ootd"){
-                            // 프로젝트의 dependencies 설치
-                            echo 'npm install'
-                            sh 'npm install'
-                        }
-                    }
+                dir("fe/ootd"){
+                    // 프로젝트의 dependencies 설치
+                    sh 'npm install'
                 }
             }
         }
@@ -42,14 +28,9 @@ pipeline {
         stage("CI: Front Build"){
             steps{
                 script{
-                    if(isChangeFe){
-                        dir("fe/ootd/android"){
-                            echo 'chmod 777 gradlew'
-                            sh 'chmod 777 gradlew'
-
-                            echo 'chmod 777 gradlew'
-                            sh './gradlew assembleRelease'
-                        }
+                    dir("fe/ootd/android"){
+                        sh 'chmod 777 gradlew'
+                       sh './gradlew assembleRelease'
                     }
                 }
             }
@@ -58,12 +39,8 @@ pipeline {
 
         stage('CI : Archive APK for FE') {
             steps {
-                script{
-                    if(isChangeFe){
-                        // 빌드된 APK 파일을 Jenkins에 아카이브
-                        archiveArtifacts artifacts: 'fe/ootd/android/app/build/outputs/apk/release/app-release.apk', fingerprint: true
-                    }
-                }
+                // 빌드된 APK 파일을 Jenkins에 아카이브
+                archiveArtifacts artifacts: 'fe/ootd/android/app/build/outputs/apk/release/app-release.apk', fingerprint: true
             }
         }
 
@@ -157,30 +134,6 @@ pipeline {
             }
         }// end Deploy Docker Container with docker compose
     }
-    post{
-        success {
-        	script {
-                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
-                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
-                mattermostSend (color: 'good', 
-                message: "# :jenkins1: \n ### 빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})(<${env.BUILD_URL}|Details>)", 
-                endpoint: 'https://meeting.ssafy.com/hooks/6az88d4jajgybgn5d6qhkyy8ma', 
-                channel: 'ootd_jenkins'
-                )
-            }
-        }
-        failure {
-        	script {
-                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
-                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
-                mattermostSend (color: 'danger', 
-                message: "# :jenkins5: \n ### 빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)", 
-                endpoint: 'https://meeting.ssafy.com/hooks/6az88d4jajgybgn5d6qhkyy8ma', 
-                channel: 'ootd_jenkins'
-                )
-            }
-        }
-    }
 }
 
 // 함수 정의
@@ -193,13 +146,4 @@ def getChangedServices(services) {
         }
     }
     return changedServices
-}
-
-
-//fe
-def getChangedFe(){
-    if(sh(script: "git diff --name-only HEAD~1 HEAD | grep 'fe' || true", returnStdout: true).trim()){
-        return true
-    }
-    return false;
 }
