@@ -1,8 +1,8 @@
 package com.threeheads.ootd.producer;
 
 import com.threeheads.ootd.AbstractTest;
-import com.threeheads.ootd.kafka.entity.KafkaEntity;
-import com.threeheads.ootd.kafka.producer.cluster.KafkaProducerCluster;
+import com.threeheads.user.kafka.entity.KafkaEntity;
+import com.threeheads.user.kafka.producer.cluster.KafkaProducerCluster;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
