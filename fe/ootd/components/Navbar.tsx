@@ -10,6 +10,7 @@ import LoginView from '../views/LoginView.tsx';
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'black',
+        minHeight: 60,
         height: '10%',
         display: 'flex',
         flexDirection: 'row',
@@ -31,7 +32,7 @@ function Navbar(): React.JSX.Element {
                 <LogoIcon width={120} height={60} />
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
-                <NoticeIcon width={40} height={40} />
+                <NoticeIcon width={30} height={30} />
             </TouchableOpacity>
         </View>
     );

@@ -11,7 +11,8 @@ import ProfileIcon from '../assets/Icons/Profile_Icon.svg';
 const styles = StyleSheet.create({
     container: {
         backgroundColor: 'black',
-        height: '10%',
+        minHeight: 50,
+        height: '7%',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -44,29 +45,31 @@ function Footerbar(): React.JSX.Element {
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.navigate('MainView')}>
                 <View style={styles.icon}>
-                    <HomeIcon width={30} height={30} />
+                    <HomeIcon width={20} height={20} />
                     <Text style={styles.text}>Home</Text>
                 </View>
             </TouchableOpacity>
-            <View style={styles.icon}>
-                <StyleIcon width={40} height={35} />
-                <Text style={styles.text}>Style</Text>
-            </View>
+            <TouchableOpacity onPress={() => navigation.navigate('StyleView')}>
+                <View style={styles.icon}>
+                    <StyleIcon width={20} height={20} />
+                    <Text style={styles.text}>Style</Text>
+                </View>
+            </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('AIView')}>
                 <View style={styles.icon}>
-                <AIIcon width={30} height={30} />
+                    <AIIcon width={20} height={20} />
                     <Text style={styles.text}>AI</Text>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Battle')}>
                 <View style={styles.icon}>
-                <BattleIcon width={30} height={30} />
+                    <BattleIcon width={20} height={20} />
                     <Text style={styles.text}>BTU</Text>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('ProfileView')}>
                 <View style={styles.icon}>
-                <ProfileIcon width={30} height={30} />
+                    <ProfileIcon width={20} height={20} />
                     <Text style={styles.text}>Profile</Text>
                 </View>
             </TouchableOpacity>
