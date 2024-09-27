@@ -1,4 +1,5 @@
 import React, {useEffect} from 'react';
+import { LogBox } from 'react-native';
 import {
   SafeAreaView,
   ScrollView,
@@ -26,6 +27,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
+LogBox.ignoreAllLogs();
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';

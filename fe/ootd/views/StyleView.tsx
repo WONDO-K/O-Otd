@@ -1,66 +1,97 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Image, FlatList } from 'react-native';
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
 import { useFocusEffect } from '@react-navigation/native';
+import { ScrollView } from 'react-native-gesture-handler';
 
 function StyleView({ navigation, route }): React.JSX.Element {
     // Main 이미지와 Sub 이미지 상태 관리
     const [mainImage, setMainImage] = useState<string | null>(null);
     const [subImage, setSubImage] = useState<string | null>(null);
+    const [recommendedImages, setRecommendedImages] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    useFocusEffect(
-        useCallback(() => {
-            if (route.params?.selectedImage && route.params?.setFor) {
-                if (route.params.setFor === 'main') {
-                    setMainImage(route.params.selectedImage);  // 메인 이미지 업데이트
-                } else if (route.params.setFor === 'sub') {
-                    setSubImage(route.params.selectedImage);  // 서브 이미지 업데이트
-                }
-            }
-        }, [route.params?.selectedImage, route.params?.setFor])
-    );
+    const fetchRecommendedImages = async (mainImage: string, subImage: string) => {
+        setLoading(true);
+    
+        // 실제 API 요청을 위한 로직 작성 (여기서는 임시로 데이터를 사용)
+        const data = [
+            { id: '1', src: 'https://placekitten.com/200/300' },
+            { id: '2', src: 'https://placedog.net/400' },
+            { id: '3', src: 'https://placekitten.com/200/300' },
+            { id: '4', src: 'https://placedog.net/400' },
+        ];
+    
+        setTimeout(() => {
+            setLoading(false);
+            setRecommendedImages(data);
+        }, 1500); // 임시 딜레이
+    };
 
     const isButtonDisabled = !mainImage || !subImage;
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>추천</Text>
-            <View style={styles.imageContainer}>
-                {/* Main 이미지 */}
-                <TouchableOpacity
-                    style={styles.mainImage}
-                    onPress={() => navigation.navigate('StyleSelect', { setFor: 'main', setMainImage })}
-                >
-                    {mainImage ? (
-                        <Image source={{ uri: mainImage }} style={styles.image} />
-                    ) : (
-                        <UploadIcon width={45} height={45} />
-                    )}
-                </TouchableOpacity>
+        <ScrollView style={styles.container}>
+            <View style={styles.recommend}>
+                <Text style={styles.title}>패션 추천</Text>
+                <View style={styles.imageContainer}>
+                    {/* Main 이미지 */}
+                    <TouchableOpacity
+                        style={styles.mainImage}
+                        onPress={() => navigation.navigate('StyleSelect', { setFor: 'main', setMainImage })}
+                    >
+                        {mainImage ? (
+                            <Image source={{ uri: mainImage }} style={styles.image} />
+                        ) : (
+                            <UploadIcon width={45} height={45} />
+                        )}
+                    </TouchableOpacity>
 
-                {/* Sub 이미지 */}
+                    {/* Sub 이미지 */}
+                    <TouchableOpacity
+                        style={styles.subImage}
+                        onPress={() => navigation.navigate('StyleSelect', { setFor: 'sub', setSubImage })}
+                    >
+                        {subImage ? (
+                            <Image source={{ uri: subImage }} style={styles.image} />
+                        ) : (
+                            <UploadIcon width={30} height={30} />
+                        )}
+                    </TouchableOpacity>
+                </View>
+
+                {/* 추천 받기 버튼 */}
                 <TouchableOpacity
-                    style={styles.subImage}
-                    onPress={() => navigation.navigate('StyleSelect', { setFor: 'sub', setSubImage })}
+                    style={[styles.recommendButton, isButtonDisabled ? styles.disabledButton : styles.enabledButton]}
+                    disabled={isButtonDisabled} // 이미지가 둘 다 선택되지 않았으면 비활성화
+                    onPress={() => {
+                        if (mainImage && subImage) {
+                            fetchRecommendedImages(mainImage, subImage);
+                        }
+                    }}
                 >
-                    {subImage ? (
-                        <Image source={{ uri: subImage }} style={styles.image} />
-                    ) : (
-                        <UploadIcon width={30} height={30} />
-                    )}
+                    <Text style={isButtonDisabled ? styles.disabledButtonText : styles.enabledButtonText}>
+                        {loading ? '추천 중...' : '추천 받기'}
+                    </Text>
                 </TouchableOpacity>
             </View>
-
-            {/* 추천 받기 버튼 */}
-            <TouchableOpacity
-                style={[styles.recommendButton, isButtonDisabled ? styles.disabledButton : styles.enabledButton]}
-                disabled={isButtonDisabled} // 이미지가 둘 다 선택되지 않았으면 비활성화
-            >
-                <Text style={isButtonDisabled ? styles.disabledButtonText : styles.enabledButtonText}>
-                    추천 받기
-                </Text>
-            </TouchableOpacity>
-        </View>
+            {recommendedImages.length > 0 && (
+                <View style={styles.recommendationList}>
+                    <Text style={styles.listTitle}>추천된 이미지</Text>
+                    <FlatList
+                        data={recommendedImages}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({ item }) => (
+                            <View style={styles.recommendationItem}>
+                                <Image source={{ uri: item.src }} style={styles.recommendationImage} />
+                            </View>
+                        )}
+                        numColumns={2}
+                        nestedScrollEnabled={true}
+                    />
+                </View>
+            )}
+        </ScrollView>
     );
 }
 
@@ -68,6 +99,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'black',
+    },
+    recommend: {
+        marginTop: 40,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -143,6 +177,23 @@ const styles = StyleSheet.create({
     disabledButtonText: {
         color: 'darkgray',
     },
+    recommendationList: {
+        marginTop: 20,
+    },
+    listTitle: {
+        fontSize: 24,
+        color: 'white',
+        marginBottom: 20,
+        textAlign: 'center',
+    },
+    recommendationItem: {
+        width: '50%',
+    },
+    recommendationImage: {
+        width: '100%',
+        height: 350,
+    },
+    
 });
 
 export default StyleView;
