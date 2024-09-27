@@ -64,10 +64,12 @@ function Footerbar(): React.JSX.Element {
                     <Text style={styles.text}>BTU</Text>
                 </View>
             </TouchableOpacity>
-            <View style={styles.icon}>
-            <ProfileIcon width={30} height={30} />
-                <Text style={styles.text}>Profile</Text>
-            </View>
+            <TouchableOpacity onPress={() => navigation.navigate('ProfileView')}>
+                <View style={styles.icon}>
+                <ProfileIcon width={30} height={30} />
+                    <Text style={styles.text}>Profile</Text>
+                </View>
+            </TouchableOpacity>
         </View>
     );
 }

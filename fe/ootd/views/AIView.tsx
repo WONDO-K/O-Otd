@@ -99,11 +99,11 @@ function AIView(): React.JSX.Element {
 
   return (
     <>
-      <ImageBackground
+      {/* <ImageBackground
         source={require('../assets/Images/BackgroundImg.png')} // 배경 이미지 경로
         style={styles.backgroundImage} // 배경 이미지 스타일 적용
         resizeMode="cover" // 이미지 크기를 화면에 맞게 조정
-      >
+      > */}
         <View style={styles.container} >
           <Text style={styles.title}>AI 분석</Text>
           {photo != null ? (
@@ -147,7 +147,7 @@ function AIView(): React.JSX.Element {
           </TouchableOpacity>
           </View>
         </View>
-      </ImageBackground>
+      {/* </ImageBackground> */}
     </>
   );
 }

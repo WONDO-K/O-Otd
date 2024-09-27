@@ -18,7 +18,8 @@ import Challenge from './views/Challenge'
 import ChallengeDetail from './views/ChallengeDetail'
 import MyFashion from './views/MyFashion';
 import SplashScreen from 'react-native-splash-screen';
-import AIReport from './views/AIReport.tsx';
+import AIReport from './views/AIReport';
+import ProfileView from './views/ProfileView';
 
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -61,6 +62,7 @@ function App(): React.JSX.Element {
             <Stack.Screen name="Challenge" component={Challenge} />
             <Stack.Screen name="ChallengeDetail" component={ChallengeDetail} />
             <Stack.Screen name="AIReport" component={AIReport} />
+            <Stack.Screen name="ProfileView" component={ProfileView} />
           </Stack.Navigator>
           <Footerbar />
         </NavigationContainer>

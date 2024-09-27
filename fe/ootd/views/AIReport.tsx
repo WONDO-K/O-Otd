@@ -105,7 +105,7 @@ function AIReport(): React.JSX.Element {
           </View>
         </View>
 
-        <View style={styles.line} />
+        {/* <View style={styles.line} /> */}
         
         <Text style={styles.title}>유사한 스타일</Text>
         <FlatList
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   photo: {
-    width: "45%",
+    width: "50%",
     height: "95%",
     borderRadius: 10,
   },
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   reportText: {
-    fontSize: 15,
+    fontSize: 18,
     color: 'white',
     textAlign: 'center',
     width: "100%",
