@@ -1,6 +1,5 @@
-package com.threeheads.ootd.kafka.consumer.cluster;
+package com.threeheads.kafka.consumer.cluster;
 
-import com.threeheads.ootd.kafka.entity.KafkaEntity;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -8,6 +7,8 @@ import org.springframework.messaging.MessageHeaders;
 import org.springframework.messaging.handler.annotation.Headers;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+
+import com.threeheads.kafka.entity.KafkaEntity;
 
 @Slf4j
 @Component

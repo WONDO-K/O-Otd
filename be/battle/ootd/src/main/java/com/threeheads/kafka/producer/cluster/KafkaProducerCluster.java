@@ -1,7 +1,6 @@
-package com.threeheads.ootd.kafka.producer.cluster;
+package com.threeheads.kafka.producer.cluster;
 
 
-import com.threeheads.ootd.kafka.entity.KafkaEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +10,8 @@ import org.springframework.kafka.support.SendResult;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
+
+import com.threeheads.kafka.entity.KafkaEntity;
 
 import java.util.concurrent.CompletableFuture;
 

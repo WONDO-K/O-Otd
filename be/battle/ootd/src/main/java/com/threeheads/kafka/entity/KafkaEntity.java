@@ -1,4 +1,4 @@
-package com.threeheads.ootd.kafka.entity;
+package com.threeheads.kafka.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
