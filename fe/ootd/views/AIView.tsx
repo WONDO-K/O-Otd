@@ -154,7 +154,9 @@ function AIView(): React.JSX.Element {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     display: 'flex',
+    backgroundColor: 'black',
     flexDirection: 'column',
     resizeMode: 'cover',
     alignItems: 'center',
