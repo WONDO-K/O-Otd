@@ -16,11 +16,24 @@ pipeline {
             }
         }
 
+        stage("CI: Determine Changed FE") {
+            steps {
+                script {
+                    // getChangedServices를 한 번만 호출하여 전역 변수에 저장
+
+                    isChangeFe = getChangedFe()
+                    echo "Changed Fe: ${isChangeFe}"
+                }
+            }
+        }
         stage('Install Dependencies for FE') {
             steps {
-                dir("fe/ootd"){
-                    // 프로젝트의 dependencies 설치
-                    sh 'npm install'
+                if(isChangeFe){
+                    dir("fe/ootd"){
+                        // 프로젝트의 dependencies 설치
+                        echo 'npm install'
+                        sh 'npm install'
+                    }
                 }
             }
         }
@@ -28,9 +41,14 @@ pipeline {
         stage("CI: Front Build"){
             steps{
                 script{
-                    dir("fe/ootd/android"){
-                        sh 'chmod 777 gradlew'
-                       sh './gradlew assembleRelease'
+                    if(isChangeFe){
+                        dir("fe/ootd/android"){
+                            echo 'chmod 777 gradlew'
+                            sh 'chmod 777 gradlew'
+
+                            echo 'chmod 777 gradlew'
+                            sh './gradlew assembleRelease'
+                        }
                     }
                 }
             }
@@ -39,8 +57,10 @@ pipeline {
 
         stage('CI : Archive APK for FE') {
             steps {
-                // 빌드된 APK 파일을 Jenkins에 아카이브
-                archiveArtifacts artifacts: 'fe/ootd/android/app/build/outputs/apk/release/app-release.apk', fingerprint: true
+                if(isChangeFe){
+                    // 빌드된 APK 파일을 Jenkins에 아카이브
+                    archiveArtifacts artifacts: 'fe/ootd/android/app/build/outputs/apk/release/app-release.apk', fingerprint: true
+                }
             }
         }
 
@@ -136,7 +156,7 @@ pipeline {
     }
 }
 
-// 함수 정의
+// be 변경사항 함수 정의
 def getChangedServices(services) {
     def changedServices = []
     for (service in services) {
@@ -146,4 +166,12 @@ def getChangedServices(services) {
         }
     }
     return changedServices
+}
+
+//fe
+def getChangedFe(){
+    if(sh(script: "git diff --name-only HEAD~1 HEAD | grep 'fe' || true", returnStdout: true).trim()){
+        return true
+    }
+    return false;
 }
