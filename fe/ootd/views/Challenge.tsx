@@ -114,19 +114,7 @@ function Challenge({ navigation, route }): React.JSX.Element {
                         )}
                     </View>
                 )}
-                {/* <GalleryButton selectedImage={selectedImage} onPress={selectImage} /> */}
                 <MyFashionButton selectedImage={selectedImage} onPress={() => navigation.navigate('MyFashion', { returnScreen: 'Challenge' })} />
-                {/* <View style={styles.gallery}>
-                    {selectedImage ? (
-                        <TouchableOpacity onPress={selectImage}>
-                            <Image source={{ uri: selectedImage }} style={styles.image} />
-                        </TouchableOpacity>
-                    ) : (
-                        <TouchableOpacity onPress={selectImage} style={styles.galleryButton}>
-                            <Image source={require('../assets/Images/chooseIcon.png')} style={{ width: 100, height: 100 }} />
-                        </TouchableOpacity>
-                    )}
-                </View> */}
             </ScrollView>
             <View style={styles.buttonSection}>
                 <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>

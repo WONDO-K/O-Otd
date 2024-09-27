@@ -120,7 +120,7 @@ function MainView(): React.JSX.Element {
                       {bookmarked[item.id] ? (
                         <WishFullIcon width={30} height={40} /> // 북마크가 활성화된 경우
                       ) : (
-                        <WishIcon width={30} height={40} /> // 비활성화된 경우
+                        <WishIcon width={30} height={40} fill='white'/> // 비활성화된 경우
                       )}
                       </TouchableOpacity>
                     </ImageBackground>
