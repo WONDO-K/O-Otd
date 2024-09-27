@@ -46,9 +46,12 @@ dependencies {
 	testImplementation 'org.springframework.kafka:spring-kafka-test'  // Kafka 관련 테스트 지원 의존성
 	testImplementation 'org.springframework.security:spring-security-test'  // Spring Security 테스트 지원 의존성
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'  // JUnit 플랫폼 실행기
+	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
+	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
 
 // Swagger 의존성 (API 문서화)
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'  // Swagger UI 및 OpenAPI 문서화를 위한 의존성
+
 }
 
 tasks.named('test') {
