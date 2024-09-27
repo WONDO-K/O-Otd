@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage("CI: Checkout") {
             steps {
-                git branch: 'master',
+                git branch: 'be',
                     url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21E104.git',
                     credentialsId: "ootd"
             }
