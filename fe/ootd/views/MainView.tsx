@@ -127,6 +127,7 @@ function MainView(): React.JSX.Element {
                   </View>
                 )}
                 numColumns={2}
+                // nestedScrollEnabled={true}
             />
         </View>
         </ScrollView>
