@@ -247,7 +247,7 @@ const getPictureList = (category: string, sort: string) => {
         </TouchableOpacity>
         ))}
       </View>
-          
+
 
 
 

@@ -5,7 +5,7 @@ import {
   View,
   TouchableOpacity,
   Image,
-  ImageBackground,
+  Modal, 
   PermissionsAndroid,
   Alert,
 } from 'react-native';
@@ -16,7 +16,7 @@ import UploadIcon from '../assets/Icons/Upload_Icon.svg';
 import CameraIcon from '../assets/Icons/Camera_Icon.svg';
 import useAIStore from '../stores/AIStore';
 
-// 카메라 권한
+// 카메라 권한 요청 함수
 async function requestCameraPermission() {
   try {
     const granted = await PermissionsAndroid.request(
@@ -29,13 +29,7 @@ async function requestCameraPermission() {
         buttonPositive: "확인"
       }
     );
-    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-      console.log("카메라 권한 허용됨");
-      return true;
-    } else {
-      console.log("카메라 권한 거부됨");
-      return false;
-    }
+    return granted === PermissionsAndroid.RESULTS.GRANTED;
   } catch (err) {
     console.warn(err);
     return false;
@@ -45,27 +39,28 @@ async function requestCameraPermission() {
 // 메인페이지
 function AIView(): React.JSX.Element {
   const navigation = useNavigation();
-  const route = useRoute();
-
   const { setImage } = useAIStore();
   const [photo, setPhoto] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setModalVisible(!isModalVisible); // 모달 상태를 토글
+  };
 
   const handleUpload = () => {
     const options = {
       mediaType: 'photo',
       includeBase64: true,
     };
-
-    // 갤러리에서 이미지 선택
     launchImageLibrary(options, (response) => {
       if (response.didCancel) {
         console.log('사용자가 취소함');
       } else if (response.errorCode) {
         console.log('에러: ', response.errorMessage);
-      } else {
-        const source = { uri: response.assets[0].uri };
+      } else if (response.assets && response.assets.length > 0) {
         setPhoto(response); // 선택된 이미지를 미리보기 위해 Base64로 설정
         setImage(response.assets[0].base64); // Base64 이미지 데이터를 Zustand 스토어에 추가
+        toggleModal(); // 모달 닫기
       }
     });
   };
@@ -80,87 +75,92 @@ function AIView(): React.JSX.Element {
     const options = {
       mediaType: 'photo',
       saveToPhotos: true,
-      includeBase64: true, // Base64로 변환
+      includeBase64: true,
     };
 
-    // 카메라로 사진 촬영
     launchCamera(options, (response) => {
       if (response.didCancel) {
         console.log('사용자가 취소함');
       } else if (response.errorCode) {
         console.log('에러: ', response.errorMessage);
-      } else {
-        const source = { uri: response.assets[0].uri };
-        setPhoto(response); // 선택된 이미지를 미리보기 위해 Base64로 설정
-        setImage(response.assets[0].base64); // Base64 이미지 데이터를 Zustand 스토어에 추가
+      } else if (response.assets && response.assets.length > 0) {
+        setPhoto(response);
+        setImage(response.assets[0].base64);
+        toggleModal(); // 모달 닫기
       }
     });
   };
 
   return (
-    <>
-      {/* <ImageBackground
-        source={require('../assets/Images/BackgroundImg.png')} // 배경 이미지 경로
-        style={styles.backgroundImage} // 배경 이미지 스타일 적용
-        resizeMode="cover" // 이미지 크기를 화면에 맞게 조정
-      > */}
-        <View style={styles.container} >
-          <Text style={styles.title}>AI 분석</Text>
-          {photo != null ? (
-          <Image source={{ uri: photo.assets[0].uri }} style={styles.uploadBox} /> // 선택된 이미지 렌더링
-          ) : (
-            <View style={styles.uploadBox}>
-              <TouchableOpacity style={styles.uploadCam} onPress={handleCamera}>
-                <CameraIcon width={60} height={60} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.uploadPic} onPress={handleUpload}>
-                <UploadIcon width={60} height={60} />
-              </TouchableOpacity>
-            </View>
-          )}
-            <Text style={styles.textContents} >
-            AI가 당신의 패션을 진단합니다.{"\n"}
-            가장 유사한 룩을 찾고,{"\n"}
-            해당 룩에 대한 설명과 함께{"\n"}
-            비슷한 스타일의 옷을 추천합니다.{"\n"}
-            </Text>
-          <View style={styles.btnContainer} >
-          <TouchableOpacity
-            style={[
-              styles.btn,
-              { backgroundColor: photo ? 'rgba(180, 180, 180, 0.8)' : 'rgba(128, 128, 128, 0.7)',
-                borderColor: photo ? 'white' : 'black'
-              }
-            ]}
-            onPress={() => {
-              if (photo) {
-                // photo가 있을 때만 실행
-                navigation.navigate('AIReport');
-              }
-            }}
-            disabled={!photo} // photo가 null이면 비활성화
-          >
-            <Text style={[
-              styles.btnText,
-              {color: photo ? 'white' : '#949494'}
-            ]} >Analysis</Text>
-          </TouchableOpacity>
+    <View style={styles.container}>
+      <Text style={styles.title}>AI 분석</Text>
+
+      {/* 모달창 */}
+      <Modal
+        transparent={true}
+        visible={isModalVisible}
+        animationType="slide"
+        onRequestClose={toggleModal}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <TouchableOpacity style={styles.modalButton} onPress={handleCamera}>
+              <Text style={styles.modalButtonText}>촬영하기</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalButton} onPress={handleUpload}>
+              <Text style={styles.modalButtonText}>갤러리에서 가져오기</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.modalButton} onPress={toggleModal}>
+              <Text style={styles.modalButtonText}>취소</Text>
+            </TouchableOpacity>
           </View>
         </View>
-      {/* </ImageBackground> */}
-    </>
+      </Modal>
+
+      <TouchableOpacity style={styles.uploadBox} onPress={toggleModal}>
+        {photo && photo.assets ? (
+          <Image 
+            source={{ uri: photo.assets[0].uri }} 
+            style={styles.uploadedImage} 
+            resizeMode="contain" // 이미지를 비율에 맞게 조정합니다.
+          />
+        ) : (
+          <UploadIcon width={60} height={60} />
+        )}
+      </TouchableOpacity>
+
+      <Text style={styles.textContents}>
+        AI가 당신의 패션을 진단합니다.{"\n"}
+        가장 유사한 룩을 찾고,{"\n"}
+        해당 룩에 대한 설명과 함께{"\n"}
+        비슷한 스타일의 옷을 추천합니다.{"\n"}
+      </Text>
+
+      <View style={styles.btnContainer}>
+        <TouchableOpacity
+          style={[
+            styles.btn,
+            { backgroundColor: photo ? 'rgba(180, 180, 180, 0.8)' : 'rgba(128, 128, 128, 0.7)', borderColor: photo ? 'white' : 'black' }
+          ]}
+          onPress={() => {
+            if (photo) {
+              navigation.navigate('AIReport'); // photo가 있을 때만 실행
+            }
+          }}
+          disabled={!photo}
+        >
+          <Text style={[styles.btnText, { color: photo ? 'white' : '#949494' }]}>Analysis</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    flexDirection: 'column',
-    resizeMode: 'cover',
+    backgroundColor: 'black',
+    flex: 1,
     alignItems: 'center',
-  },
-  backgroundImage: {
-    flex: 1, // 화면 전체를 덮도록 설정
   },
   title: {
     fontSize: 40,
@@ -168,64 +168,51 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   uploadBox: {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent:'space-between',
-    marginTop: 20,
-    marginBottom: 20,
-    // backgroundColor: 'rgba(180, 180, 180, 0.8)',
-    // borderColor: '#ffffff',
-    // borderWidth: 2,
     width: "90%",
     height: "45%",
     borderRadius: 10,
     alignItems: 'center',
-  },
-  uploadCam: {
-    backgroundColor: 'rgba(180, 180, 180, 0.8)',
-    borderColor: '#ffffff',
+    justifyContent: 'center',
     borderWidth: 2,
-    width: "47%",
-    height: "100%",
-    borderRadius: 10,
+    borderColor: '#ffffff',
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  uploadedImage: {
+    width: '100%', // 부모 크기에 맞게 설정
+    height: '100%', // 부모 크기에 맞게 설정
+    borderRadius: 10, // 업로드 박스와 동일한 경계선 반경 적용
+  },
+  modalContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // shadowColor: 'white',
-    // shadowOffset: { width: 20, height: 20 },
-    // shadowOpacity: 0.2,
-    // shadowRadius: 10,
-    // elevation: 20,
-    // marginTop: 20,
-    // marginBottom: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
   },
-  uploadPic: {
-    backgroundColor: 'rgba(180, 180, 180, 0.8)',
-    borderColor: '#ffffff',
-    borderWidth: 2,
-    width: "47%",
-    height: "100%",
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#ffffff',
     borderRadius: 10,
-    justifyContent: 'center',
+    padding: 20,
     alignItems: 'center',
-    // shadowColor: 'white',
-    // shadowOffset: { width: 20, height: 20 },
-    // shadowOpacity: 0.2,
-    // shadowRadius: 10,
-    // elevation: 20,
-    // marginTop: 20,
-    // marginBottom: 20,
+  },
+  modalButton: {
+    width: '100%',
+    padding: 15,
+    backgroundColor: '#1e90ff',
+    borderRadius: 10,
+    marginVertical: 10,
+    alignItems: 'center',
+  },
+  modalButtonText: {
+    color: '#ffffff',
+    fontSize: 18,
   },
   textContents: {
-    backgroundColor: 'rgba(180, 180, 180, 0.8)',
     borderColor: '#ffffff',
     borderWidth: 1,
     width: '90%',
     borderRadius: 10,
-    // shadowColor: 'white',
-    // shadowOffset: { width: 20, height: 20 },
-    // shadowOpacity: 0.2,
-    // shadowRadius: 10,
-    // elevation: 10,
     marginTop: 10,
     fontSize: 20,
     color: '#ffffff',
@@ -235,13 +222,11 @@ const styles = StyleSheet.create({
   btnContainer: {
     display: 'flex',
     flexDirection: 'row',
-    justifyContent:'space-around',
+    justifyContent: 'space-around',
     width: '100%',
     marginTop: 20,
   },
   btn: {
-    // backgroundColor: 'rgba(256, 256, 256, 0.6)',
-    // backgroundColor: 'rgba(180, 180, 180, 0.8)',
     borderColor: '#ffffff',
     borderWidth: 1,
     padding: 10,
@@ -251,17 +236,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 10,
-    // shadowColor: 'white',
-    // shadowOffset: { width: 20, height: 20 },
-    // shadowOpacity: 0.2,
-    // shadowRadius: 10,
-    // elevation: 10,
-    // marginBottom: 10,
-    // marginLeft: 10,
-    // marginRight: 10,
   },
   btnText: {
-    // color: '#ffffff',
     fontSize: 20,
     fontWeight: 'bold',
   },

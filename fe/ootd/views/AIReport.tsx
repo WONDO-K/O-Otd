@@ -76,11 +76,11 @@ function AIReport(): React.JSX.Element {
   }, []);
 
   return (
-    <ImageBackground
-      source={require('../assets/Images/BackgroundImg.png')} // 배경 이미지 경로
-      style={styles.backgroundImage} // 배경 이미지 스타일 적용
-      resizeMode="cover" // 이미지 크기를 화면에 맞게 조정
-    >
+    // <ImageBackground
+    //   source={require('../assets/Images/BackgroundImg.png')} // 배경 이미지 경로
+    //   style={styles.backgroundImage} // 배경 이미지 스타일 적용
+    //   resizeMode="cover" // 이미지 크기를 화면에 맞게 조정
+    // >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
         <Text style={styles.title}>AI 분석</Text>
@@ -124,9 +124,9 @@ function AIReport(): React.JSX.Element {
                   onPress={() => toggleBookmark(item.id)}
                 >
                 {bookmarked[item.id] ? (
-                  <WishFullIcon width={30} height={40} /> // 북마크가 활성화된 경우
+                  <WishFullIcon width={30} height={40} fill={'white'} /> // 북마크가 활성화된 경우
                 ) : (
-                  <WishIcon width={30} height={40} /> // 비활성화된 경우
+                  <WishIcon width={30} height={40} fill={'white'} /> // 비활성화된 경우
                 )}
                 </TouchableOpacity>
               </ImageBackground>
@@ -134,15 +134,15 @@ function AIReport(): React.JSX.Element {
           )}
           numColumns={2}
         />
-
       </View>
       </ScrollView>
-    </ImageBackground>
+    // </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'black',
     display: 'flex',
     flexDirection: 'column',
     resizeMode: 'cover',
@@ -167,10 +167,10 @@ const styles = StyleSheet.create({
     justifyContent:'space-between',
     width: "90%",
     height: 300,
-    backgroundColor: 'rgba(180, 180, 180, 0.8)',
-    borderColor: '#ffffff',
-    borderWidth: 2,
-    borderRadius: 10,
+    // backgroundColor: 'rgba(180, 180, 180, 0.8)',
+    // borderColor: '#ffffff',
+    // borderWidth: 2,
+    // borderRadius: 10,
     padding: 5,
     alignItems: 'center',
     marginTop: 20,
@@ -192,6 +192,7 @@ const styles = StyleSheet.create({
     width: "50%",
     height: "90%",
     padding: 5,
+    paddingLeft: 10,
     alignItems: 'center',
     justifyContent: 'center',
   },
