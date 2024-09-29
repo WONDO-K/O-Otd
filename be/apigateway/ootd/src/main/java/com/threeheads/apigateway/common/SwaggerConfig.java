@@ -1,33 +1,29 @@
 package com.threeheads.apigateway.common;
 
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 @Configuration
 @OpenAPIDefinition(
         info = @Info(
                 title = "API Gateway",
                 version = "v1",
-                description = "API Gateway for O-Otd Services",
+                description = "Unified and Grouped API Gateway for O-Otd Services",
                 contact = @Contact(name = "Your Name", email = "your.email@example.com")
         ),
         servers = @Server(
                 url = "http://localhost:8080", // API Gateway URL
                 description = "API Gateway Server URL"
-        ),
-        security = {
-                @SecurityRequirement(name = "Bearer Authentication") // 모든 엔드포인트에 JWT 인증 적용
-        }
+        )
 )
 @SecurityScheme(
         name = "Bearer Authentication",
@@ -40,51 +36,44 @@ public class SwaggerConfig {
     private static final String BEARER_TOKEN_PREFIX = "Bearer";
     private static final String SECURITY_SCHEME_NAME = "Bearer Authentication";
 
-    /**
-     * OpenAPI 정의 및 JWT 보안 스키마 설정
-     */
     @Bean
-    public OpenAPI gatewayOpenAPI() {
+    public OpenAPI OpenAPI() {
         return new OpenAPI()
-                .addSecurityItem(new io.swagger.v3.oas.models.security.SecurityRequirement().addList(SECURITY_SCHEME_NAME)) // 보안 요구 사항 설정
+                .addSecurityItem(new SecurityRequirement().addList(SECURITY_SCHEME_NAME))
                 .components(new Components()
                         .addSecuritySchemes(SECURITY_SCHEME_NAME, new io.swagger.v3.oas.models.security.SecurityScheme()
                                 .name(SECURITY_SCHEME_NAME)
                                 .type(io.swagger.v3.oas.models.security.SecurityScheme.Type.HTTP)
-                                .scheme(BEARER_TOKEN_PREFIX) // Bearer 토큰 설정
+                                .scheme(BEARER_TOKEN_PREFIX)
                                 .bearerFormat("JWT")));
     }
 
-    /**
-     * GroupedOpenApi 정의: Gateway API
-     */
+    // 단일 페이지로 모든 마이크로서비스 API 통합
     @Bean
-    public GroupedOpenApi gatewayServiceApi() {
+    public GroupedOpenApi unifiedApi() {
         return GroupedOpenApi.builder()
-                .group("gateway-service")
-                .pathsToMatch("/auth/**") // Gateway의 소셜 로그인 등의 엔드포인트를 포함
-                .build();
-    }
+                .group("all-services")  // 단일 페이지에 모든 서비스를 포함
+                .pathsToMatch("/user-service/**", "/gallery-service/**")  // 각 마이크로서비스의 실제 API 경로
+                .pathsToExclude("/user-service/auth/**") // 인증 경로는 문서에서 제외
 
-    /**
-     * GroupedOpenApi 정의: User Service API
-     */
-    @Bean
-    public GroupedOpenApi userServiceApi() {
-        return GroupedOpenApi.builder()
-                .group("user-service")
-                .pathsToMatch("/user-service/**", "/user-client/**")  // 유저 서비스 경로
                 .build();
     }
+//
+//    // 각 서비스별로 그룹화된 API
+//    @Bean
+//    public GroupedOpenApi userServiceApi() {
+//        return GroupedOpenApi.builder()
+//                .group("user-service")  // 그룹화된 User 서비스 API
+//                .pathsToMatch("/user-service/**")
+//                .build();
+//    }
+//
+//    @Bean
+//    public GroupedOpenApi galleryServiceApi() {
+//        return GroupedOpenApi.builder()
+//                .group("gallery-service")  // 그룹화된 Gallery 서비스 API
+//                .pathsToMatch("/gallery-service/**")
+//                .build();
+//    }
 
-    /**
-     * GroupedOpenApi 정의: Gallery Service API
-     */
-    @Bean
-    public GroupedOpenApi galleryServiceApi() {
-        return GroupedOpenApi.builder()
-                .group("gallery-service")
-                .pathsToMatch("/gallery-service/**") // 갤러리 서비스 경로
-                .build();
-    }
 }
