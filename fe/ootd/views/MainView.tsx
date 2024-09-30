@@ -79,6 +79,11 @@ function MainView(): React.JSX.Element {
     <>
       <View style={styles.container} >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate('LoginView')}>
+          <Text style={{ fontSize: 20, color: 'white' }} >
+            로그인
+          </Text>
+        </TouchableOpacity>
           <Carousel />
           <View style={styles.searchBar}>
             <Image

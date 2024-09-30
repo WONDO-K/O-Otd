@@ -134,7 +134,79 @@ const getPictureList = (category: string, sort: string) => {
           <PencilIcon width={30} height={30} style={styles.pencil} />
         </TouchableOpacity>
 
-        <View style={styles.profileTab}>
+        <View style={styles.profileCategory}>
+          <View style={styles.iconContainer}>
+            <TouchableOpacity
+              style={styles.profileCategoryButton}
+              onPress={() => selectCategory('마이 패션')}
+            >
+              <View
+                style={[
+                  styles.iconWrapper,
+                  {
+                    borderBottomWidth: selectedCategory === '마이 패션' ? 3 : 0,
+                    borderColor: selectedCategory === '마이 패션' ? 'white' : 'transparent',
+                  },
+                ]}
+              >
+                <MyFashionIcon
+                  fill={selectedCategory === '마이 패션' ? 'white' : '#949494'}
+                  width={40}
+                  height={40}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.iconContainer}>
+            <TouchableOpacity
+              style={styles.profileCategoryButton}
+              onPress={() => selectCategory('마이 갤러리')}
+            >
+              <View
+                style={[
+                  styles.iconWrapper,
+                  {
+                    borderBottomWidth: selectedCategory === '마이 갤러리' ? 3 : 0,
+                    borderColor: selectedCategory === '마이 갤러리' ? 'white' : 'transparent',
+                  },
+                ]}
+              >
+                <WishIcon
+                  fill={selectedCategory === '마이 갤러리' ? 'white' : '#949494'}
+                  width={40}
+                  height={40}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.iconContainer}>
+            <TouchableOpacity
+              style={styles.profileCategoryButton}
+              onPress={() => selectCategory('마이 문철')}
+            >
+              <View
+                style={[
+                  styles.iconWrapper,
+                  {
+                    borderBottomWidth: selectedCategory === '마이 문철' ? 3 : 0,
+                    borderColor: selectedCategory === '마이 문철' ? 'white' : 'transparent',
+                  },
+                ]}
+              >
+                <BattleIcon
+                  fill={selectedCategory === '마이 문철' ? 'white' : '#949494'}
+                  width={40}
+                  height={40}
+                />
+              </View>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+
+        {/* <View style={styles.profileTab}>
           <View style={styles.profileCategory}>
               <TouchableOpacity
                   style={styles.profileCategoryButton}
@@ -198,10 +270,8 @@ const getPictureList = (category: string, sort: string) => {
             />
           </View>
         </TouchableOpacity>
-          </View>
-      </View>
-
-      <View style={styles.profileSort}>
+          </View> */}
+                <View style={styles.profileSort}>
       {selectedCategory === '마이 패션' && ['최신순', '출전 수', '승리 수'].map((sort) => (
         <TouchableOpacity
           key={sort}
@@ -247,7 +317,55 @@ const getPictureList = (category: string, sort: string) => {
         </TouchableOpacity>
         ))}
       </View>
+    </View>
 
+      {/* <View style={styles.profileSort}>
+      {selectedCategory === '마이 패션' && ['최신순', '출전 수', '승리 수'].map((sort) => (
+        <TouchableOpacity
+          key={sort}
+          style={[
+            styles.profileSortButton,
+            {
+              backgroundColor: selectedSort === sort ? 'white' : 'gray',
+            },
+          ]}
+          onPress={() => selectSort(sort)}
+        >
+          <Text style={styles.profileSortButtonText}>{sort}</Text>
+        </TouchableOpacity>
+      ))}
+
+      {selectedCategory === '마이 갤러리' && ['최신순', '인기순'].map((sort) => (
+        <TouchableOpacity
+          key={sort}
+          style={[
+            styles.profileSortButton,
+            {
+              backgroundColor: selectedSort === sort ? 'white' : 'gray',
+            },
+          ]}
+          onPress={() => selectSort(sort)}
+        >
+          <Text style={styles.profileSortButtonText}>{sort}</Text>
+        </TouchableOpacity>
+      ))}
+
+      {selectedCategory === '마이 문철' && ['최신순', '투표 수'].map((sort) => (
+        <TouchableOpacity
+          key={sort}
+          style={[
+            styles.profileSortButton,
+            {
+              backgroundColor: selectedSort === sort ? 'white' : 'gray',
+            },
+          ]}
+          onPress={() => selectSort(sort)}
+        >
+          <Text style={styles.profileSortButtonText}>{sort}</Text>
+        </TouchableOpacity>
+        ))}
+      </View>
+ */}
 
 
 
@@ -276,9 +394,9 @@ const getPictureList = (category: string, sort: string) => {
             </View>
           )}
           numColumns={2}
-        /> */}
+        />
 
-      </View>
+      </View> */}
       </ScrollView>
       </>
   );
@@ -360,17 +478,17 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: 'gray',
   },
-  profileCategory:{
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent:'space-around',
-      alignItems: 'center',
-      width: '100%',
-      height: 40,
-      marginBottom: 5,
-  },
+  // profileCategory:{
+  //     display: 'flex',
+  //     flexDirection: 'row',
+  //     justifyContent:'space-around',
+  //     alignItems: 'center',
+  //     width: '100%',
+  //     height: 40,
+  //     marginBottom: 5,
+  // },
   profileCategoryButton:{ 
-      width: 100,
+      width: "90%",
       height: 40,
       justifyContent: 'center',
       alignItems: 'center',
@@ -406,6 +524,30 @@ const styles = StyleSheet.create({
   },
   switchText: {
       color: 'white',
+  },
+  profileCategory: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    width: '100%',
+    height: 40,
+    marginBottom: 5,
+    paddingBottom: 7,
+    borderBottomWidth: 1,
+    borderColor: 'gray',
+  },
+  iconContainer: {
+    flex: 1,  // 아이콘을 3등분하기 위한 설정
+    alignItems: 'center',
+  },
+  iconWrapper: {
+    padding: 5,
+    width: '100%',
+    height: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
   },
 });
 

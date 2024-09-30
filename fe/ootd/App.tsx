@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import { LogBox } from 'react-native';
 import {
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   useColorScheme,
 } from 'react-native';
