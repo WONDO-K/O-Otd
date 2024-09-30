@@ -1,0 +1,106 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.threeheads",
+    "module": "common-library",
+    "version": "0.0.1-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.10.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "common-library-0.0.1-SNAPSHOT-plain.jar",
+          "url": "common-library-0.0.1-SNAPSHOT-plain.jar",
+          "size": 31315,
+          "sha512": "73625f6d0e77ff6356376ea09d5c4e347ba9a0dbd6bdeab2039a4a902f80e810b8759e6d1541a2f296a1b0aff4629ce30e6a9a789d49caa06ead273c1a25df26",
+          "sha256": "7ce62821146cc348b4e13d71c5cd9691bcefd3d44cc2a5ed5e1e56edafc2ff7b",
+          "sha1": "c439a8e06451341cf6d10f114d3657dc23b9de02",
+          "md5": "6412fa4fd534bb8f3a216ffe30ec22c5"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-security"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-validation"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-data-jpa"
+        },
+        {
+          "group": "io.jsonwebtoken",
+          "module": "jjwt-api",
+          "version": {
+            "requires": "0.11.5"
+          }
+        },
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-databind",
+          "version": {
+            "requires": "2.17.1"
+          }
+        },
+        {
+          "group": "io.jsonwebtoken",
+          "module": "jjwt-impl",
+          "version": {
+            "requires": "0.11.5"
+          }
+        },
+        {
+          "group": "io.jsonwebtoken",
+          "module": "jjwt-jackson",
+          "version": {
+            "requires": "0.11.5"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "common-library-0.0.1-SNAPSHOT-plain.jar",
+          "url": "common-library-0.0.1-SNAPSHOT-plain.jar",
+          "size": 31315,
+          "sha512": "73625f6d0e77ff6356376ea09d5c4e347ba9a0dbd6bdeab2039a4a902f80e810b8759e6d1541a2f296a1b0aff4629ce30e6a9a789d49caa06ead273c1a25df26",
+          "sha256": "7ce62821146cc348b4e13d71c5cd9691bcefd3d44cc2a5ed5e1e56edafc2ff7b",
+          "sha1": "c439a8e06451341cf6d10f114d3657dc23b9de02",
+          "md5": "6412fa4fd534bb8f3a216ffe30ec22c5"
+        }
+      ]
+    }
+  ]
+}

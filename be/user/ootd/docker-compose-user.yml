@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  user_db:
+    image: mysql:8.0
+    container_name: user_db_container  # 직접 하드코딩
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - ootd_user_mysql_data:/var/lib/mysql
+    ports:
+      - "${USER_DB_PORT}:3306"
+    networks:
+      - ootd-user-network
+  redis:
+    image: redis:latest
+    command: redis-server --requirepass ootd201104
+    container_name: redis_container
+    ports:
+      - "6379:6379"
+    networks:
+      - ootd-user-network # 네트워크 설정 추가
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "ootd201104", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  ootd_user_mysql_data:
+
+networks:
+  ootd-user-network:
+    driver: bridge

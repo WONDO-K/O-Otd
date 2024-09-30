@@ -1,0 +1,20 @@
+server:
+  port: ${SERVER_PORT:8080}  # Battle 서비스의 포트
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/  # Eureka 서버의 주소
+    fetch-registry: true  # Eureka에서 서비스 목록 가져오기
+    register-with-eureka: true  # Eureka에 서비스 등록
+
+spring:
+  application:
+    name: battle-service  # 서비스 이름을 고유하게 설정 (apigateway에서 이 이름으로 라우팅)
+
+# Swagger 설정
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

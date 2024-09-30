@@ -1,0 +1,49 @@
+spring:
+  application:
+    name: user-service
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/user_db?autoReconnect=true&useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: 0oTd!
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+      dialect: org.hibernate.dialect.MySQLDialect
+      format_sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ootd201104  # Redis 설정 유지 (게이트웨이에서 블랙리스트 및 토큰 관리)
+
+  profiles:
+    active: oauth  # 활성화할 Spring 프로파일 설정
+
+
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: false  # 호스트 이름 사용
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+
+server:
+  port: 8081
+
+#logging:
+#  level:
+#    org.springframework.security: DEBUG
+#    org.springframework: DEBUG
+
+
+jwt:
+  secret: e13af114d471424d6c9f2b7d03c3e25e630f269fbb3587f35068cb7d253150f568812b114afd8fd6941a005cdcf64b8b8baec4ce9de512b6aaad9ba732c6eee4  # JWT 비밀 키
+  expiration: 1296000000  # JWT 만료 시간
