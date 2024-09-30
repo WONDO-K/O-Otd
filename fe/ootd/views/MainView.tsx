@@ -77,13 +77,8 @@ function MainView(): React.JSX.Element {
 
   return (
     <>
-      <ImageBackground
-        source={require('../assets/Images/BackgroundImg.png')} // 배경 이미지 경로
-        style={styles.backgroundImage} // 배경 이미지 스타일 적용
-        resizeMode="cover" // 이미지 크기를 화면에 맞게 조정
-      >
+      <View style={styles.container} >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <View style={styles.container} >
           <Carousel />
           <View style={styles.searchBar}>
             <Image
@@ -129,15 +124,15 @@ function MainView(): React.JSX.Element {
                 numColumns={2}
                 // nestedScrollEnabled={true}
             />
-        </View>
         </ScrollView>
-      </ImageBackground>
+      </View>
     </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: 'black',
     display: 'flex',
     flexDirection: 'column',
     resizeMode: 'cover',
@@ -145,9 +140,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,  // ScrollView의 내용이 화면을 넘어가도 스크롤 가능하도록 설정
     justifyContent: 'flex-start',
-  },
-  backgroundImage: {
-    flex: 1, // 화면 전체를 덮도록 설정
+    backgroundColor: 'black',
   },
   searchBar: {
     flexDirection: 'row',
@@ -180,6 +173,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     justifyContent: 'flex-end', // 아이콘을 하단에 배치
+    backgroundColor: 'black',
   },
   bookmarkIcon: {
     position: 'absolute',
