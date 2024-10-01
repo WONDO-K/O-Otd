@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
@@ -137,7 +136,7 @@ function MainView(): React.JSX.Element {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'black',
+    backgroundColor: '#121212',
     display: 'flex',
     flexDirection: 'column',
     resizeMode: 'cover',
@@ -145,7 +144,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,  // ScrollView의 내용이 화면을 넘어가도 스크롤 가능하도록 설정
     justifyContent: 'flex-start',
-    backgroundColor: 'black',
+    backgroundColor: '#121212',
   },
   searchBar: {
     flexDirection: 'row',
@@ -178,7 +177,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     justifyContent: 'flex-end', // 아이콘을 하단에 배치
-    backgroundColor: 'black',
+    backgroundColor: '#121212',
   },
   bookmarkIcon: {
     position: 'absolute',

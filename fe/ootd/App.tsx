@@ -1,9 +1,8 @@
-import React, {useEffect} from 'react';
+import React, { useEffect, useState } from 'react';
 import { LogBox } from 'react-native';
 import {
   SafeAreaView,
   StyleSheet,
-  useColorScheme,
 } from 'react-native';
 import Navbar from './components/Navbar';
 import Footerbar from './components/Footerbar';
@@ -23,7 +22,7 @@ import SplashScreen from 'react-native-splash-screen';
 import AIReport from './views/AIReport';
 import ProfileView from './views/ProfileView';
 
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, NavigationState } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
@@ -31,21 +30,30 @@ const Stack = createStackNavigator();
 LogBox.ignoreAllLogs();
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  
-  // 스플래시 화면을 보여줌
-  SplashScreen.show();
+  const [currentRoute, setCurrentRoute] = useState('MainView');
+  const [isAppLoaded, setIsAppLoaded] = useState(false);
 
-  // 앱이 실행된 후 1.5초 뒤 스플래시 화면을 숨김
+  // 최초 로딩 시 1.5초 동안 스플래시 화면을 보여주고 숨김
   useEffect(() => {
+    SplashScreen.show();  // 스플래시 화면을 보이게 함
     setTimeout(() => {
-      SplashScreen.hide();
-    }, 1500); // 1.5초 후 스플래시 화면 숨기기
+      SplashScreen.hide();  // 1.5초 후에 스플래시 화면을 숨김
+      setIsAppLoaded(true);  // 앱이 로드되었음을 상태로 표시
+    }, 1500);  // 1.5초 후 스플래시 화면 숨기기
   }, []);
+
+  const handleStateChange = (state?: NavigationState) => {
+    if (!state) return;
+    const currentRouteName = state.routes[state.index]?.name;
+    if (currentRouteName) {
+      setCurrentRoute(currentRouteName);  // 현재 경로를 업데이트
+    }
+  };
+
 
   return (
     <SafeAreaView style={styles.safeArea}>
-        <NavigationContainer>
+        <NavigationContainer onStateChange={handleStateChange}>
           <Navbar />
           <Stack.Navigator
             initialRouteName="MainView"
@@ -69,7 +77,7 @@ function App(): React.JSX.Element {
             <Stack.Screen name="AIReport" component={AIReport} />
             <Stack.Screen name="ProfileView" component={ProfileView} />
           </Stack.Navigator>
-          <Footerbar />
+          <Footerbar currentRoute={currentRoute} />
         </NavigationContainer>
     </SafeAreaView>
   );

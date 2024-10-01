@@ -94,7 +94,7 @@ export default function Carousel() {
       <BlurView
         blurType="dark"
         blurAmount={10}
-        overlayColor="rgba(255, 255, 255, 0.1)"
+        overlayColor="rgba(255, 255, 255, 0)"
         style={styles.blurView}
       >
         <View style={styles.container}>

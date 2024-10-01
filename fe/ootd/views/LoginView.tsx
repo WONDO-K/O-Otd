@@ -180,7 +180,7 @@ function LoginScreen(): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black', // 배경 검정색
+    backgroundColor: '#121212', // 배경 검정색
     justifyContent: 'center', // 화면 중앙 정렬
   },
   header: {

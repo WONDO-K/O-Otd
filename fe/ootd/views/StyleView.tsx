@@ -98,7 +98,7 @@ function StyleView({ navigation, route }): React.JSX.Element {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'black',
+        backgroundColor: '#121212',
     },
     recommend: {
         marginTop: 40,
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     subImage: {
         width: 150,
         height: 200,
-        backgroundColor: 'black',
+        backgroundColor: '#121212',
         borderColor: 'white',
         borderWidth: 5,
         borderRadius: 10,

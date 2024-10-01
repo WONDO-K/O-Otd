@@ -270,7 +270,7 @@ function Battle({ navigation }): React.JSX.Element {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'black',
+        backgroundColor: '#121212',
     },
     battleHeader: {
         display: 'flex',
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     battleTab:{
-        backgroundColor: 'black',
+        backgroundColor: '#121212',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',

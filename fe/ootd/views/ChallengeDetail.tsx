@@ -95,7 +95,7 @@ function ChallengeDetail({ navigation, route }): React.JSX.Element {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'black',
+        backgroundColor: '#121212',
         position: 'relative',
     },
     scrollContainer: {
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     gallery: {
-        backgroundColor: 'black',
+        backgroundColor: '#121212',
         width: '100%', 
         height: 400, 
         display: 'flex',
@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: '100%',
         height: 100,
-        backgroundColor: 'black',
+        backgroundColor: '#121212',
         opacity: 0.8,
         flexDirection: 'row',
         justifyContent: 'space-around',
