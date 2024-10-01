@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.3.3'
+	id 'org.springframework.boot' version '3.3.4'
 	id 'io.spring.dependency-management' version '1.1.6'
 }
 
@@ -21,15 +21,28 @@ configurations {
 
 repositories {
 	mavenCentral()
+	maven {
+		// common-library JAR 파일이 저장된 경로
+		url = uri("${projectDir}/../../shared-repo")
+	}
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:2023.0.1" // 2023.0.x (Leyton) 릴리즈 트레인 사용
+	}
 }
 
 dependencies {
+// 공통 라이브러리 의존성 추가
+	implementation 'com.threeheads:common-library:0.0.1-SNAPSHOT'
+
 // Spring Boot 스타터 의존성
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'  // JPA를 위한 의존성
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'  // Redis 사용을 위한 의존성
 	implementation 'org.springframework.boot:spring-boot-starter-security'  // Spring Security 의존성
 	implementation 'org.springframework.boot:spring-boot-starter-web'  // Spring MVC 및 REST API 지원을 위한 의존성
-
+	implementation 'org.springframework.boot:spring-boot-starter-quartz' //	Quartz 스케줄러를 위한 의존성
 // Kafka 관련 의존성
 	implementation 'org.springframework.kafka:spring-kafka'  // Kafka 통합을 위한 의존성
 
@@ -40,6 +53,18 @@ dependencies {
 
 // 애노테이션 프로세서
 	annotationProcessor 'org.projectlombok:lombok'  // Lombok 애노테이션 처리를 위한 프로세서
+
+// Spring Cloud 및 Eureka 관련 의존성
+	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+
+// Swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+
+
+// JWT
+	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
+	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
 // 테스트 관련 의존성
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'  // Spring Boot 테스트 지원 의존성

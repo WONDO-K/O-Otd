@@ -20,4 +20,5 @@ public class BattleResponseDto {
     private BattleStatus status;  // 배틀 상태 (ACTIVE, COMPLETED, EXPIRED, CANCELED)
     private LocalDateTime createdAt;  // 배틀 생성 시간
     private LocalDateTime expiresAt;  // 배틀 만료 시간 (24시간)
+    private LocalDateTime activeAt;  // 배틀이 ACTIVE 상태로 변경된 시간 (null일 수 있음)
 }

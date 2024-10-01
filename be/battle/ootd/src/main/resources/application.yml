@@ -1,20 +1,61 @@
 server:
-  port: ${SERVER_PORT:8080}  # Battle 서비스의 포트
-
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/  # Eureka 서버의 주소
-    fetch-registry: true  # Eureka에서 서비스 목록 가져오기
-    register-with-eureka: true  # Eureka에 서비스 등록
+  port: 8082
 
 spring:
   application:
-    name: battle-service  # 서비스 이름을 고유하게 설정 (apigateway에서 이 이름으로 라우팅)
+    name: battle-service
 
-# Swagger 설정
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui.html
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/battle_db?autoReconnect=true&useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: 0oTd!
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+      dialect: org.hibernate.dialect.MySQLDialect
+      format_sql: true
+
+  kafka:
+    bootstrap-servers: kafka1:9092  # Kafka 서버 주소
+
+    template:
+      # Producer topics
+      from-battle-to-user: from_battle_to_user
+      from-battle-to-gallery: from_battle_to_gallery
+
+      # Consumer topics
+      from-user-to-battle: from_user_to_battle
+      from-gallery-to-battle: from_gallery_to_battle
+
+    consumer:
+      # Consumer group
+      group-battle: battle
+
+  quartz:
+    job-store-type: jdbc
+    jdbc:
+      initialize-schema: always
+    properties:
+      org:
+        quartz:
+          scheduler:
+            instanceName: BattleScheduler
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            tablePrefix: QRTZ_
+          threadPool:
+            threadCount: 5
+
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: false  # 호스트 이름 사용
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true

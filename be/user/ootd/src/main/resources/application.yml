@@ -24,6 +24,21 @@ spring:
   profiles:
     active: oauth  # 활성화할 Spring 프로파일 설정
 
+  kafka:
+    bootstrap-servers: kafka1:9092  # Kafka 서버 설정
+
+    template:
+      # Producer topics
+      from-user-to-battle: from_user_to_battle
+      from-user-to-gallery: from_user_to_gallery
+
+      # Consumer topics
+      from-battle-to-user: from_battle_to_user
+      from-gallery-to-user: from_gallery_to_user
+
+    consumer:
+      # Consumer group
+      group-user: user
 
 eureka:
   instance:
@@ -42,7 +57,6 @@ server:
 #  level:
 #    org.springframework.security: DEBUG
 #    org.springframework: DEBUG
-
 
 jwt:
   secret: e13af114d471424d6c9f2b7d03c3e25e630f269fbb3587f35068cb7d253150f568812b114afd8fd6941a005cdcf64b8b8baec4ce9de512b6aaad9ba732c6eee4  # JWT 비밀 키

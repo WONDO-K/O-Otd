@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  battle_db:
+    image: mysql:8.0
+    container_name: battle_db_container  # 직접 하드코딩
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+    volumes:
+      - ootd_user_mysql_data:/var/lib/mysql
+    ports:
+      - "${BATTLE_DB_PORT}:3306"
+    networks:
+      - ootd-user-network
+
+
+volumes:
+  ootd_battle_mysql_data:
+
+networks:
+  ootd-battle-network:
+    driver: bridge

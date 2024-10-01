@@ -31,7 +31,7 @@ public class BattleController {
         return ResponseEntity.ok(battleDetailResponseDto);
     }
 
-    @PostMapping("/{battleId}/vote")
+    @PostMapping("/vote/{battleId}")
     @Operation(summary = "배틀 투표", description = "배틀에 투표합니다.")
     public ResponseEntity<?> voteBattle(@PathVariable Long battleId, @RequestBody VoteRequestDto voteRequestDto) {
         battleService.voteBattle(battleId, voteRequestDto);
@@ -47,7 +47,7 @@ public class BattleController {
     }
 
     // 배틀 응답 API (수락 또는 거절)
-    @PostMapping("/{battleId}/response")
+    @PostMapping("/response/{battleId}")
     @Operation(summary = "배틀 응답", description = "배틀을 수락하거나 거절합니다.")
     public ResponseEntity<BattleResponseDto> respondToBattle(
             @RequestBody BattleResponseRequestDto responseDto,
@@ -58,7 +58,7 @@ public class BattleController {
     }
 
     // 최신 배틀 리스트 조회 API
-    @GetMapping("/recent")
+    @GetMapping("/list/recent")
     @Operation(summary = "최신 배틀 리스트 조회", description = "최신 배틀 리스트를 조회합니다.")
     public ResponseEntity<List<BattleDto>> getRecentBattles() {
         List<BattleDto> recentBattles = battleService.getRecentBattles();
@@ -66,7 +66,7 @@ public class BattleController {
     }
 
     // 투표수 많은 배틀 리스트 조회 API
-    @GetMapping("/popular")
+    @GetMapping("/list/popular")
     @Operation(summary = "투표수가 많은 배틀 리스트 조회", description = "투표수가 많은 배틀 리스트를 조회합니다.")
     public ResponseEntity<List<BattleDto>> getPopularBattles() {
         List<BattleDto> popularBattles = battleService.getBattlesByVoteCount();
@@ -74,7 +74,7 @@ public class BattleController {
     }
 
     // 특정 사용자의 배틀 리스트 조회 API
-    @GetMapping("/user/{userId}")
+    @GetMapping("/list/{userId}")
     @Operation(summary = "특정 사용자의 배틀 리스트 조회", description = "특정 사용자의 배틀 리스트를 조회합니다.")
     public ResponseEntity<List<BattleDto>> getUserBattles(@PathVariable Long userId) {
         List<BattleDto> userBattles = battleService.getUserBattles(userId);
