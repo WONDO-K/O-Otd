@@ -8,6 +8,7 @@ import {
   Modal, 
   PermissionsAndroid,
   Alert,
+  ImageBackground,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
@@ -92,73 +93,79 @@ function AIView(): React.JSX.Element {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>AI 분석</Text>
+    <ImageBackground 
+      source={require('../assets/Images/bg_img.jpg')}  // 배경 이미지 경로 설정
+      style={styles.background}  // 스타일 설정
+    >
+      <View style={styles.container}>
+        <Text style={styles.title}>AI 분석</Text>
 
-      {/* 모달창 */}
-      <Modal
-        transparent={true}
-        visible={isModalVisible}
-        animationType="slide"
-        onRequestClose={toggleModal}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <TouchableOpacity style={styles.modalButton} onPress={handleCamera}>
-              <Text style={styles.modalButtonText}>촬영하기</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.modalButton} onPress={handleUpload}>
-              <Text style={styles.modalButtonText}>갤러리에서 가져오기</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.modalButton} onPress={toggleModal}>
-              <Text style={styles.modalButtonText}>취소</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-
-      <TouchableOpacity style={styles.uploadBox} onPress={toggleModal}>
-        {photo && photo.assets ? (
-          <Image 
-            source={{ uri: photo.assets[0].uri }} 
-            style={styles.uploadedImage} 
-            resizeMode="contain" // 이미지를 비율에 맞게 조정합니다.
-          />
-        ) : (
-          <UploadIcon width={60} height={60} />
-        )}
-      </TouchableOpacity>
-
-      <Text style={styles.textContents}>
-        AI가 당신의 패션을 진단합니다.{"\n"}
-        가장 유사한 룩을 찾고,{"\n"}
-        해당 룩에 대한 설명과 함께{"\n"}
-        비슷한 스타일의 옷을 추천합니다.{"\n"}
-      </Text>
-
-      <View style={styles.btnContainer}>
-        <TouchableOpacity
-          style={[
-            styles.btn,
-            { backgroundColor: photo ? 'rgba(180, 180, 180, 0.8)' : 'rgba(128, 128, 128, 0.7)', borderColor: photo ? 'white' : 'black' }
-          ]}
-          onPress={() => {
-            if (photo) {
-              navigation.navigate('AIReport'); // photo가 있을 때만 실행
-            }
-          }}
-          disabled={!photo}
+        {/* 모달창 */}
+        <Modal
+          transparent={true}
+          visible={isModalVisible}
+          animationType="slide"
+          onRequestClose={toggleModal}
         >
-          <Text style={[styles.btnText, { color: photo ? 'white' : '#949494' }]}>Analysis</Text>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <TouchableOpacity style={styles.modalButton} onPress={handleCamera}>
+                <Text style={styles.modalButtonText}>촬영하기</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalButton} onPress={handleUpload}>
+                <Text style={styles.modalButtonText}>갤러리에서 가져오기</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.modalButton} onPress={toggleModal}>
+                <Text style={styles.modalButtonText}>취소</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
+
+        <TouchableOpacity style={styles.uploadBox} onPress={toggleModal}>
+          {photo && photo.assets ? (
+            <Image 
+              source={{ uri: photo.assets[0].uri }} 
+              style={styles.uploadedImage} 
+              resizeMode="contain" // 이미지를 비율에 맞게 조정합니다.
+            />
+          ) : (
+            <UploadIcon width={60} height={60} />
+          )}
         </TouchableOpacity>
+
+        <Text style={styles.textContents}>
+        AI가 당신의 패션을 분석하고,{"\n"}
+        유사한 스타일의 룩을 추천해줍니다.{"\n"}
+        </Text>
+
+        <View style={styles.btnContainer}>
+          <TouchableOpacity
+            style={[
+              styles.btn,
+              { backgroundColor: photo ? 'rgba(255, 255, 255, 0.3)' : 'rgba(128, 128, 128, 0.7)'}
+            ]}
+            onPress={() => {
+              if (photo) {
+                navigation.navigate('AIReport'); // photo가 있을 때만 실행
+              }
+            }}
+            disabled={!photo}
+          >
+            <Text style={[styles.btnText, { color: photo ? 'white' : '#949494' }]}>Analysis</Text>
+          </TouchableOpacity>
+        </View>
       </View>
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'cover', // 배경 이미지가 뷰의 크기에 맞게 조정됨
+  },
   container: {
-    backgroundColor: '#121212',
     flex: 1,
     alignItems: 'center',
   },
@@ -166,6 +173,7 @@ const styles = StyleSheet.create({
     fontSize: 40,
     textAlign: 'center',
     color: '#ffffff',
+    marginTop: 20,
   },
   uploadBox: {
     width: "90%",
@@ -173,15 +181,17 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 2,
-    borderColor: '#ffffff',
     marginTop: 20,
     marginBottom: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+  
+    elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
+    shadowColor: 'black', // 그림자 색상
   },
   uploadedImage: {
-    width: '100%', // 부모 크기에 맞게 설정
-    height: '100%', // 부모 크기에 맞게 설정
-    borderRadius: 10, // 업로드 박스와 동일한 경계선 반경 적용
+    width: '100%',
+    height: '100%',
+    borderRadius: 10,
   },
   modalContainer: {
     flex: 1,
@@ -209,8 +219,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   textContents: {
-    borderColor: '#ffffff',
-    borderWidth: 1,
     width: '90%',
     borderRadius: 10,
     marginTop: 10,
@@ -218,6 +226,9 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     textAlign: 'center',
     paddingTop: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
+    shadowColor: 'black', // 그림자 색상
   },
   btnContainer: {
     display: 'flex',

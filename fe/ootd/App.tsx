@@ -37,20 +37,20 @@ function App(): React.JSX.Element {
   const [currentRoute, setCurrentRoute] = useState('MainView');
   const [isAppLoaded, setIsAppLoaded] = useState(false);
 
-  // 최초 로딩 시 1.5초 동안 스플래시 화면을 보여주고 숨김
+  // 스플래시 화면
   useEffect(() => {
-    SplashScreen.show();  // 스플래시 화면을 보이게 함
+    SplashScreen.show();
     setTimeout(() => {
-      SplashScreen.hide();  // 1.5초 후에 스플래시 화면을 숨김
-      setIsAppLoaded(true);  // 앱이 로드되었음을 상태로 표시
-    }, 1500);  // 1.5초 후 스플래시 화면 숨기기
+      SplashScreen.hide();
+      setIsAppLoaded(true);
+    }, 1500);  // 1.5초
   }, []);
 
   const handleStateChange = (state?: NavigationState) => {
     if (!state) return;
     const currentRouteName = state.routes[state.index]?.name;
     if (currentRouteName) {
-      setCurrentRoute(currentRouteName);  // 현재 경로를 업데이트
+      setCurrentRoute(currentRouteName);
     }
   };
 
