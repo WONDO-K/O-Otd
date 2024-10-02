@@ -207,74 +207,7 @@ const getPictureList = (category: string, sort: string) => {
             </TouchableOpacity>
           </View>
         </View>
-
-
-        {/* <View style={styles.profileTab}>
-          <View style={styles.profileCategory}>
-              <TouchableOpacity
-                  style={styles.profileCategoryButton}
-                  onPress={() => selectCategory('마이 패션')}
-              >
-                <View
-                    style={[
-                        {
-                          padding: selectedCategory === '마이 패션' ? 5 : 0,
-                          borderBottomWidth: selectedCategory === '마이 패션' ? 3 : 0,
-                          borderColor: selectedCategory === '마이 패션' ? 'white' : 'transparent',
-                        },
-                    ]}
-                >
-                  <MyFashionIcon
-                    fill={selectedCategory === '마이 패션' ? 'white' : '#949494'}
-                    width={40}
-                    height={40}
-                  />
-                </View>
-              </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.profileCategoryButton}
-          onPress={() => selectCategory('마이 갤러리')}
-        >
-          <View
-            style={[
-              {
-                padding: selectedCategory === '마이 갤러리' ? 5 : 0,
-                borderBottomWidth: selectedCategory === '마이 갤러리' ? 3 : 0,
-                borderColor: selectedCategory === '마이 갤러리' ? 'white' : 'transparent',
-              },
-            ]}
-          >
-            <WishIcon
-              fill={selectedCategory === '마이 갤러리' ? 'white' : '#949494'}
-              width={35}
-              height={40}
-            />
-          </View>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.profileCategoryButton}
-          onPress={() => selectCategory('마이 문철')}
-        >
-          <View
-            style={[
-              {
-                padding: selectedCategory === '마이 문철' ? 5 : 0,
-                borderBottomWidth: selectedCategory === '마이 문철' ? 3 : 0,
-                borderColor: selectedCategory === '마이 문철' ? 'white' : 'transparent',
-              },
-            ]}
-          >
-            <BattleIcon
-              fill={selectedCategory === '마이 문철' ? 'white' : '#949494'}
-              width={40}
-              height={40}
-            />
-          </View>
-        </TouchableOpacity>
-          </View> */}
-                <View style={styles.profileSort}>
+      <View style={styles.profileSort}>
       {selectedCategory === '마이 패션' && ['최신순', '출전 수', '승리 수'].map((sort) => (
         <TouchableOpacity
           key={sort}
