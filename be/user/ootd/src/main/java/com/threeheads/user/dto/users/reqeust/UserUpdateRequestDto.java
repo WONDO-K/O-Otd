@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class UserUpdateRequest {
+public class UserUpdateRequestDto {
 
     private String nickName;
     private String phone;

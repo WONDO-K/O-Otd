@@ -4,10 +4,9 @@ package com.threeheads.user.controller;
 import com.threeheads.library.dto.auth.StatusResponseDto;
 import com.threeheads.user.common.jwt.GeneratedToken;
 import com.threeheads.user.dto.kakao.KakaoUserInfoDto;
-import com.threeheads.user.dto.login.reqeust.OriginLoginRequestDto;
 import com.threeheads.user.dto.login.reqeust.SignupRequestDto;
 import com.threeheads.user.dto.login.response.TokenResponseStatus;
-import com.threeheads.user.dto.users.reqeust.UserUpdateRequest;
+import com.threeheads.user.dto.users.reqeust.UserUpdateRequestDto;
 import com.threeheads.user.dto.users.response.UserResponseDto;
 import com.threeheads.user.entity.User;
 import com.threeheads.user.redis.service.TokenBlacklistService;
@@ -109,7 +108,7 @@ public class UserController {
 
     @PutMapping("/update/userInfo")
     @Operation(summary = "회원 정보 수정", description = "회원 정보 수정")
-    public ResponseEntity<?> updateUserInfo(@RequestBody UserUpdateRequest request,
+    public ResponseEntity<?> updateUserInfo(@RequestBody UserUpdateRequestDto request,
                                             @AuthenticationPrincipal UserDetails userDetails) {
 
         userService.updateUserInfo(userDetails.getUsername(), request);

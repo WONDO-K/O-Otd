@@ -313,27 +313,33 @@ public class BattleServiceImpl implements BattleService {
         logger.info("배틀 ID {}에 대한 사용자 ID {}의 투표가 저장되었습니다.", battleId, voteRequestDto.getUserId());
     }
 
-    /**
-     * 최신 배틀 리스트 조회 메서드
-     * @return List<BattleDto>
-     */
     @Override
-    public List<BattleDto> getRecentBattles() {
-        List<Battle> battles = battleRepository.findAllByOrderByCreatedAtDesc();
-        List<BattleDto> battleDtos = battles.stream().map(battleMapper::toDto).collect(Collectors.toList());
-        logger.info("최신 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
+    public List<BattleDto> getActiveBattlesByRecent() {
+        List<Battle> battles = battleRepository.findByStatusOrderByCreatedAtDesc(BattleStatus.ACTIVE);
+        List<BattleDto> battleDtos = battles.stream()
+                .map(battleMapper::toDto)
+                .collect(Collectors.toList());
+        logger.info("ACTIVE 상태의 최신 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
         return battleDtos;
     }
 
-    /**
-     * 투표수가 많은 배틀 리스트 조회 메서드
-     * @return List<BattleDto>
-     */
     @Override
-    public List<BattleDto> getBattlesByVoteCount() {
-        List<Battle> battles = battleRepository.findAllByOrderByRequesterVotesDescResponderVotesDesc();
-        List<BattleDto> battleDtos = battles.stream().map(battleMapper::toDto).collect(Collectors.toList());
-        logger.info("투표수가 많은 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
+    public List<BattleDto> getActiveBattlesByVote() {
+        List<Battle> battles = battleRepository.findByStatusOrderByRequesterVotesDescResponderVotesDesc(BattleStatus.ACTIVE);
+        List<BattleDto> battleDtos = battles.stream()
+                .map(battleMapper::toDto)
+                .collect(Collectors.toList());
+        logger.info("ACTIVE 상태의 투표수가 많은 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
+        return battleDtos;
+    }
+
+    @Override
+    public List<BattleDto> getCompletedBattlesByCompletionTime() {
+        List<Battle> battles = battleRepository.findByStatusOrderByCompletedAtDesc(BattleStatus.COMPLETED);
+        List<BattleDto> battleDtos = battles.stream()
+                .map(battleMapper::toDto)
+                .collect(Collectors.toList());
+        logger.info("COMPLETE 상태의 완료순 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
         return battleDtos;
     }
 

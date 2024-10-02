@@ -1,4 +1,14 @@
 spring:
+  kafka:
+    template:
+      # Producer topics
+      from-user-to-battle: from_user_to_battle
+      from-user-to-gallery: from_user_to_gallery
+
+      # Consumer topics
+      from-battle-to-user: from_battle_to_user
+      from-gallery-to-user: from_gallery_to_user
+
   security:
     oauth2:
       client:

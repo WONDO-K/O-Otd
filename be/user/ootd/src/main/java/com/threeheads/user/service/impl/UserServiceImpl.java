@@ -3,7 +3,7 @@ package com.threeheads.user.service.impl;
 import com.threeheads.library.dto.auth.security.SecurityUserDto;
 
 import com.threeheads.user.dto.login.reqeust.SignupRequestDto;
-import com.threeheads.user.dto.users.reqeust.UserUpdateRequest;
+import com.threeheads.user.dto.users.reqeust.UserUpdateRequestDto;
 import com.threeheads.user.entity.User;
 import com.threeheads.library.exception.CustomException;
 import com.threeheads.library.exception.ErrorCode;
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserInfo(String username, UserUpdateRequest request) {
+    public void updateUserInfo(String username, UserUpdateRequestDto request) {
 
             User user = userRepository.findByUsername(username)
                     .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
