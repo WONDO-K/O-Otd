@@ -29,7 +29,7 @@ public class JwtAuthFilter implements WebFilter {
     // JWT 검증이 필요 없는 경로들 (Swagger 및 인증 관련 경로)
     private static final List<String> EXCLUDED_PATHS = List.of(
             "/swagger-ui", "/v3/api-docs", "/swagger-ui/index.html",
-            "/user-service/auth", "/user-service/v3/api-docs", "/user-service/swagger-ui",
+            "/user-service/auth/**", "/user-service/v3/api-docs", "/user-service/swagger-ui",
             "/gallery-service/v3/api-docs", "/gallery-service/swagger-ui"
     );
 //    // JWT 검증이 필요 없는 경로들 (Swagger 및 인증 관련 경로)

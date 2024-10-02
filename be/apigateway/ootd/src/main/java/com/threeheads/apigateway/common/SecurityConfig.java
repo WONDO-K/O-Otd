@@ -51,7 +51,7 @@ public class SecurityConfig {
         CorsConfiguration config = new CorsConfiguration();
 
         // 로컬 개발 환경의 도메인 및 포트 설정
-        config.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:8081"));
+        config.setAllowedOrigins(List.of("http://localhost"));
         // 추후 실제 서비스 배포 시에는 아래와 같이 실제 도메인으로 변경해야 함
         // config.setAllowedOrigins(List.of("https://domain.com"));
 

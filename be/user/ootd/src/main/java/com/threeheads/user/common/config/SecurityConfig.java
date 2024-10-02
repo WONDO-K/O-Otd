@@ -60,7 +60,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:8081")); // 허용할 도메인 설정
+        configuration.setAllowedOrigins(List.of("http://localhost")); // 허용할 도메인 설정
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")); // 허용할 HTTP 메서드 설정
         configuration.setAllowedHeaders(List.of("Authorization","refreshToken", "Content-Type", "X-User-ID", "X-User-Role")); // 허용할 헤더 추가
 
