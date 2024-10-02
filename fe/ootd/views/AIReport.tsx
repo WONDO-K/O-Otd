@@ -29,7 +29,7 @@ function AIReport(): React.JSX.Element {
   const getMyFashion = async () => {
       // 실제 API 호출 부분
       // try {
-      //     const response = await axios.get('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+      //     const response = await axios.get('');
       //     setMyFashion(response.data);
       // } catch (error) {
       //     console.error('Error fetching my fashion:', error);
@@ -77,11 +77,10 @@ function AIReport(): React.JSX.Element {
   }, []);
 
   return (
-    // <ImageBackground
-    //   source={require('../assets/Images/BackgroundImg.png')} // 배경 이미지 경로
-    //   style={styles.backgroundImage} // 배경 이미지 스타일 적용
-    //   resizeMode="cover" // 이미지 크기를 화면에 맞게 조정
-    // >
+    <ImageBackground
+      source={require('../assets/Images/bg_img.jpg')} // 배경 이미지 경로
+      style={styles.background} // 배경 스타일 설정
+    >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
         <TitleText style={styles.title}><TitleBoldText>AI</TitleBoldText> Lens</TitleText>
@@ -105,8 +104,6 @@ function AIReport(): React.JSX.Element {
             </Text>
           </View>
         </View>
-
-        {/* <View style={styles.line} /> */}
         
         <Text style={styles.title}>유사한 스타일</Text>
         <FlatList
@@ -137,20 +134,20 @@ function AIReport(): React.JSX.Element {
         />
       </View>
       </ScrollView>
-    // </ImageBackground>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#121212',
     display: 'flex',
     flexDirection: 'column',
     resizeMode: 'cover',
     alignItems: 'center',
   },
-  backgroundImage: {
-    flex: 1, // 화면 전체를 덮도록 설정
+  background: {
+    flex: 1,
+    resizeMode: 'cover', // 배경 이미지를 뷰에 맞게 조정
   },
   scrollContainer: {
     flexGrow: 1,  // ScrollView의 내용이 화면을 넘어가도 스크롤 가능하도록 설정
@@ -168,14 +165,16 @@ const styles = StyleSheet.create({
     justifyContent:'space-between',
     width: "90%",
     height: 300,
-    // backgroundColor: 'rgba(180, 180, 180, 0.8)',
-    // borderColor: '#ffffff',
-    // borderWidth: 2,
-    // borderRadius: 10,
     padding: 5,
     alignItems: 'center',
     marginTop: 20,
     marginBottom: 20,
+    borderRadius: 10,
+
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+  
+    elevation: 3,
+    shadowColor: 'black',
   },
   photo: {
     width: "50%",
@@ -223,7 +222,7 @@ const styles = StyleSheet.create({
   notificationImage: {
     width: '100%',
     height: '100%',
-    justifyContent: 'flex-end', // 아이콘을 하단에 배치
+    justifyContent: 'flex-end',
   },
   bookmarkIcon: {
     position: 'absolute',
@@ -233,12 +232,6 @@ const styles = StyleSheet.create({
   icon: {
     width: 30,
     height: 30,
-  },
-  line: {
-    borderBottomColor: 'white', // 선 색상
-    borderBottomWidth: 2, // 선 두께
-    width: '100%', // 선의 길이를 부모의 너비로 설정
-    marginTop: 10,
   },
 });
 
