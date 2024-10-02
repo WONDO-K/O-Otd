@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import useAIStore from '../stores/AIStore'; // Zustand 스토어 가져오기
+import { TitleText, TitleBoldText, FooterText } from '../components/CustomTexts';
 
 import WishFullIcon from '../assets/Icons/WishFull_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
@@ -83,7 +84,7 @@ function AIReport(): React.JSX.Element {
     // >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
-        <Text style={styles.title}>AI 분석</Text>
+        <TitleText style={styles.title}><TitleBoldText>AI</TitleBoldText> Lens</TitleText>
 
         <View style={styles.reportBox}>
         {image ? (

@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import { BlurView } from '@react-native-community/blur';
+import { TitleText } from '../components/CustomTexts';
 
 const windowWidth = Dimensions.get('window').width;
 const margin = 24;
@@ -98,7 +99,7 @@ export default function Carousel() {
         style={styles.blurView}
       >
         <View style={styles.container}>
-          <Text style={styles.title}>금주의 스타일</Text>
+          <TitleText style={styles.title}>Weekly Styles</TitleText>
           <View style={{ marginBottom: 10 }} />
           {/* <FlatList
             ref={flatListRef}
@@ -177,12 +178,7 @@ const styles = StyleSheet.create({
     // backgroundColor: 'rgba(128, 128, 128, 0.25)',
   },
   title: {
-    // fontFamily: 'GmarketSansTTFMedium',
-    // fontFamily: 'SUIT-Regular',
-    // fontFamily: 'SCDream5',
-    // fontFamily: 'Paperlogy-5Medium',
-    fontFamily: 'Pretendard-Regular',
-    // fontFamily: 'Freesentation-5Medium',
+    marginVertical: 20,
     fontSize: 40,
     textAlign: 'center',
     color: '#ffffff',

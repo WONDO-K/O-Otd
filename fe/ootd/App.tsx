@@ -21,15 +21,7 @@ import ProfileView from './views/ProfileView';
 import { NavigationContainer, NavigationState } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
-import { ThemeProvider } from 'styled-components/native';
-
 const Stack = createStackNavigator();
-const theme = {
-  fonts: {
-    regular: 'Pretendard-Regular',
-    bold: 'Pretendard-Bold',
-  },
-};
 
 LogBox.ignoreAllLogs();
 
@@ -54,38 +46,35 @@ function App(): React.JSX.Element {
     }
   };
 
-
   return (
-    <ThemeProvider theme={theme}>
-      <SafeAreaView style={styles.safeArea}>
-        <NavigationContainer onStateChange={handleStateChange}>
-          <Navbar />
-          <Stack.Navigator
-            initialRouteName="MainView"
-            screenOptions={{
-              headerShown: false, // 모든 화면에서 헤더를 제거
-              animationEnabled: false, // 모든 화면에서 전환 애니메이션 비활성화
-            }}
-          >
-            <Stack.Screen name="MainView" component={MainView} />
-            <Stack.Screen name="LoginView" component={LoginView} />
-            <Stack.Screen name="StyleView" component={StyleView} />
-            <Stack.Screen name="StyleSelect" component={StyleSelect} />
-            <Stack.Screen name="AIView" component={AIView} />
-            <Stack.Screen name="MyFashion" component={MyFashion}/>
-            <Stack.Screen name="Battle" component={Battle} />
-            <Stack.Screen name="BattleDetail" component={BattleDetail} />
-            <Stack.Screen name="BattleResult" component={BattleResult} />
-            <Stack.Screen name="Notification" component={Notification} />
-            <Stack.Screen name="Challenge" component={Challenge} />
-            <Stack.Screen name="ChallengeDetail" component={ChallengeDetail} />
-            <Stack.Screen name="AIReport" component={AIReport} />
-            <Stack.Screen name="ProfileView" component={ProfileView} />
-          </Stack.Navigator>
-          <Footerbar currentRoute={currentRoute} />
-        </NavigationContainer>
-      </SafeAreaView>
-    </ThemeProvider>
+    <SafeAreaView style={styles.safeArea}>
+      <NavigationContainer onStateChange={handleStateChange}>
+        <Navbar />
+        <Stack.Navigator
+          initialRouteName="MainView"
+          screenOptions={{
+            headerShown: false, // 모든 화면에서 헤더를 제거
+            animationEnabled: false, // 모든 화면에서 전환 애니메이션 비활성화
+          }}
+        >
+          <Stack.Screen name="MainView" component={MainView} />
+          <Stack.Screen name="LoginView" component={LoginView} />
+          <Stack.Screen name="StyleView" component={StyleView} />
+          <Stack.Screen name="StyleSelect" component={StyleSelect} />
+          <Stack.Screen name="AIView" component={AIView} />
+          <Stack.Screen name="MyFashion" component={MyFashion}/>
+          <Stack.Screen name="Battle" component={Battle} />
+          <Stack.Screen name="BattleDetail" component={BattleDetail} />
+          <Stack.Screen name="BattleResult" component={BattleResult} />
+          <Stack.Screen name="Notification" component={Notification} />
+          <Stack.Screen name="Challenge" component={Challenge} />
+          <Stack.Screen name="ChallengeDetail" component={ChallengeDetail} />
+          <Stack.Screen name="AIReport" component={AIReport} />
+          <Stack.Screen name="ProfileView" component={ProfileView} />
+        </Stack.Navigator>
+        <Footerbar currentRoute={currentRoute} />
+      </NavigationContainer>
+    </SafeAreaView>
   );
 }
 

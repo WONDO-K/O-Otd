@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Switch, StyleSheet, ScrollView, Image } from 'react-native'; 
 import { FlatList } from 'react-native-gesture-handler';
-import LinearGradient from 'react-native-linear-gradient';
 import BattleIcon from '../assets/Icons/Battle_Icon.svg';
+import { TitleText } from '../components/CustomTexts';
 import axios from 'axios';
 
 import BattleItemProgress from '../components/BattleItemProgress';
@@ -164,15 +164,13 @@ function Battle({ navigation }): React.JSX.Element {
         <ScrollView style={styles.container}>
             {/* 배틀 헤더 */}
             <View style={styles.battleHeader}>
-                <Text style={styles.battleHeaderText}>
-                    BTU
-                    <Text style={{fontSize:24}}>(Better Than U)</Text>
-                </Text>
-                <TouchableOpacity style={styles.battleHeaderButton} onPress={() => navigation.navigate('Challenge')}>
-                    {/* <Text style={styles.battleHeaderButtonText}>결투다!</Text> */}
-                    <BattleIcon/>
-                </TouchableOpacity>
+                <TitleText style={styles.battleHeaderText}>
+                    Beyond U
+                </TitleText>
             </View>
+            <TouchableOpacity style={styles.battleHeaderButton} onPress={() => navigation.navigate('Challenge')}>
+                <BattleIcon/>
+            </TouchableOpacity>
             {/* 배틀 카테고리 */}
             <View style={styles.battleTab}>
                 <View style={styles.battleCategory}>
@@ -275,14 +273,13 @@ const styles = StyleSheet.create({
     battleHeader: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'center',
         alignItems: 'center',
         padding: 30,
     },
     battleHeaderText: {
         color: 'white',
         fontSize: 40,
-        fontWeight: 'bold',
     },
     battleHeaderButton: {
         backgroundColor: 'white',
@@ -291,6 +288,8 @@ const styles = StyleSheet.create({
         height: 50,
         justifyContent: 'center',
         alignItems: 'center',
+        alignSelf: 'flex-end',
+        marginRight: 20,
     },
     battleHeaderButtonText:{
         fontSize: 20,

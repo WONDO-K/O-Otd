@@ -82,11 +82,11 @@ function MainView(): React.JSX.Element {
     <>
       <View style={styles.container} >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('LoginView')}>
+        {/* <TouchableOpacity onPress={() => navigation.navigate('LoginView')}>
           <StyledText style={{ fontSize: 20, color: 'white' }} >
             로그인
           </StyledText>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
           <Carousel />
           <View style={styles.searchBar}>
             <Image
@@ -96,7 +96,7 @@ function MainView(): React.JSX.Element {
             <TextInput
                 style={styles.searchInput}
                 maxLength={30}
-                placeholder='패션 검색'
+                placeholder='Style Search'
                 placeholderTextColor='gray'
                 value={searchType}
                 onChangeText={(input) => {

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import { TitleText, TitleBoldText } from '../components/CustomTexts';
 
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
 import CameraIcon from '../assets/Icons/Camera_Icon.svg';
@@ -98,7 +99,7 @@ function AIView(): React.JSX.Element {
       style={styles.background}  // 스타일 설정
     >
       <View style={styles.container}>
-        <Text style={styles.title}>AI 분석</Text>
+        <TitleText style={styles.title}><TitleBoldText>AI</TitleBoldText> Lens</TitleText>
 
         {/* 모달창 */}
         <Modal
