@@ -26,7 +26,7 @@ const MyFashion: React.FC<MyFashionProps> = ({ selectedImage, onPress }) => {
 
 const styles = StyleSheet.create({
     gallery: {
-        backgroundColor: 'black',
+        backgroundColor: '#121212',
         width: '100%', 
         height: 400, 
         display: 'flex',

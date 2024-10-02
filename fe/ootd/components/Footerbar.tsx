@@ -10,7 +10,7 @@ import ProfileIcon from '../assets/Icons/Profile_Icon.svg';
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'black',
+        backgroundColor: '#121212',
         minHeight: 50,
         height: '7%',
         display: 'flex',
@@ -26,51 +26,64 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: '60%',
     },
-    icon: {
-        display: 'flex',
-        flexDirection: 'column', // 아이콘과 텍스트를 세로로 배치
-        justifyContent: 'space-between', // 아이콘과 텍스트 간 간격 추가
-        alignItems: 'center',
-        height: '60%',
-    },
     text: {
-        color: 'white', // 글자 색상을 흰색으로 설정
         fontSize: 12,   // 글자 크기 설정
     },
 })
 
-function Footerbar(): React.JSX.Element {
+function Footerbar({ currentRoute }: { currentRoute: string }): React.JSX.Element {
     const navigation = useNavigation();
+    const isActive = (screens: string[]) => screens.includes(currentRoute);
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.navigate('MainView')}>
                 <View style={styles.icon}>
-                    <HomeIcon width={20} height={20} />
-                    <Text style={styles.text}>Home</Text>
+                    <HomeIcon
+                        width={20}
+                        height={20}
+                        fill={isActive(['MainView', 'LoginView', 'Notification']) ? 'white' : '#949494'}
+                    />
+                    <Text style={[styles.text, {color: isActive(['MainView', 'LoginView', 'Notification']) ? 'white' : '#949494'}]}>Home</Text>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('StyleView')}>
                 <View style={styles.icon}>
-                    <StyleIcon width={20} height={20} />
-                    <Text style={styles.text}>Style</Text>
+                    <StyleIcon
+                        width={20}
+                        height={20} 
+                        fill={isActive(['StyleView', 'StyleSelect']) ? 'white' : '#949494'}
+                    />
+                    <Text style={[styles.text, {color: isActive(['StyleView', 'StyleSelect']) ? 'white' : '#949494'}]}>Style</Text>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('AIView')}>
                 <View style={styles.icon}>
-                    <AIIcon width={20} height={20} />
-                    <Text style={styles.text}>AI</Text>
+                    <AIIcon
+                        width={20}
+                        height={20} 
+                        fill={isActive(['AIView', 'AIReport']) ? 'white' : '#949494'}
+                    />
+                    <Text style={[styles.text, {color: isActive(['AIView', 'AIReport']) ? 'white' : '#949494'}]}>AI</Text>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Battle')}>
                 <View style={styles.icon}>
-                    <BattleIcon width={20} height={20} />
-                    <Text style={styles.text}>BTU</Text>
+                    <BattleIcon
+                        width={20}
+                        height={20} 
+                        fill={isActive(['Battle', 'BattleDetail', 'BattleResult', 'MyFashion', 'Challenge', 'ChallengeDetail']) ? 'white' : '#949494'}
+                    />
+                    <Text style={[styles.text, {color: isActive(['Battle', 'BattleDetail', 'BattleResult', 'MyFashion', 'Challenge', 'ChallengeDetail']) ? 'white' : '#949494'}]}>BTU</Text>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('ProfileView')}>
                 <View style={styles.icon}>
-                    <ProfileIcon width={20} height={20} />
-                    <Text style={styles.text}>Profile</Text>
+                    <ProfileIcon
+                        width={20}
+                        height={20} 
+                        fill={isActive(['ProfileView']) ? 'white' : '#949494'}
+                    />
+                    <Text style={[styles.text, {color: isActive(['ProfileView']) ? 'white' : '#949494'}]}>Profile</Text>
                 </View>
             </TouchableOpacity>
         </View>

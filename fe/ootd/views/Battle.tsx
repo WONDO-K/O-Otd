@@ -93,8 +93,8 @@ function Battle({ navigation }): React.JSX.Element {
                         "participantCount": 2,
                         "status": "IN_PROGRESS",
                         "startedAt": "2024-09-25T00:00:00",
-                        "leftImage": "https://picsum.photos/400/400",
-                        "rightImage": "https://picsum.photos/200/300",
+                        "leftImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_9/img_184929.png",
+                        "rightImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_9/img_184928.png",
                         "myPick": "left",
                         "leftName": "유저네임3",
                         "rightName": "유저네임4"
@@ -113,8 +113,8 @@ function Battle({ navigation }): React.JSX.Element {
                         "status": "COMPLETED",
                         "startedAt": "2024-08-01T10:00:00",
                         "endedAt": "2024-08-10T18:00:00",
-                        "leftImage": "https://picsum.photos/400/400",
-                        "rightImage": "https://picsum.photos/200/300",
+                        "leftImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_9/img_184930.png",
+                        "rightImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_9/img_18493.png",
                         "myPick": "right",
                         "leftName": "유저네임5",
                         "rightName": "유저네임6",
@@ -270,7 +270,7 @@ function Battle({ navigation }): React.JSX.Element {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'black',
+        backgroundColor: '#121212',
     },
     battleHeader: {
         display: 'flex',
@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     battleTab:{
-        backgroundColor: 'black',
+        backgroundColor: '#121212',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',

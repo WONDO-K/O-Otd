@@ -9,7 +9,7 @@ import LoginView from '../views/LoginView.tsx';
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'black',
+        backgroundColor: '#121212',
         minHeight: 60,
         height: '10%',
         display: 'flex',

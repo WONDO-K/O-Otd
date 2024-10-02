@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     resizeMode: 'cover',
     alignItems: 'center',
-    backgroundColor: 'black',
+    backgroundColor: '#121212',
     flex: 1,
   },
   backgroundImage: {
@@ -469,7 +469,7 @@ const styles = StyleSheet.create({
   },
 
   profileTab:{
-    backgroundColor: 'black',
+    backgroundColor: '#121212',
     display: 'flex',
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
   Text,
   View,
@@ -15,11 +14,15 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import Carousel from '../components/Carousel';
 import WishFullIcon from '../assets/Icons/WishFull_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
+import styled from 'styled-components/native';
+
+const StyledText = styled.Text`
+  font-family: ${(props) => props.theme.fonts.regular};
+`;
 
 // 메인페이지
 function MainView(): React.JSX.Element {
   const navigation = useNavigation();
-  const route = useRoute();
 
   const [searchType, setSearchType] = useState('');
   const [myFashion, setMyFashion] = useState([]);
@@ -80,9 +83,9 @@ function MainView(): React.JSX.Element {
       <View style={styles.container} >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('LoginView')}>
-          <Text style={{ fontSize: 20, color: 'white' }} >
+          <StyledText style={{ fontSize: 20, color: 'white' }} >
             로그인
-          </Text>
+          </StyledText>
         </TouchableOpacity>
           <Carousel />
           <View style={styles.searchBar}>
@@ -137,7 +140,7 @@ function MainView(): React.JSX.Element {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'black',
+    backgroundColor: '#121212',
     display: 'flex',
     flexDirection: 'column',
     resizeMode: 'cover',
@@ -145,7 +148,7 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,  // ScrollView의 내용이 화면을 넘어가도 스크롤 가능하도록 설정
     justifyContent: 'flex-start',
-    backgroundColor: 'black',
+    backgroundColor: '#121212',
   },
   searchBar: {
     flexDirection: 'row',
@@ -178,7 +181,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     justifyContent: 'flex-end', // 아이콘을 하단에 배치
-    backgroundColor: 'black',
+    backgroundColor: '#121212',
   },
   bookmarkIcon: {
     position: 'absolute',

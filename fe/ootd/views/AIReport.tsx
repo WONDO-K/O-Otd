@@ -142,7 +142,7 @@ function AIReport(): React.JSX.Element {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'black',
+    backgroundColor: '#121212',
     display: 'flex',
     flexDirection: 'column',
     resizeMode: 'cover',

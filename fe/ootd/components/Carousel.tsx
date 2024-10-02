@@ -94,7 +94,7 @@ export default function Carousel() {
       <BlurView
         blurType="dark"
         blurAmount={10}
-        overlayColor="rgba(255, 255, 255, 0.1)"
+        overlayColor="rgba(255, 255, 255, 0)"
         style={styles.blurView}
       >
         <View style={styles.container}>
@@ -177,6 +177,12 @@ const styles = StyleSheet.create({
     // backgroundColor: 'rgba(128, 128, 128, 0.25)',
   },
   title: {
+    // fontFamily: 'GmarketSansTTFMedium',
+    // fontFamily: 'SUIT-Regular',
+    // fontFamily: 'SCDream5',
+    // fontFamily: 'Paperlogy-5Medium',
+    fontFamily: 'Pretendard-Regular',
+    // fontFamily: 'Freesentation-5Medium',
     fontSize: 40,
     textAlign: 'center',
     color: '#ffffff',

@@ -26,14 +26,13 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-	  <!-- Do not change NSAllowsArbitraryLoads to true, or you will risk app rejection! -->
 		<key>NSAllowsArbitraryLoads</key>
 		<false/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -48,5 +47,56 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>GmarketSansTTFBold.ttf</string>
+		<string>GmarketSansTTFLight.ttf</string>
+		<string>GmarketSansTTFMedium.ttf</string>
+		<string>Pretendard-Black.otf</string>
+		<string>Pretendard-Bold.otf</string>
+		<string>Pretendard-ExtraBold.otf</string>
+		<string>Pretendard-ExtraLight.otf</string>
+		<string>Pretendard-Light.otf</string>
+		<string>Pretendard-Medium.otf</string>
+		<string>Pretendard-Regular.otf</string>
+		<string>Pretendard-SemiBold.otf</string>
+		<string>Pretendard-Thin.otf</string>
+		<string>SCDream1.otf</string>
+		<string>SCDream2.otf</string>
+		<string>SCDream3.otf</string>
+		<string>SCDream4.otf</string>
+		<string>SCDream5.otf</string>
+		<string>SCDream6.otf</string>
+		<string>SCDream7.otf</string>
+		<string>SCDream8.otf</string>
+		<string>SCDream9.otf</string>
+		<string>Freesentation-1Thin.ttf</string>
+		<string>Freesentation-2ExtraLight.ttf</string>
+		<string>Freesentation-3Light.ttf</string>
+		<string>Freesentation-4Regular.ttf</string>
+		<string>Freesentation-5Medium.ttf</string>
+		<string>Freesentation-6SemiBold.ttf</string>
+		<string>Freesentation-7Bold.ttf</string>
+		<string>Freesentation-8ExtraBold.ttf</string>
+		<string>Freesentation-9Black.ttf</string>
+		<string>Paperlogy-1Thin.ttf</string>
+		<string>Paperlogy-2ExtraLight.ttf</string>
+		<string>Paperlogy-3Light.ttf</string>
+		<string>Paperlogy-4Regular.ttf</string>
+		<string>Paperlogy-5Medium.ttf</string>
+		<string>Paperlogy-6SemiBold.ttf</string>
+		<string>Paperlogy-7Bold.ttf</string>
+		<string>Paperlogy-8ExtraBold.ttf</string>
+		<string>Paperlogy-9Black.ttf</string>
+		<string>SUIT-Bold.ttf</string>
+		<string>SUIT-ExtraBold.ttf</string>
+		<string>SUIT-ExtraLight.ttf</string>
+		<string>SUIT-Heavy.ttf</string>
+		<string>SUIT-Light.ttf</string>
+		<string>SUIT-Medium.ttf</string>
+		<string>SUIT-Regular.ttf</string>
+		<string>SUIT-SemiBold.ttf</string>
+		<string>SUIT-Thin.ttf</string>
+	</array>
 </dict>
 </plist>

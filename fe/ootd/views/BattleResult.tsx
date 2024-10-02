@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: 'black',
+        backgroundColor: '#121212',
     },
     battleItem: {
         display: 'flex',

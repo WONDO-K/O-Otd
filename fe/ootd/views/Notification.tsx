@@ -100,7 +100,7 @@ function Notification({ navigation }): React.JSX.Element {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'black',
+        backgroundColor: '#121212',
     },
     notificationItem: {
         display: 'flex',
