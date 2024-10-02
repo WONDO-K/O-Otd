@@ -106,7 +106,9 @@ export default function Carousel() {
           return (
             <TouchableOpacity style={{ marginRight: margin }}>
               <Animated.View style={{ transform: [{ scale }] }}>
-                <ImageBackground style={cardSize} source={item.carouselImageUrl} />
+                <View style={{ borderRadius: 10, overflow: 'hidden' }}>
+                  <ImageBackground style={cardSize} source={item.carouselImageUrl} />
+                </View>
               </Animated.View>
             </TouchableOpacity>
           );
