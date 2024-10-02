@@ -1,9 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { LogBox } from 'react-native';
-import {
-  SafeAreaView,
-  StyleSheet,
-} from 'react-native';
+import { Text, LogBox, SafeAreaView, StyleSheet } from 'react-native';
 import Navbar from './components/Navbar';
 import Footerbar from './components/Footerbar';
 import MainView from './views/MainView';
@@ -25,7 +21,15 @@ import ProfileView from './views/ProfileView';
 import { NavigationContainer, NavigationState } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 
+import { ThemeProvider } from 'styled-components/native';
+
 const Stack = createStackNavigator();
+const theme = {
+  fonts: {
+    regular: 'Pretendard-Regular',
+    bold: 'Pretendard-Bold',
+  },
+};
 
 LogBox.ignoreAllLogs();
 
@@ -52,7 +56,8 @@ function App(): React.JSX.Element {
 
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <ThemeProvider theme={theme}>
+      <SafeAreaView style={styles.safeArea}>
         <NavigationContainer onStateChange={handleStateChange}>
           <Navbar />
           <Stack.Navigator
@@ -79,7 +84,8 @@ function App(): React.JSX.Element {
           </Stack.Navigator>
           <Footerbar currentRoute={currentRoute} />
         </NavigationContainer>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ThemeProvider>
   );
 }
 

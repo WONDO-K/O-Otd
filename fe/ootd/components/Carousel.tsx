@@ -177,11 +177,11 @@ const styles = StyleSheet.create({
     // backgroundColor: 'rgba(128, 128, 128, 0.25)',
   },
   title: {
-    fontFamily: 'GmarketSansTTFMedium',
+    // fontFamily: 'GmarketSansTTFMedium',
     // fontFamily: 'SUIT-Regular',
     // fontFamily: 'SCDream5',
     // fontFamily: 'Paperlogy-5Medium',
-    // fontFamily: 'Pretendard-Regular',
+    fontFamily: 'Pretendard-Regular',
     // fontFamily: 'Freesentation-5Medium',
     fontSize: 40,
     textAlign: 'center',

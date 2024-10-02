@@ -14,11 +14,15 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import Carousel from '../components/Carousel';
 import WishFullIcon from '../assets/Icons/WishFull_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
+import styled from 'styled-components/native';
+
+const StyledText = styled.Text`
+  font-family: ${(props) => props.theme.fonts.regular};
+`;
 
 // 메인페이지
 function MainView(): React.JSX.Element {
   const navigation = useNavigation();
-  const route = useRoute();
 
   const [searchType, setSearchType] = useState('');
   const [myFashion, setMyFashion] = useState([]);
@@ -79,9 +83,9 @@ function MainView(): React.JSX.Element {
       <View style={styles.container} >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('LoginView')}>
-          <Text style={{ fontSize: 20, color: 'white', fontFamily: 'GmarketSansTTFMedium' }} >
+          <StyledText style={{ fontSize: 20, color: 'white' }} >
             로그인
-          </Text>
+          </StyledText>
         </TouchableOpacity>
           <Carousel />
           <View style={styles.searchBar}>
