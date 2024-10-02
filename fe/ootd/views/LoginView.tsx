@@ -9,42 +9,84 @@ import {
   Modal,
   TextInput,
   TouchableWithoutFeedback,
-  Animated, // Import Animated for animations
-  Easing, // Import Easing for animation easing functions
+  Animated,
+  Easing,
 } from 'react-native';
-import axios from 'axios'; // Import axios
+import axios from 'axios';
+import { WebView } from 'react-native-webview';
+import { useNavigation } from '@react-navigation/native';
 
-// 로그인 페이지
-function LoginScreen(): React.JSX.Element {
-  const [modalVisible, setModalVisible] = useState(false); // 모달 표시 상태
-  const [nickname, setNickname] = useState(''); // 닉네임 입력 상태
-  const [errorMessage, setErrorMessage] = useState(''); // 에러 메시지 상태
-  const [isSuccess, setIsSuccess] = useState(false); // 성공 메시지 표시 상태
-  const shakeAnimation = useRef(new Animated.Value(0)).current; // 애니메이션 값 초기화
+function LoginView(): React.JSX.Element {
+  const [modalVisible, setModalVisible] = useState(false);
+  const [nickname, setNickname] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [serviceMessage, setServiceMessage] = useState('');
+  const shakeAnimation = useRef(new Animated.Value(0)).current;
+  const [kakaoCode, setKakaoCode] = useState('');
+  const [webViewVisible, setWebViewVisible] = useState(false);
+  const navigation = useNavigation();
+
+  // Kakao OAuth URL
+  const KAKAO_AUTH_URL = 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=fb7d24f77e374b62fe33b066aac83003&redirect_uri=http://localhost:8080/login/oauth2/code/kakao';
+
+  // Kakao 로그인 처리 함수
+  const handleKakaoLogin = async (code: string) => {
+    try {
+      const response = await axios.get('API_요청_주소', {
+        params: {
+          code: code,
+        },
+      });
+
+      if (response.data.exists) {
+        // 이미 회원인 경우
+        // 예: setTokens(response.data.tokens);
+        navigateToMainView();
+      } else {
+        // 신규 회원인 경우 닉네임 입력 모달 표시
+        setModalVisible(true);
+      }
+    } catch (error) {
+      console.error('Kakao 로그인 중 오류 발생:', error);
+      setServiceMessage('로그인 중 오류가 발생했습니다.');
+      setModalVisible(true);
+    }
+  };
+
+  // MainView로 이동하는 함수
+  const navigateToMainView = () => {
+    navigation.navigate('MainView');
+  };
 
   // 닉네임 제출 핸들러
   const handleNicknameSubmit = async () => {
     try {
-      // 서버에 닉네임 중복 확인 요청
-      // Replace 'YOUR_BACKEND_ENDPOINT' with your actual backend URL
-      const response = await axios.post('', {
+      const response = await axios.post('API_요청_주소', {
         nickname: nickname.trim(),
+        // code: kakaoCode,
       });
 
       if (response.data.exists) {
-        // 닉네임이 이미 존재하는 경우
         setErrorMessage('* 이미 존재하는 닉네임입니다.');
-        triggerShake(); // 모달 쉐이크 애니메이션
+        triggerShake();
       } else {
-        // 닉네임이 유일한 경우
         setIsSuccess(true);
         setErrorMessage('');
+        // 필요 시 추가 작업 (예: 토큰 저장, MainView로 이동 등)
       }
     } catch (error) {
       console.error('닉네임 확인 중 오류 발생:', error);
       setErrorMessage('* 서버와의 통신에 문제가 있습니다.');
-      triggerShake(); // 모달 쉐이크 애니메이션
+      triggerShake();
     }
+  };
+
+  // 서비스 준비 중 모달 트리거
+  const handleServiceNotAvailable = () => {
+    setServiceMessage('서비스 준비중입니다.');
+    setModalVisible(true);
+    triggerShake();
   };
 
   // 쉐이크 애니메이션 트리거
@@ -84,6 +126,7 @@ function LoginScreen(): React.JSX.Element {
     setNickname('');
     setErrorMessage('');
     setIsSuccess(false);
+    setServiceMessage('');
   };
 
   return (
@@ -94,28 +137,49 @@ function LoginScreen(): React.JSX.Element {
       </View>
       <View style={styles.body}>
         {/* Kakao 로그인 버튼 */}
-        <TouchableOpacity
-          style={styles.kakaoButton}
-          onPress={() => setModalVisible(true)} // 버튼 눌렀을 때 모달 열기
-        >
+        <TouchableOpacity style={styles.kakaoButton} onPress={() => setWebViewVisible(true)}>
           <Image source={require('../assets/Images/kakao.png')} style={styles.btnLogo} />
           <Text style={styles.kakaoButtonText}>카카오로 로그인</Text>
         </TouchableOpacity>
 
         {/* Google 로그인 버튼 */}
-        <TouchableOpacity style={styles.googleButton}>
+        <TouchableOpacity style={styles.googleButton} onPress={handleServiceNotAvailable}>
           <Image source={require('../assets/Images/google.png')} style={styles.btnLogo} />
           <Text style={styles.googleButtonText}>Google로 로그인</Text>
         </TouchableOpacity>
 
         {/* Naver 로그인 버튼 */}
-        <TouchableOpacity style={styles.naverButton}>
+        <TouchableOpacity style={styles.naverButton} onPress={handleServiceNotAvailable}>
           <Image source={require('../assets/Images/naver.png')} style={styles.btnLogo} />
           <Text style={styles.naverButtonText}>Naver로 로그인</Text>
         </TouchableOpacity>
       </View>
 
-      {/* 닉네임 입력 모달 */}
+      {/* WebView 모달 */}
+      <Modal
+        visible={webViewVisible}
+        onRequestClose={() => setWebViewVisible(false)}
+        animationType="slide"
+      >
+        <WebView
+          source={{ uri: KAKAO_AUTH_URL }}
+          onNavigationStateChange={(navState) => {
+            const { url } = navState;
+            if (url.startsWith('http://localhost:8080/login/oauth2/code/kakao')) {
+              const codeMatch = url.match(/code=([^&]+)/);
+              if (codeMatch && codeMatch[1]) {
+                const code = codeMatch[1];
+                setKakaoCode(code);
+                setWebViewVisible(false);
+                handleKakaoLogin(code);
+              }
+            }
+          }}
+          startInLoadingState
+        />
+      </Modal>
+
+      {/* 닉네임 입력 또는 서비스 준비 중 모달 */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -125,7 +189,6 @@ function LoginScreen(): React.JSX.Element {
         <TouchableWithoutFeedback onPress={closeModal}>
           <View style={styles.modalOverlay}>
             <TouchableWithoutFeedback>
-              {/* Animated.View for shake animation */}
               <Animated.View
                 style={[
                   styles.modalContainer,
@@ -134,7 +197,9 @@ function LoginScreen(): React.JSX.Element {
                   },
                 ]}
               >
-                {!isSuccess ? (
+                {serviceMessage ? (
+                  <Text style={styles.serviceMessage}>{serviceMessage}</Text>
+                ) : !isSuccess ? (
                   <>
                     <Text style={styles.modalTitle}>닉네임 입력</Text>
                     <TextInput
@@ -143,21 +208,19 @@ function LoginScreen(): React.JSX.Element {
                       value={nickname}
                       onChangeText={(text) => {
                         setNickname(text);
-                        if (errorMessage) setErrorMessage(''); // 입력 시 에러 메시지 초기화
+                        if (errorMessage) setErrorMessage('');
                       }}
                     />
                     {errorMessage ? (
                       <Text style={styles.errorText}>{errorMessage}</Text>
                     ) : null}
                     <View style={styles.modalButtons}>
-                      {/* 커스텀 '확인' 버튼 */}
                       <TouchableOpacity style={styles.confirmButton} onPress={handleNicknameSubmit}>
                         <Text style={styles.confirmButtonText}>확인</Text>
                       </TouchableOpacity>
                     </View>
                   </>
                 ) : (
-                  // 성공 메시지 표시
                   <View style={styles.successContainer}>
                     <Text style={styles.successText}>
                       정상적으로 회원가입에 성공하셨습니다.{'\n'}
@@ -180,51 +243,51 @@ function LoginScreen(): React.JSX.Element {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212', // 배경 검정색
-    justifyContent: 'center', // 화면 중앙 정렬
+    backgroundColor: '#121212',
+    justifyContent: 'center',
   },
   header: {
     flex: 1,
     justifyContent: 'flex-start',
     alignItems: 'center',
-    marginTop: 100, // 중앙 상단 배치
+    marginTop: 100,
   },
   loginText: {
-    fontSize: 30, // 글자 크기
-    color: 'white', // 글자 색상 흰색
+    fontSize: 30,
+    color: 'white',
   },
   body: {
     flex: 2,
     justifyContent: 'center',
-    alignItems: 'center', // 중앙 배치
+    alignItems: 'center',
   },
   kakaoButton: {
-    backgroundColor: '#FEE500', // 카카오 노란색
-    width: 250, // 버튼 고정 크기
-    height: 50, // 버튼 고정 크기
-    flexDirection: 'row', // 로고와 텍스트를 나란히
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    marginBottom: 20, // 아래 요소와 간격
-  },
-  googleButton: {
-    backgroundColor: 'white', // 구글 흰색 배경
-    width: 250, // 버튼 고정 크기
-    height: 50, // 버튼 고정 크기
-    flexDirection: 'row', // 로고와 텍스트를 나란히
+    backgroundColor: '#FEE500',
+    width: 250,
+    height: 50,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
     marginBottom: 20,
-    borderWidth: 1, // 구글 버튼의 테두리 추가
-    borderColor: '#4285F4', // 구글 파란색 테두리
+  },
+  googleButton: {
+    backgroundColor: 'white',
+    width: 250,
+    height: 50,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#4285F4',
   },
   naverButton: {
-    backgroundColor: '#03C75A', // 네이버 녹색
-    width: 250, // 버튼 고정 크기
-    height: 50, // 버튼 고정 크기
-    flexDirection: 'row', // 로고와 텍스트를 나란히
+    backgroundColor: '#03C75A',
+    width: 250,
+    height: 50,
+    flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
@@ -234,34 +297,34 @@ const styles = StyleSheet.create({
     color: '#3C1E1E',
     fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: 10, // 로고와 텍스트 사이 간격
+    marginLeft: 10,
   },
   googleButtonText: {
     color: '#4285F4',
     fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: 10, // 로고와 텍스트 사이 간격
+    marginLeft: 10,
   },
   naverButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
-    marginLeft: 10, // 로고와 텍스트 사이 간격
+    marginLeft: 10,
   },
   btnLogo: {
-    width: 20, // 로고 크기
+    width: 20,
     height: 20,
-    resizeMode: 'contain', // 로고 비율 유지
+    resizeMode: 'contain',
   },
   ootdLogo: {
-    width: 200, // OOTD 로고 크기
+    width: 200,
     height: 200,
     resizeMode: 'contain',
   },
   // 모달 관련 스타일
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.8)', // 반투명 배경
+    backgroundColor: 'rgba(0,0,0,0.8)',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -282,7 +345,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     padding: 10,
-    marginBottom: 10, // 에러 메시지와 간격
+    marginBottom: 10,
     fontSize: 18,
   },
   errorText: {
@@ -294,14 +357,13 @@ const styles = StyleSheet.create({
   },
   modalButtons: {
     width: '100%',
-    alignItems: 'center', // 버튼을 중앙에 배치
+    alignItems: 'center',
   },
-  // 새로운 스타일 추가
   confirmButton: {
-    backgroundColor: '#4285F4', // 원하는 버튼 배경색 (예: Google 파란색)
-    paddingVertical: 12, // 세로 패딩 (버튼 높이 조절)
-    paddingHorizontal: 30, // 가로 패딩 (버튼 너비 조절)
-    borderRadius: 10, // borderRadius 10
+    backgroundColor: '#4285F4',
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 10,
     alignItems: 'center',
   },
   confirmButtonText: {
@@ -309,7 +371,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  // 성공 메시지 관련 스타일
   successContainer: {
     alignItems: 'center',
   },
@@ -319,7 +380,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   nicknameText: {
-    color: 'limegreen', // 밝은 초록색
+    color: 'limegreen',
     fontWeight: 'bold',
   },
   closeButton: {
@@ -333,6 +394,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  serviceMessage: {
+    fontSize: 18,
+    color: 'red',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
 });
 
-export default LoginScreen;
+export default LoginView;
