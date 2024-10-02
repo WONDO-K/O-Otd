@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, TouchableOpacity, Image, FlatList } from 'react
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
 import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
+import { TitleText, TitleBoldText } from '../components/CustomTexts';
 
 function StyleView({ navigation, route }): React.JSX.Element {
     // Main 이미지와 Sub 이미지 상태 관리
@@ -33,7 +34,7 @@ function StyleView({ navigation, route }): React.JSX.Element {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.recommend}>
-                <Text style={styles.title}>패션 추천</Text>
+                <TitleText style={styles.title}><TitleBoldText>AI</TitleBoldText> Style Maker</TitleText>
                 <View style={styles.imageContainer}>
                     {/* Main 이미지 */}
                     <TouchableOpacity

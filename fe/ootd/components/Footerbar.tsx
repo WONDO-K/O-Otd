@@ -1,12 +1,19 @@
 import React from 'react';
 import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { FooterText } from '../components/CustomTexts';
 
 import HomeIcon from '../assets/Icons/House_Icon.svg';
 import StyleIcon from '../assets/Icons/Style_Icon.svg';
 import AIIcon from '../assets/Icons/AI_Icon.svg';
 import BattleIcon from '../assets/Icons/VS_Icon.svg';
 import ProfileIcon from '../assets/Icons/Profile_Icon.svg';
+
+// const fontFamily = 'NanumGothicBold'
+const fontFamily = 'NanumGothicExtraBold'
+// const fontFamily = 'DalseoHealingBold'
+// const fontFamily = 'DalseoHealingMedium'
+// const fontFamily = 'Cafe24Ssurround-v2.0'
 
 const styles = StyleSheet.create({
     container: {
@@ -43,7 +50,7 @@ function Footerbar({ currentRoute }: { currentRoute: string }): React.JSX.Elemen
                         height={20}
                         fill={isActive(['MainView', 'LoginView', 'Notification']) ? 'white' : '#949494'}
                     />
-                    <Text style={[styles.text, {color: isActive(['MainView', 'LoginView', 'Notification']) ? 'white' : '#949494'}]}>Home</Text>
+                    <FooterText style={[styles.text, {color: isActive(['MainView', 'LoginView', 'Notification']) ? 'white' : '#949494'}]}>Home</FooterText>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('StyleView')}>
@@ -53,7 +60,7 @@ function Footerbar({ currentRoute }: { currentRoute: string }): React.JSX.Elemen
                         height={20} 
                         fill={isActive(['StyleView', 'StyleSelect']) ? 'white' : '#949494'}
                     />
-                    <Text style={[styles.text, {color: isActive(['StyleView', 'StyleSelect']) ? 'white' : '#949494'}]}>Style</Text>
+                    <FooterText style={[styles.text, {color: isActive(['StyleView', 'StyleSelect']) ? 'white' : '#949494'}]}>Style</FooterText>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('AIView')}>
@@ -63,7 +70,7 @@ function Footerbar({ currentRoute }: { currentRoute: string }): React.JSX.Elemen
                         height={20} 
                         fill={isActive(['AIView', 'AIReport']) ? 'white' : '#949494'}
                     />
-                    <Text style={[styles.text, {color: isActive(['AIView', 'AIReport']) ? 'white' : '#949494'}]}>AI</Text>
+                    <FooterText style={[styles.text, {color: isActive(['AIView', 'AIReport']) ? 'white' : '#949494'}]}>AI</FooterText>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Battle')}>
@@ -73,7 +80,7 @@ function Footerbar({ currentRoute }: { currentRoute: string }): React.JSX.Elemen
                         height={20} 
                         fill={isActive(['Battle', 'BattleDetail', 'BattleResult', 'MyFashion', 'Challenge', 'ChallengeDetail']) ? 'white' : '#949494'}
                     />
-                    <Text style={[styles.text, {color: isActive(['Battle', 'BattleDetail', 'BattleResult', 'MyFashion', 'Challenge', 'ChallengeDetail']) ? 'white' : '#949494'}]}>BTU</Text>
+                    <FooterText style={[styles.text, {color: isActive(['Battle', 'BattleDetail', 'BattleResult', 'MyFashion', 'Challenge', 'ChallengeDetail']) ? 'white' : '#949494'}]}>Battle</FooterText>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('ProfileView')}>
@@ -83,7 +90,7 @@ function Footerbar({ currentRoute }: { currentRoute: string }): React.JSX.Elemen
                         height={20} 
                         fill={isActive(['ProfileView']) ? 'white' : '#949494'}
                     />
-                    <Text style={[styles.text, {color: isActive(['ProfileView']) ? 'white' : '#949494'}]}>Profile</Text>
+                    <FooterText style={[styles.text, {color: isActive(['ProfileView']) ? 'white' : '#949494'}]}>Profile</FooterText>
                 </View>
             </TouchableOpacity>
         </View>
