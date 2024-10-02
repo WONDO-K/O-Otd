@@ -1,85 +1,80 @@
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.metrics.pairwise import euclidean_distances
-import joblib
 import os
-import time
-from datetime import datetime
-from settings import CLUSTER_CENTERS_FILE, CLUSTER_DATA_DIR, UMAP_MODEL_FILE, n_clusters, n_features
+import json
+import numpy as np
+from settings import CLUSTER_DATA_DIR, CLUSTER_CENTERS_FILE
 
-# 랜덤 시드 설정
-np.random.seed(datetime.now().microsecond)
-
-def load_umap_model(filename):
-    return joblib.load(filename)
+# 파일 경로 설정
+CLUSTER_CENTERS_FILE = os.path.join(CLUSTER_DATA_DIR, CLUSTER_CENTERS_FILE)
 
 def load_data():
+    # 클러스터 센터 파일 로드
     cluster_centers = np.load(CLUSTER_CENTERS_FILE)
-    umap_reducer = load_umap_model(UMAP_MODEL_FILE)
-    return cluster_centers, umap_reducer
+    return cluster_centers
 
-def generate_sparse_probability_vector(n_features, min_non_zero=2, max_non_zero=4):
-    num_non_zero = np.random.randint(min_non_zero, max_non_zero + 1)
-    non_zero_indices = np.random.choice(n_features, num_non_zero, replace=False)
-    vector = np.zeros(n_features)
-    vector[non_zero_indices] = np.random.rand(num_non_zero)
-    return vector / vector.sum()
+def calculate_distance(point1, point2):
+    return np.sqrt(np.sum((point1 - point2) ** 2))
 
-# 측정 시작
-start_time = time.time()
-
-# 데이터와 모델 불러오기
+# 데이터 로드
 print('Load Data')
-data_load_start_time = time.time()
-cluster_centers, umap_reducer = load_data()
-data_load_end_time = time.time()
+cluster_centers = load_data()
 print('Data Load Complete!')
-print(f"Data Load Time: {data_load_end_time - data_load_start_time:.2f} seconds")
 
-# Create a custom colormap with 30 distinct colors
-cmap = plt.get_cmap('tab20', n_clusters)
-colors = cmap(np.arange(n_clusters))  # Convert cmap to array of colors
+# 6D 포인트 및 해당 룩 레이블 정의
+points_6d = np.array([
+    [1, 0, 0, 0, 0, 0],  # casual_look
+    [0, 1, 0, 0, 0, 0],  # classic_look
+    [0, 0, 1, 0, 0, 0],  # minimal_look
+    [0, 0, 0, 1, 0, 0],  # chic_look
+    [0, 0, 0, 0, 1, 0],  # sporty_look
+    [0, 0, 0, 0, 0, 1]   # street_look
+])
 
-# 새로운 6차원 점 생성 및 UMAP으로 축소
-vector_generation_start_time = time.time()
-new_point_6d = generate_sparse_probability_vector(n_features)
-vector_generation_end_time = time.time()
-print(f"Vector Generation Time: {vector_generation_end_time - vector_generation_start_time:.2f} seconds")
+look_labels = [
+    "casual_look",
+    "classic_look",
+    "minimal_look",
+    "chic_look",
+    "sporty_look",
+    "street_look"
+]
 
-umap_transform_start_time = time.time()
-new_point_3d = umap_reducer.transform([new_point_6d])[0]
-umap_transform_end_time = time.time()
-print(f"UMAP Transformation Time: {umap_transform_end_time - umap_transform_start_time:.2f} seconds")
+# 각 6D 포인트와 그에 해당하는 룩을 매핑
+for idx, (point_6d, look_label) in enumerate(zip(points_6d, look_labels)):
+    print(f"\nProcessing {look_label}: {point_6d}")
+    
+    # 클러스터 중심과의 거리 계산
+    distances_to_centers = [calculate_distance(point_6d, center) for center in cluster_centers]
+    closest_cluster_idx = np.argmin(distances_to_centers)
+    
+    print(f"{look_label} is closest to cluster {closest_cluster_idx}")
 
-# 새로운 점과 같은 클러스터의 영역 찾기
-distance_to_centers_start_time = time.time()
-distances_to_centers = euclidean_distances([new_point_3d], cluster_centers)[0]
-closest_cluster_idx = np.argmin(distances_to_centers)
-distance_to_centers_end_time = time.time()
-print(f"Distance to Centers Calculation Time: {distance_to_centers_end_time - distance_to_centers_start_time:.2f} seconds")
+    # 해당 클러스터 데이터 로드
+    file_path = os.path.join(CLUSTER_DATA_DIR, f'cluster_{closest_cluster_idx}_data_with_points.npz')
+    if os.path.exists(file_path):
+        cluster_data = np.load(file_path)
+        same_cluster_points = cluster_data['original_data']
+        original_indices = cluster_data['cluster_indices']  # 원본 인덱스 (이미지 라벨)
 
-# 클러스터의 점들을 로드
-data_loading_cluster_start_time = time.time()
-# same_cluster_points = np.load(os.path.join(CLUSTER_DATA_DIR, f'cluster_{closest_cluster_idx}_data.npy'))
-file_path = os.path.join(CLUSTER_DATA_DIR, f'cluster_{closest_cluster_idx}_data.npy')
-same_cluster_points = np.load(file_path, mmap_mode='r')  # 메모리 매핑 모드로 열기
-data_loading_cluster_end_time = time.time()
-print(f"Cluster Data Loading Time: {data_loading_cluster_end_time - data_loading_cluster_start_time:.2f} seconds")
+        # 클러스터 정보 출력
+        print(f"Cluster {closest_cluster_idx} Data Shape: {same_cluster_points.shape}")
+        print(f"Sample Points from Cluster {closest_cluster_idx}:\n", same_cluster_points[:5])
+        print(f"Sample Points number (first 5):\n", original_indices[:5])
 
-# 새로운 점과 같은 클러스터의 점들 중 가까운 20개 점 선택
-distance_to_points_start_time = time.time()
-distances = euclidean_distances([new_point_3d], same_cluster_points)[0]
-sorted_indices = np.argsort(distances)
-closest_points_indices = sorted_indices[:100]
-distance_to_points_end_time = time.time()
-print(f"Distance to Points Calculation Time: {distance_to_points_end_time - distance_to_points_start_time:.2f} seconds")
+        # 같은 클러스터에서 가장 가까운 20개 포인트 찾기
+        distances = np.array([calculate_distance(point_6d, point) for point in same_cluster_points])
+        sorted_indices = np.argsort(distances)
+        closest_points_indices = sorted_indices[:20]  # 상위 20개 가까운 포인트 선택
 
-print(f"Indices of Closest 20 Points: {closest_points_indices}")
+        # 가장 가까운 포인트의 원본 인덱스 추출
+        closest_original_indices = original_indices[closest_points_indices]
+        closest_points = same_cluster_points[closest_points_indices]  # 가까운 포인트의 좌표 추출
 
-# 측정 종료 및 실행 시간 출력
-end_time = time.time()
-execution_time = end_time - start_time
-print(f"Total Execution Time: {execution_time:.2f} seconds")
+        # JSON 응답 준비
+        response_json = json.dumps(closest_original_indices.tolist())
 
+        # JSON 응답과 가까운 포인트의 좌표 출력
+        print(f"Closest points number: {response_json}")
+        print(f'Closest Points from Cluster:\n{closest_points}')
 
-# 처음 모든 클러스터 점을 불러오고, while을 통해 계속 대기하다가, 요청오면 Json 보내기(3초 정도) 
+    else:
+        print(f"Data for cluster {closest_cluster_idx} does not exist.")
