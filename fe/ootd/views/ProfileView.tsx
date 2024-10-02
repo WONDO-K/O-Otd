@@ -151,8 +151,8 @@ const getPictureList = (category: string, sort: string) => {
               >
                 <MyFashionIcon
                   fill={selectedCategory === '마이 패션' ? 'white' : '#949494'}
-                  width={40}
-                  height={40}
+                  width={30}
+                  height={30}
                 />
               </View>
             </TouchableOpacity>
@@ -174,8 +174,8 @@ const getPictureList = (category: string, sort: string) => {
               >
                 <WishIcon
                   fill={selectedCategory === '마이 갤러리' ? 'white' : '#949494'}
-                  width={40}
-                  height={40}
+                  width={30}
+                  height={30}
                 />
               </View>
             </TouchableOpacity>
@@ -197,8 +197,8 @@ const getPictureList = (category: string, sort: string) => {
               >
                 <BattleIcon
                   fill={selectedCategory === '마이 문철' ? 'white' : '#949494'}
-                  width={40}
-                  height={40}
+                  width={30}
+                  height={30}
                 />
               </View>
             </TouchableOpacity>

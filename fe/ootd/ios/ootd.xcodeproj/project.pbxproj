@@ -62,6 +62,39 @@
 		D71B7FD739F64672A557F7EF /* SUIT-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CBA72B3AA2A24F6BAA08D119 /* SUIT-Regular.ttf */; };
 		08C7509F86DC440BBB1C7212 /* SUIT-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 15EF8401350A4AFA9A4AF950 /* SUIT-SemiBold.ttf */; };
 		8EA51573D71F485DAEC10FE8 /* SUIT-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 79B0518674AE47C698F3E985 /* SUIT-Thin.ttf */; };
+		27D783E26D684A818E0F1820 /* MinSans-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0F9BE7BD4E404A9286FF7F2C /* MinSans-Black.otf */; };
+		83AE6707E5F6488CA32BB7B7 /* MinSans-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 36D5523103F9437B852A14A3 /* MinSans-Bold.otf */; };
+		EC5F84CFFC9E4C3D869B8585 /* MinSans-ExtraBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = C8841E57D7574F0DB009ABD0 /* MinSans-ExtraBold.otf */; };
+		3585715ED3F9448D91DD778D /* MinSans-ExtraLight.otf in Resources */ = {isa = PBXBuildFile; fileRef = 43DB10ACA8634660B2A68673 /* MinSans-ExtraLight.otf */; };
+		B815820550FD45E4A123822A /* MinSans-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = E74AF2065AB44191B7EC9BAB /* MinSans-Light.otf */; };
+		0F4A6DFEA56F45328306D56E /* MinSans-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = BF3F799A693E474F851B9A6F /* MinSans-Medium.otf */; };
+		27F2BFBAF0134A74B0848760 /* MinSans-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 8E7F075F29124AFD92C7A9E2 /* MinSans-Regular.otf */; };
+		7CE6AA7BC7C24237BA5A5BF9 /* MinSans-SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 240E9D4C7C0444139AFADF35 /* MinSans-SemiBold.otf */; };
+		7FBD5215D9ED45A4818DFA07 /* MinSans-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = BD2F65E4B3464036AEDCD186 /* MinSans-Thin.otf */; };
+		FD9FC02061C445D7BB0F2FEE /* LINESeedKR-Bd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F288479F043C474F9454B90B /* LINESeedKR-Bd.ttf */; };
+		828C2265A3054C789FC5A7C5 /* LINESeedKR-Rg.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5363C0BAA8F64BB58D109023 /* LINESeedKR-Rg.ttf */; };
+		009683E865D04DF0B67598E0 /* LINESeedKR-Th.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A847FDB013BB4335A8B6F61F /* LINESeedKR-Th.ttf */; };
+		F14A0013768D404A81750AA0 /* NanumSquareNeo-aLt.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DF23E12441FB4CE3AE8A2891 /* NanumSquareNeo-aLt.ttf */; };
+		139EE6AAC47F458D8947384C /* NanumSquareNeo-bRg.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 04C95A76784640CC8BC3BFBF /* NanumSquareNeo-bRg.ttf */; };
+		9940284CFEAC4F4A8377C6FA /* NanumSquareNeo-cBd.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A738AED4DEE84C208547B5D5 /* NanumSquareNeo-cBd.ttf */; };
+		605D75526A22456A8C2C4B99 /* NanumSquareNeo-dEb.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 39617B721E914EB085EF0D32 /* NanumSquareNeo-dEb.ttf */; };
+		BEFEB1BDC4284340AB89B15E /* NanumSquareNeo-eHv.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E6EA7AC913AC4ACC93419357 /* NanumSquareNeo-eHv.ttf */; };
+		1454338EB74B45878612EC36 /* LeferiBaseBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C545BB8CA93C4E298B752D90 /* LeferiBaseBold.ttf */; };
+		F733DE8CDD0748A1B59CCC8B /* LeferiBaseRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CEC3509FF580404E929E23C4 /* LeferiBaseRegular.ttf */; };
+		45530FBCA9314016A0E4A7E2 /* LeferiPointBlack.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 857B842AB86345E48853F8C5 /* LeferiPointBlack.ttf */; };
+		6E307F94D6664558986C7C8F /* LeferiPointBlackOblique.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 51571B8F2C9748278B0B6A40 /* LeferiPointBlackOblique.ttf */; };
+		D44D70FA1CFA4C93B3B33AF7 /* LeferiPointSpecial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A71CABCCB1548B2A5A157F6 /* LeferiPointSpecial.ttf */; };
+		B60D24D19FCA4C8EBA567CE4 /* LeferiPointSpecialItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8FD5175C649743EF9E413CC7 /* LeferiPointSpecialItalic.ttf */; };
+		1953407A4F134AF68C7354A0 /* LeferiPointWhite.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 635259A641884D37BB4AA607 /* LeferiPointWhite.ttf */; };
+		356F99037FF64B8B94DC1D65 /* LeferiPointWhiteOblique.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E83B15163E054EEA8844351B /* LeferiPointWhiteOblique.ttf */; };
+		052FFF77F2D442E8911098D2 /* Cafe24Ssurround-v2.0.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6C2063B4FD7F452991CA0A81 /* Cafe24Ssurround-v2.0.ttf */; };
+		709F524B293E48AD9DCAE6D2 /* DalseoDarling.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F6F5AB65A9CB45C79C8EB9BD /* DalseoDarling.ttf */; };
+		8B17CD21EB9F4CEF98C881AE /* DalseoHealingBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ABB8AD2B76A2418FB76A79CF /* DalseoHealingBold.ttf */; };
+		FFB8890BC53D443496A6C558 /* DalseoHealingMedium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0C0EE0C577EF4D3BB31EF36E /* DalseoHealingMedium.ttf */; };
+		6B63B5A4B9054AFC8F41B2D4 /* NanumGothic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C64562F82DAA4057BD81D78B /* NanumGothic.ttf */; };
+		0AA177C55AA14241BA2700E7 /* NanumGothicBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1766730A391C47A9B5090116 /* NanumGothicBold.ttf */; };
+		72F8AB06F08E42AE83844EDB /* NanumGothicExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = ECEA0C13C18142B4B6357B5F /* NanumGothicExtraBold.ttf */; };
+		00C837E574C14D8DB3CC97F7 /* NanumGothicLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1866C4AB77334498ABCDD70F /* NanumGothicLight.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -141,6 +174,39 @@
 		CBA72B3AA2A24F6BAA08D119 /* SUIT-Regular.ttf */ = {isa = PBXFileReference; name = "SUIT-Regular.ttf"; path = "../assets/Fonts/SUIT-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		15EF8401350A4AFA9A4AF950 /* SUIT-SemiBold.ttf */ = {isa = PBXFileReference; name = "SUIT-SemiBold.ttf"; path = "../assets/Fonts/SUIT-SemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		79B0518674AE47C698F3E985 /* SUIT-Thin.ttf */ = {isa = PBXFileReference; name = "SUIT-Thin.ttf"; path = "../assets/Fonts/SUIT-Thin.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0F9BE7BD4E404A9286FF7F2C /* MinSans-Black.otf */ = {isa = PBXFileReference; name = "MinSans-Black.otf"; path = "../assets/Fonts/MinSans-Black.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		36D5523103F9437B852A14A3 /* MinSans-Bold.otf */ = {isa = PBXFileReference; name = "MinSans-Bold.otf"; path = "../assets/Fonts/MinSans-Bold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C8841E57D7574F0DB009ABD0 /* MinSans-ExtraBold.otf */ = {isa = PBXFileReference; name = "MinSans-ExtraBold.otf"; path = "../assets/Fonts/MinSans-ExtraBold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		43DB10ACA8634660B2A68673 /* MinSans-ExtraLight.otf */ = {isa = PBXFileReference; name = "MinSans-ExtraLight.otf"; path = "../assets/Fonts/MinSans-ExtraLight.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E74AF2065AB44191B7EC9BAB /* MinSans-Light.otf */ = {isa = PBXFileReference; name = "MinSans-Light.otf"; path = "../assets/Fonts/MinSans-Light.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		BF3F799A693E474F851B9A6F /* MinSans-Medium.otf */ = {isa = PBXFileReference; name = "MinSans-Medium.otf"; path = "../assets/Fonts/MinSans-Medium.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8E7F075F29124AFD92C7A9E2 /* MinSans-Regular.otf */ = {isa = PBXFileReference; name = "MinSans-Regular.otf"; path = "../assets/Fonts/MinSans-Regular.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		240E9D4C7C0444139AFADF35 /* MinSans-SemiBold.otf */ = {isa = PBXFileReference; name = "MinSans-SemiBold.otf"; path = "../assets/Fonts/MinSans-SemiBold.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		BD2F65E4B3464036AEDCD186 /* MinSans-Thin.otf */ = {isa = PBXFileReference; name = "MinSans-Thin.otf"; path = "../assets/Fonts/MinSans-Thin.otf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F288479F043C474F9454B90B /* LINESeedKR-Bd.ttf */ = {isa = PBXFileReference; name = "LINESeedKR-Bd.ttf"; path = "../assets/Fonts/LINESeedKR-Bd.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		5363C0BAA8F64BB58D109023 /* LINESeedKR-Rg.ttf */ = {isa = PBXFileReference; name = "LINESeedKR-Rg.ttf"; path = "../assets/Fonts/LINESeedKR-Rg.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A847FDB013BB4335A8B6F61F /* LINESeedKR-Th.ttf */ = {isa = PBXFileReference; name = "LINESeedKR-Th.ttf"; path = "../assets/Fonts/LINESeedKR-Th.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		DF23E12441FB4CE3AE8A2891 /* NanumSquareNeo-aLt.ttf */ = {isa = PBXFileReference; name = "NanumSquareNeo-aLt.ttf"; path = "../assets/Fonts/NanumSquareNeo-aLt.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		04C95A76784640CC8BC3BFBF /* NanumSquareNeo-bRg.ttf */ = {isa = PBXFileReference; name = "NanumSquareNeo-bRg.ttf"; path = "../assets/Fonts/NanumSquareNeo-bRg.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		A738AED4DEE84C208547B5D5 /* NanumSquareNeo-cBd.ttf */ = {isa = PBXFileReference; name = "NanumSquareNeo-cBd.ttf"; path = "../assets/Fonts/NanumSquareNeo-cBd.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		39617B721E914EB085EF0D32 /* NanumSquareNeo-dEb.ttf */ = {isa = PBXFileReference; name = "NanumSquareNeo-dEb.ttf"; path = "../assets/Fonts/NanumSquareNeo-dEb.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E6EA7AC913AC4ACC93419357 /* NanumSquareNeo-eHv.ttf */ = {isa = PBXFileReference; name = "NanumSquareNeo-eHv.ttf"; path = "../assets/Fonts/NanumSquareNeo-eHv.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C545BB8CA93C4E298B752D90 /* LeferiBaseBold.ttf */ = {isa = PBXFileReference; name = "LeferiBaseBold.ttf"; path = "../assets/Fonts/LeferiBaseBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		CEC3509FF580404E929E23C4 /* LeferiBaseRegular.ttf */ = {isa = PBXFileReference; name = "LeferiBaseRegular.ttf"; path = "../assets/Fonts/LeferiBaseRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		857B842AB86345E48853F8C5 /* LeferiPointBlack.ttf */ = {isa = PBXFileReference; name = "LeferiPointBlack.ttf"; path = "../assets/Fonts/LeferiPointBlack.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		51571B8F2C9748278B0B6A40 /* LeferiPointBlackOblique.ttf */ = {isa = PBXFileReference; name = "LeferiPointBlackOblique.ttf"; path = "../assets/Fonts/LeferiPointBlackOblique.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0A71CABCCB1548B2A5A157F6 /* LeferiPointSpecial.ttf */ = {isa = PBXFileReference; name = "LeferiPointSpecial.ttf"; path = "../assets/Fonts/LeferiPointSpecial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		8FD5175C649743EF9E413CC7 /* LeferiPointSpecialItalic.ttf */ = {isa = PBXFileReference; name = "LeferiPointSpecialItalic.ttf"; path = "../assets/Fonts/LeferiPointSpecialItalic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		635259A641884D37BB4AA607 /* LeferiPointWhite.ttf */ = {isa = PBXFileReference; name = "LeferiPointWhite.ttf"; path = "../assets/Fonts/LeferiPointWhite.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		E83B15163E054EEA8844351B /* LeferiPointWhiteOblique.ttf */ = {isa = PBXFileReference; name = "LeferiPointWhiteOblique.ttf"; path = "../assets/Fonts/LeferiPointWhiteOblique.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		6C2063B4FD7F452991CA0A81 /* Cafe24Ssurround-v2.0.ttf */ = {isa = PBXFileReference; name = "Cafe24Ssurround-v2.0.ttf"; path = "../assets/Fonts/Cafe24Ssurround-v2.0.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F6F5AB65A9CB45C79C8EB9BD /* DalseoDarling.ttf */ = {isa = PBXFileReference; name = "DalseoDarling.ttf"; path = "../assets/Fonts/DalseoDarling.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		ABB8AD2B76A2418FB76A79CF /* DalseoHealingBold.ttf */ = {isa = PBXFileReference; name = "DalseoHealingBold.ttf"; path = "../assets/Fonts/DalseoHealingBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		0C0EE0C577EF4D3BB31EF36E /* DalseoHealingMedium.ttf */ = {isa = PBXFileReference; name = "DalseoHealingMedium.ttf"; path = "../assets/Fonts/DalseoHealingMedium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C64562F82DAA4057BD81D78B /* NanumGothic.ttf */ = {isa = PBXFileReference; name = "NanumGothic.ttf"; path = "../assets/Fonts/NanumGothic.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		1766730A391C47A9B5090116 /* NanumGothicBold.ttf */ = {isa = PBXFileReference; name = "NanumGothicBold.ttf"; path = "../assets/Fonts/NanumGothicBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		ECEA0C13C18142B4B6357B5F /* NanumGothicExtraBold.ttf */ = {isa = PBXFileReference; name = "NanumGothicExtraBold.ttf"; path = "../assets/Fonts/NanumGothicExtraBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		1866C4AB77334498ABCDD70F /* NanumGothicLight.ttf */ = {isa = PBXFileReference; name = "NanumGothicLight.ttf"; path = "../assets/Fonts/NanumGothicLight.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -298,6 +364,39 @@
 				CBA72B3AA2A24F6BAA08D119 /* SUIT-Regular.ttf */,
 				15EF8401350A4AFA9A4AF950 /* SUIT-SemiBold.ttf */,
 				79B0518674AE47C698F3E985 /* SUIT-Thin.ttf */,
+				0F9BE7BD4E404A9286FF7F2C /* MinSans-Black.otf */,
+				36D5523103F9437B852A14A3 /* MinSans-Bold.otf */,
+				C8841E57D7574F0DB009ABD0 /* MinSans-ExtraBold.otf */,
+				43DB10ACA8634660B2A68673 /* MinSans-ExtraLight.otf */,
+				E74AF2065AB44191B7EC9BAB /* MinSans-Light.otf */,
+				BF3F799A693E474F851B9A6F /* MinSans-Medium.otf */,
+				8E7F075F29124AFD92C7A9E2 /* MinSans-Regular.otf */,
+				240E9D4C7C0444139AFADF35 /* MinSans-SemiBold.otf */,
+				BD2F65E4B3464036AEDCD186 /* MinSans-Thin.otf */,
+				F288479F043C474F9454B90B /* LINESeedKR-Bd.ttf */,
+				5363C0BAA8F64BB58D109023 /* LINESeedKR-Rg.ttf */,
+				A847FDB013BB4335A8B6F61F /* LINESeedKR-Th.ttf */,
+				DF23E12441FB4CE3AE8A2891 /* NanumSquareNeo-aLt.ttf */,
+				04C95A76784640CC8BC3BFBF /* NanumSquareNeo-bRg.ttf */,
+				A738AED4DEE84C208547B5D5 /* NanumSquareNeo-cBd.ttf */,
+				39617B721E914EB085EF0D32 /* NanumSquareNeo-dEb.ttf */,
+				E6EA7AC913AC4ACC93419357 /* NanumSquareNeo-eHv.ttf */,
+				C545BB8CA93C4E298B752D90 /* LeferiBaseBold.ttf */,
+				CEC3509FF580404E929E23C4 /* LeferiBaseRegular.ttf */,
+				857B842AB86345E48853F8C5 /* LeferiPointBlack.ttf */,
+				51571B8F2C9748278B0B6A40 /* LeferiPointBlackOblique.ttf */,
+				0A71CABCCB1548B2A5A157F6 /* LeferiPointSpecial.ttf */,
+				8FD5175C649743EF9E413CC7 /* LeferiPointSpecialItalic.ttf */,
+				635259A641884D37BB4AA607 /* LeferiPointWhite.ttf */,
+				E83B15163E054EEA8844351B /* LeferiPointWhiteOblique.ttf */,
+				6C2063B4FD7F452991CA0A81 /* Cafe24Ssurround-v2.0.ttf */,
+				F6F5AB65A9CB45C79C8EB9BD /* DalseoDarling.ttf */,
+				ABB8AD2B76A2418FB76A79CF /* DalseoHealingBold.ttf */,
+				0C0EE0C577EF4D3BB31EF36E /* DalseoHealingMedium.ttf */,
+				C64562F82DAA4057BD81D78B /* NanumGothic.ttf */,
+				1766730A391C47A9B5090116 /* NanumGothicBold.ttf */,
+				ECEA0C13C18142B4B6357B5F /* NanumGothicExtraBold.ttf */,
+				1866C4AB77334498ABCDD70F /* NanumGothicLight.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -446,6 +545,39 @@
 				D71B7FD739F64672A557F7EF /* SUIT-Regular.ttf in Resources */,
 				08C7509F86DC440BBB1C7212 /* SUIT-SemiBold.ttf in Resources */,
 				8EA51573D71F485DAEC10FE8 /* SUIT-Thin.ttf in Resources */,
+				27D783E26D684A818E0F1820 /* MinSans-Black.otf in Resources */,
+				83AE6707E5F6488CA32BB7B7 /* MinSans-Bold.otf in Resources */,
+				EC5F84CFFC9E4C3D869B8585 /* MinSans-ExtraBold.otf in Resources */,
+				3585715ED3F9448D91DD778D /* MinSans-ExtraLight.otf in Resources */,
+				B815820550FD45E4A123822A /* MinSans-Light.otf in Resources */,
+				0F4A6DFEA56F45328306D56E /* MinSans-Medium.otf in Resources */,
+				27F2BFBAF0134A74B0848760 /* MinSans-Regular.otf in Resources */,
+				7CE6AA7BC7C24237BA5A5BF9 /* MinSans-SemiBold.otf in Resources */,
+				7FBD5215D9ED45A4818DFA07 /* MinSans-Thin.otf in Resources */,
+				FD9FC02061C445D7BB0F2FEE /* LINESeedKR-Bd.ttf in Resources */,
+				828C2265A3054C789FC5A7C5 /* LINESeedKR-Rg.ttf in Resources */,
+				009683E865D04DF0B67598E0 /* LINESeedKR-Th.ttf in Resources */,
+				F14A0013768D404A81750AA0 /* NanumSquareNeo-aLt.ttf in Resources */,
+				139EE6AAC47F458D8947384C /* NanumSquareNeo-bRg.ttf in Resources */,
+				9940284CFEAC4F4A8377C6FA /* NanumSquareNeo-cBd.ttf in Resources */,
+				605D75526A22456A8C2C4B99 /* NanumSquareNeo-dEb.ttf in Resources */,
+				BEFEB1BDC4284340AB89B15E /* NanumSquareNeo-eHv.ttf in Resources */,
+				1454338EB74B45878612EC36 /* LeferiBaseBold.ttf in Resources */,
+				F733DE8CDD0748A1B59CCC8B /* LeferiBaseRegular.ttf in Resources */,
+				45530FBCA9314016A0E4A7E2 /* LeferiPointBlack.ttf in Resources */,
+				6E307F94D6664558986C7C8F /* LeferiPointBlackOblique.ttf in Resources */,
+				D44D70FA1CFA4C93B3B33AF7 /* LeferiPointSpecial.ttf in Resources */,
+				B60D24D19FCA4C8EBA567CE4 /* LeferiPointSpecialItalic.ttf in Resources */,
+				1953407A4F134AF68C7354A0 /* LeferiPointWhite.ttf in Resources */,
+				356F99037FF64B8B94DC1D65 /* LeferiPointWhiteOblique.ttf in Resources */,
+				052FFF77F2D442E8911098D2 /* Cafe24Ssurround-v2.0.ttf in Resources */,
+				709F524B293E48AD9DCAE6D2 /* DalseoDarling.ttf in Resources */,
+				8B17CD21EB9F4CEF98C881AE /* DalseoHealingBold.ttf in Resources */,
+				FFB8890BC53D443496A6C558 /* DalseoHealingMedium.ttf in Resources */,
+				6B63B5A4B9054AFC8F41B2D4 /* NanumGothic.ttf in Resources */,
+				0AA177C55AA14241BA2700E7 /* NanumGothicBold.ttf in Resources */,
+				72F8AB06F08E42AE83844EDB /* NanumGothicExtraBold.ttf in Resources */,
+				00C837E574C14D8DB3CC97F7 /* NanumGothicLight.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

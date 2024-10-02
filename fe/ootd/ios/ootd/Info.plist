@@ -97,6 +97,39 @@
 		<string>SUIT-Regular.ttf</string>
 		<string>SUIT-SemiBold.ttf</string>
 		<string>SUIT-Thin.ttf</string>
+		<string>MinSans-Black.otf</string>
+		<string>MinSans-Bold.otf</string>
+		<string>MinSans-ExtraBold.otf</string>
+		<string>MinSans-ExtraLight.otf</string>
+		<string>MinSans-Light.otf</string>
+		<string>MinSans-Medium.otf</string>
+		<string>MinSans-Regular.otf</string>
+		<string>MinSans-SemiBold.otf</string>
+		<string>MinSans-Thin.otf</string>
+		<string>LINESeedKR-Bd.ttf</string>
+		<string>LINESeedKR-Rg.ttf</string>
+		<string>LINESeedKR-Th.ttf</string>
+		<string>NanumSquareNeo-aLt.ttf</string>
+		<string>NanumSquareNeo-bRg.ttf</string>
+		<string>NanumSquareNeo-cBd.ttf</string>
+		<string>NanumSquareNeo-dEb.ttf</string>
+		<string>NanumSquareNeo-eHv.ttf</string>
+		<string>LeferiBaseBold.ttf</string>
+		<string>LeferiBaseRegular.ttf</string>
+		<string>LeferiPointBlack.ttf</string>
+		<string>LeferiPointBlackOblique.ttf</string>
+		<string>LeferiPointSpecial.ttf</string>
+		<string>LeferiPointSpecialItalic.ttf</string>
+		<string>LeferiPointWhite.ttf</string>
+		<string>LeferiPointWhiteOblique.ttf</string>
+		<string>Cafe24Ssurround-v2.0.ttf</string>
+		<string>DalseoDarling.ttf</string>
+		<string>DalseoHealingBold.ttf</string>
+		<string>DalseoHealingMedium.ttf</string>
+		<string>NanumGothic.ttf</string>
+		<string>NanumGothicBold.ttf</string>
+		<string>NanumGothicExtraBold.ttf</string>
+		<string>NanumGothicLight.ttf</string>
 	</array>
 </dict>
 </plist>

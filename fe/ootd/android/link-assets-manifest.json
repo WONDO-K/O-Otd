@@ -2,6 +2,22 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "assets/Fonts/Cafe24Ssurround-v2.0.ttf",
+      "sha1": "2190407dfb0804fcac3dc52f40e8e639ae2f32ea"
+    },
+    {
+      "path": "assets/Fonts/DalseoDarling.ttf",
+      "sha1": "eabbd820ecbe8456e6c2b591f679b64c9e9528a0"
+    },
+    {
+      "path": "assets/Fonts/DalseoHealingBold.ttf",
+      "sha1": "933b44872a76b6f028d80c0548683cceb7ac7670"
+    },
+    {
+      "path": "assets/Fonts/DalseoHealingMedium.ttf",
+      "sha1": "4fd39049099a40970494e24ddc2461cf6414259f"
+    },
+    {
       "path": "assets/Fonts/Freesentation-1Thin.ttf",
       "sha1": "bf1d096796acef16c67c9d946864d7a20cefbd9d"
     },
@@ -48,6 +64,122 @@
     {
       "path": "assets/Fonts/GmarketSansTTFMedium.ttf",
       "sha1": "abf7d6ce1869bad059315fc748aa2d5d56d00892"
+    },
+    {
+      "path": "assets/Fonts/LeferiBaseBold.ttf",
+      "sha1": "f9998b5d62297a408d3a4ad9c236b4d8c38e7874"
+    },
+    {
+      "path": "assets/Fonts/LeferiBaseRegular.ttf",
+      "sha1": "52e203fdfd44632999b1d9118aec84bb4fbc5496"
+    },
+    {
+      "path": "assets/Fonts/LeferiPointBlack.ttf",
+      "sha1": "0235fd0850296ef546aa1583205c60c4c8ee6190"
+    },
+    {
+      "path": "assets/Fonts/LeferiPointBlackOblique.ttf",
+      "sha1": "13f7822d6c24bdec5cfec780a2b5ab26147d6692"
+    },
+    {
+      "path": "assets/Fonts/LeferiPointSpecial.ttf",
+      "sha1": "040f28a1037e352613b3b8315c338891e53bd1d9"
+    },
+    {
+      "path": "assets/Fonts/LeferiPointSpecialItalic.ttf",
+      "sha1": "7212caa005e598e33401112462e7e9cc1fd0d970"
+    },
+    {
+      "path": "assets/Fonts/LeferiPointWhite.ttf",
+      "sha1": "9dba58cf075dcc89056d802b0cd8179d450d42c3"
+    },
+    {
+      "path": "assets/Fonts/LeferiPointWhiteOblique.ttf",
+      "sha1": "f1f52c050c9082598587ca123c3994aed2d071a0"
+    },
+    {
+      "path": "assets/Fonts/LINESeedKR-Bd.ttf",
+      "sha1": "ee5404f4e209715299cfb718e357e59cf11b3655"
+    },
+    {
+      "path": "assets/Fonts/LINESeedKR-Rg.ttf",
+      "sha1": "7bbcea92cc33a051af96a9374200e65c3a3873b4"
+    },
+    {
+      "path": "assets/Fonts/LINESeedKR-Th.ttf",
+      "sha1": "9033c28c18fb37e71eebae4d3180140983871e96"
+    },
+    {
+      "path": "assets/Fonts/MinSans-Black.otf",
+      "sha1": "99bd512bf2bffea2414e6a364764e052eb8de18c"
+    },
+    {
+      "path": "assets/Fonts/MinSans-Bold.otf",
+      "sha1": "2dc3285904b4de3d4e1d0c4dca8bd3e3330b00b0"
+    },
+    {
+      "path": "assets/Fonts/MinSans-ExtraBold.otf",
+      "sha1": "e941b7d999da7f27b89389c762005373f62a77e9"
+    },
+    {
+      "path": "assets/Fonts/MinSans-ExtraLight.otf",
+      "sha1": "74de50b980968ec41a6684cbde7161f33fb20417"
+    },
+    {
+      "path": "assets/Fonts/MinSans-Light.otf",
+      "sha1": "066c59d6db13d596c60ead08fecc4a75a75cbdef"
+    },
+    {
+      "path": "assets/Fonts/MinSans-Medium.otf",
+      "sha1": "81f42c11452c665c015cf37e31f69c2468ba9b11"
+    },
+    {
+      "path": "assets/Fonts/MinSans-Regular.otf",
+      "sha1": "57305ea67ec58bd00a00b4b791925967d0340a86"
+    },
+    {
+      "path": "assets/Fonts/MinSans-SemiBold.otf",
+      "sha1": "376761c211b571726c17eebe6820ba5b0191d50b"
+    },
+    {
+      "path": "assets/Fonts/MinSans-Thin.otf",
+      "sha1": "d5e09baa2fd14554e336e37196b92136658c123c"
+    },
+    {
+      "path": "assets/Fonts/NanumGothic.ttf",
+      "sha1": "6b61cdb4fe859e3932437d6d816c1944daeff1b2"
+    },
+    {
+      "path": "assets/Fonts/NanumGothicBold.ttf",
+      "sha1": "f892d26a11d118ca76a00901390f611c34bbf62d"
+    },
+    {
+      "path": "assets/Fonts/NanumGothicExtraBold.ttf",
+      "sha1": "974116089db0e8c0e19b62a6a280908cbe3fafba"
+    },
+    {
+      "path": "assets/Fonts/NanumGothicLight.ttf",
+      "sha1": "451faa2221d1613e646a95bc646cce556a7f1758"
+    },
+    {
+      "path": "assets/Fonts/NanumSquareNeo-aLt.ttf",
+      "sha1": "75613883b6ec50b2338881b5f4485d0f41d0b87e"
+    },
+    {
+      "path": "assets/Fonts/NanumSquareNeo-bRg.ttf",
+      "sha1": "71fe16804bfb047541786372fb85e7c0d5bc210c"
+    },
+    {
+      "path": "assets/Fonts/NanumSquareNeo-cBd.ttf",
+      "sha1": "cd9e58031c41271195ad793ae6443f7ee7e9f1c1"
+    },
+    {
+      "path": "assets/Fonts/NanumSquareNeo-dEb.ttf",
+      "sha1": "578941cfc4bf2ad7a06922b8bf16ca25fdb1e959"
+    },
+    {
+      "path": "assets/Fonts/NanumSquareNeo-eHv.ttf",
+      "sha1": "55ed11e0bfa2165291ffcfdffb3d9ce17d50e3db"
     },
     {
       "path": "assets/Fonts/Paperlogy-1Thin.ttf",
