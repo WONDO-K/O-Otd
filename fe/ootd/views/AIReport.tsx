@@ -28,7 +28,7 @@ function AIReport(): React.JSX.Element {
   const getMyFashion = async () => {
       // 실제 API 호출 부분
       // try {
-      //     const response = await axios.get('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
+      //     const response = await axios.get('');
       //     setMyFashion(response.data);
       // } catch (error) {
       //     console.error('Error fetching my fashion:', error);
