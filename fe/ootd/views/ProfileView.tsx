@@ -126,7 +126,10 @@ const getPictureList = (category: string, sort: string) => {
   // }, []);
 
   return (
-    <>
+    <ImageBackground
+      source={require('../assets/Images/bg_img.jpg')} // 배경 이미지 경로
+      style={styles.background} // 배경 스타일 설정
+    >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
         <TouchableOpacity style={styles.nicknameBox}>
@@ -319,86 +322,8 @@ const getPictureList = (category: string, sort: string) => {
       </View>
     </View>
 
-      {/* <View style={styles.profileSort}>
-      {selectedCategory === '마이 패션' && ['최신순', '출전 수', '승리 수'].map((sort) => (
-        <TouchableOpacity
-          key={sort}
-          style={[
-            styles.profileSortButton,
-            {
-              backgroundColor: selectedSort === sort ? 'white' : 'gray',
-            },
-          ]}
-          onPress={() => selectSort(sort)}
-        >
-          <Text style={styles.profileSortButtonText}>{sort}</Text>
-        </TouchableOpacity>
-      ))}
-
-      {selectedCategory === '마이 갤러리' && ['최신순', '인기순'].map((sort) => (
-        <TouchableOpacity
-          key={sort}
-          style={[
-            styles.profileSortButton,
-            {
-              backgroundColor: selectedSort === sort ? 'white' : 'gray',
-            },
-          ]}
-          onPress={() => selectSort(sort)}
-        >
-          <Text style={styles.profileSortButtonText}>{sort}</Text>
-        </TouchableOpacity>
-      ))}
-
-      {selectedCategory === '마이 문철' && ['최신순', '투표 수'].map((sort) => (
-        <TouchableOpacity
-          key={sort}
-          style={[
-            styles.profileSortButton,
-            {
-              backgroundColor: selectedSort === sort ? 'white' : 'gray',
-            },
-          ]}
-          onPress={() => selectSort(sort)}
-        >
-          <Text style={styles.profileSortButtonText}>{sort}</Text>
-        </TouchableOpacity>
-        ))}
-      </View>
- */}
-
-
-
-        {/* <FlatList
-          style={{marginTop: 20}}
-          data={myFashion}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.notificationItem}>
-              <ImageBackground
-                source={item.src}
-                style={styles.notificationImage}
-                resizeMode="cover"
-              >
-                <TouchableOpacity
-                  style={styles.bookmarkIcon}
-                  onPress={() => toggleBookmark(item.id)}
-                >
-                {bookmarked[item.id] ? (
-                  <WishFullIcon width={30} height={40} /> // 북마크가 활성화된 경우
-                ) : (
-                  <WishIcon width={30} height={40} /> // 비활성화된 경우
-                )}
-                </TouchableOpacity>
-              </ImageBackground>
-            </View>
-          )}
-          numColumns={2}
-        />
-
-      </View> */}
       </ScrollView>
-      </>
+    </ImageBackground>
   );
 }
 
@@ -408,11 +333,11 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     resizeMode: 'cover',
     alignItems: 'center',
-    backgroundColor: '#121212',
     flex: 1,
   },
-  backgroundImage: {
-    flex: 1, // 화면 전체를 덮도록 설정
+  background: {
+    flex: 1,
+    resizeMode: 'cover', // 배경 이미지를 뷰에 맞게 조정
   },
   scrollContainer: {
     flexGrow: 1,  // ScrollView의 내용이 화면을 넘어가도 스크롤 가능하도록 설정
@@ -467,27 +392,7 @@ const styles = StyleSheet.create({
     width: '100%', // 선의 길이를 부모의 너비로 설정
     marginTop: 10,
   },
-
-  profileTab:{
-    backgroundColor: '#121212',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 30,
-    paddingTop: 10,
-    borderBottomWidth: 1,
-    borderColor: 'gray',
-  },
-  // profileCategory:{
-  //     display: 'flex',
-  //     flexDirection: 'row',
-  //     justifyContent:'space-around',
-  //     alignItems: 'center',
-  //     width: '100%',
-  //     height: 40,
-  //     marginBottom: 5,
-  // },
-  profileCategoryButton:{ 
+  profileCategoryButton:{
       width: "90%",
       height: 40,
       justifyContent: 'center',
