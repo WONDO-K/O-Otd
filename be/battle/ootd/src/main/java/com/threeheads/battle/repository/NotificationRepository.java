@@ -23,5 +23,5 @@ public interface NotificationRepository extends JpaRepository<Notification, Long
      * @param userId 사용자 ID
      * @return 읽지 않은 알림 수
      */
-    long countByUserIdAndReadFalse(Long userId);
+    long countByUserIdAndIsReadFalse(Long userId);
 }

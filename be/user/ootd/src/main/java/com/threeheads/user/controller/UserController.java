@@ -29,7 +29,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/user-service")
+//@RequestMapping("/user-service")
 @Tag(name = "UserController", description = "유저 및 인증 관련 API")
 public class UserController {
 
@@ -93,6 +93,7 @@ public class UserController {
     @GetMapping("/myinfo")
     @Operation(summary = "내 정보 조회", description = "현재 로그인된 사용자의 정보를 반환합니다.")
     public ResponseEntity<UserResponseDto> getMyInfo() {
+        log.info("내 정보 조회 호출");
         UserResponseDto userDto = userService.getMyInfo();
         return ResponseEntity.ok(userDto);
     }
@@ -106,7 +107,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUser);
     }
 
-    @PutMapping("/update/userInfo")
+    @PutMapping("/update/userinfo")
     @Operation(summary = "회원 정보 수정", description = "회원 정보 수정")
     public ResponseEntity<?> updateUserInfo(@RequestBody UserUpdateRequestDto request,
                                             @AuthenticationPrincipal UserDetails userDetails) {

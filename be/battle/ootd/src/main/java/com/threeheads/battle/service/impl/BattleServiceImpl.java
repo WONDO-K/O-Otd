@@ -147,7 +147,7 @@ public class BattleServiceImpl implements BattleService {
                     .title("배틀 수락")
                     .message("배틀이 수락되었습니다.")
                     .timestamp(LocalDateTime.now())
-                    .read(false)
+                    .isRead(false)
                     .build();
             notificationService.sendNotification(battle.getRequesterId(), acceptNotification);
 
@@ -156,7 +156,7 @@ public class BattleServiceImpl implements BattleService {
                     .title("배틀 시작")
                     .message("배틀이 시작되었습니다!")
                     .timestamp(LocalDateTime.now())
-                    .read(false)
+                    .isRead(false)
                     .build();
             notificationService.sendNotification(battle.getResponderId(), startNotification);
 
@@ -175,7 +175,7 @@ public class BattleServiceImpl implements BattleService {
                     .title("배틀 거절")
                     .message("배틀이 거절되었습니다.")
                     .timestamp(LocalDateTime.now())
-                    .read(false)
+                    .isRead(false)
                     .build();
             notificationService.sendNotification(battle.getRequesterId(), cancelNotification);
 
@@ -184,7 +184,7 @@ public class BattleServiceImpl implements BattleService {
                     .title("배틀 거절")
                     .message("배틀이 거절되었습니다.")
                     .timestamp(LocalDateTime.now())
-                    .read(false)
+                    .isRead(false)
                     .build();
             notificationService.sendNotification(battle.getResponderId(), cancelResponderNotification);
 
@@ -335,7 +335,7 @@ public class BattleServiceImpl implements BattleService {
 
     @Override
     public List<BattleDto> getCompletedBattlesByCompletionTime() {
-        List<Battle> battles = battleRepository.findByStatusOrderByCompletedAtDesc(BattleStatus.COMPLETED);
+        List<Battle> battles = battleRepository.findByStatusOrderByExpiresAtDesc(BattleStatus.COMPLETED);
         List<BattleDto> battleDtos = battles.stream()
                 .map(battleMapper::toDto)
                 .collect(Collectors.toList());

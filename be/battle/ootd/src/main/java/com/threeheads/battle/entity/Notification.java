@@ -34,5 +34,5 @@ public class Notification {
     private LocalDateTime timestamp; // 알림 발생 시간
 
     @Column(nullable = false)
-    private boolean read; // 알림 읽음 여부
+    private boolean isRead; // 알림 읽음 여부
 }

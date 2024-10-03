@@ -36,7 +36,6 @@ out/
 ### VS Code ###
 .vscode/
 
+### application.propertise
 .env
-
 application.yml
-docker-compose-gateway.yml

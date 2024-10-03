@@ -90,7 +90,7 @@ public class BattleCompletionJob implements Job {
                 .title(title)
                 .message(message)
                 .timestamp(LocalDateTime.now())
-                .read(false)
+                .isRead(false)
                 .build();
 
         NotificationDto notificationResponder = NotificationDto.builder()
@@ -98,7 +98,7 @@ public class BattleCompletionJob implements Job {
                 .title(title)
                 .message(message)
                 .timestamp(LocalDateTime.now())
-                .read(false)
+                .isRead(false)
                 .build();
 
         notificationService.sendNotification(requesterId, notificationRequester);

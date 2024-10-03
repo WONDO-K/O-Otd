@@ -58,7 +58,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .title(notificationDto.getTitle())
                 .message(notificationDto.getMessage())
                 .timestamp(notificationDto.getTimestamp())
-                .read(false) // 새로운 알림은 읽지 않은 상태로 설정
+                .isRead(false) // 새로운 알림은 읽지 않은 상태로 설정
                 .build();
         notificationRepository.save(notification);
         logger.info("데이터베이스에 알림이 저장되었습니다: {}", notification);
@@ -86,7 +86,7 @@ public class NotificationServiceImpl implements NotificationService {
                         .title(notification.getTitle())
                         .message(notification.getMessage())
                         .timestamp(notification.getTimestamp())
-                        .read(notification.isRead())
+                        .isRead(notification.isRead())
                         .build())
                 .collect(Collectors.toList());
         logger.info("사용자 ID {}의 알림 히스토리가 조회되었습니다. 총 {}개의 알림.", userId, notificationDtos.size());
@@ -100,7 +100,7 @@ public class NotificationServiceImpl implements NotificationService {
      */
     @Override
     public long countUnreadNotifications(Long userId) {
-        long count = notificationRepository.countByUserIdAndReadFalse(userId);
+        long count = notificationRepository.countByUserIdAndIsReadFalse(userId);
         logger.info("사용자 ID {}의 읽지 않은 알림 수: {}", userId, count);
         return count;
     }

@@ -51,6 +51,7 @@ dependencies {
 	// Spring Cloud Gateway (WebFlux 기반)
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
 	implementation 'org.springframework.cloud:spring-cloud-starter-gateway'
+	implementation 'org.springframework.cloud:spring-cloud-starter-loadbalancer'
 
 	// Lombok
 	compileOnly 'org.projectlombok:lombok'

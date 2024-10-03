@@ -40,6 +40,6 @@ out/
 
 
 ### application.propertise
-application.properties
 application.yml
-
+application-oauth.yml
+docker-compose-battle.yml

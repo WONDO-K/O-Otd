@@ -5,24 +5,25 @@ services:
     image: mysql:8.0
     container_name: user_db_container  # 직접 하드코딩
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}  # TODO: 환경 변수로 설정 (MySQL 루트 비밀번호를 환경 변수로 관리)
+      MYSQL_DATABASE: ${MYSQL_DATABASE}  # TODO: 환경 변수로 설정 (MySQL 데이터베이스 이름을 환경 변수로 관리)
     volumes:
       - ootd_user_mysql_data:/var/lib/mysql
     ports:
-      - "${USER_DB_PORT}:3306"
+      - "${USER_DB_PORT}:3306"  # TODO: 데이터베이스 포트를 환경 변수로 관리
     networks:
       - ootd-user-network
+
   redis:
     image: redis:latest
-    command: redis-server --requirepass ootd201104
+    command: redis-server --requirepass ootd201104  # TODO: Redis 비밀번호를 환경 변수로 설정
     container_name: redis_container
     ports:
       - "6379:6379"
     networks:
-      - ootd-user-network # 네트워크 설정 추가
+      - ootd-user-network  # 네트워크 설정 추가
     healthcheck:
-      test: ["CMD", "redis-cli", "-a", "ootd201104", "ping"]
+      test: ["CMD", "redis-cli", "-a", "ootd201104", "ping"]  # TODO: Redis 비밀번호를 환경 변수로 설정
       interval: 10s
       timeout: 5s
       retries: 3
