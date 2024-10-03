@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, Image, StyleSheet, FlatList } from 'react-native';
+import { Text, View, TouchableOpacity, Image, StyleSheet, FlatList, ImageBackground } from 'react-native';
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
 import MyFashionIcon from '../assets/Icons/MyFashion_Icon.svg';
@@ -127,83 +127,95 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
     }, []);
 
     return (
-        <View style={styles.container}>
-            <TouchableOpacity 
-                style={styles.imageIconBox}
-                onPress={() => navigation.goBack()}
-            >
-                <UploadIcon width={25} height={25} />
-            </TouchableOpacity>
-
-            {/* 카테고리 선택 버튼 */}
-            <View style={styles.categoryContainer}>
-                <TouchableOpacity onPress={() => setSelectedCategory('myFashion')}>
-                    <MyFashionIcon 
-                        width={30} 
-                        height={30} 
-                        fill={selectedCategory === 'myFashion' ? 'white' : 'gray'}
-                    />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setSelectedCategory('myCollection')}>
-                    <WishIcon 
-                        width={30} 
-                        height={30}
-                        fill={selectedCategory === 'myCollection' ? 'white' : 'gray'} 
-                    />
-                </TouchableOpacity>
-            </View>
-
-            {/* 정렬 버튼 */}
-            <View style={styles.battleSort}>
-                <TouchableOpacity
-                    style={[styles.battleSortButton, { backgroundColor: selectedSort === '최신순' ? 'white' : 'gray' }]}
-                    onPress={() => setSelectedSort('최신순')}
+        <ImageBackground 
+            source={require('../assets/Images/bg_img.jpg')}  // 배경 이미지 경로 설정
+            style={styles.background}  // 스타일 설정
+        >
+            <View style={styles.container}>
+                <TouchableOpacity 
+                    style={styles.imageIconBox}
+                    onPress={() => navigation.goBack()}
                 >
-                    <Text style={styles.battleSortButtonText}>최신순</Text>
+                    <UploadIcon width={25} height={25} />
                 </TouchableOpacity>
-                <TouchableOpacity
-                    style={[styles.battleSortButton, { backgroundColor: selectedSort === '인기순' ? 'white' : 'gray' }]}
-                    onPress={() => setSelectedSort('인기순')}
-                >
-                    <Text style={styles.battleSortButtonText}>인기순</Text>
-                </TouchableOpacity>
-            </View>
 
-            {/* 이미지 리스트 */}
-            <FlatList
-                data={fashionList}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                    <TouchableOpacity
-                        style={styles.notificationItem}
-                        onPress={() => {
-                            if (route.params?.setFor === 'main') {
-                                route.params.setMainImage(item.imageUrl);
-                            } else if (route.params?.setFor === 'sub') {
-                                route.params.setSubImage(item.imageUrl);
-                            }
-                            navigation.goBack();
-                        }}
-                    >
-                        <Image style={styles.notificationImage} source={{ uri: item.imageUrl }} />
+                {/* 카테고리 선택 버튼 */}
+                <View style={styles.categoryContainer}>
+                    <TouchableOpacity onPress={() => setSelectedCategory('myFashion')}>
+                        <MyFashionIcon 
+                            width={30} 
+                            height={30} 
+                            fill={selectedCategory === 'myFashion' ? 'white' : 'gray'}
+                        />
                     </TouchableOpacity>
-                )}
-                numColumns={2}
-            />
-        </View>
+                    <TouchableOpacity onPress={() => setSelectedCategory('myCollection')}>
+                        <WishIcon 
+                            width={30} 
+                            height={30}
+                            fill={selectedCategory === 'myCollection' ? 'white' : 'gray'} 
+                        />
+                    </TouchableOpacity>
+                </View>
+
+                {/* 정렬 버튼 */}
+                <View style={styles.battleSort}>
+                    <TouchableOpacity
+                        style={[styles.battleSortButton, { backgroundColor: selectedSort === '최신순' ? 'white' : 'gray' }]}
+                        onPress={() => setSelectedSort('최신순')}
+                    >
+                        <Text style={styles.battleSortButtonText}>최신순</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.battleSortButton, { backgroundColor: selectedSort === '인기순' ? 'white' : 'gray' }]}
+                        onPress={() => setSelectedSort('인기순')}
+                    >
+                        <Text style={styles.battleSortButtonText}>인기순</Text>
+                    </TouchableOpacity>
+                </View>
+
+                {/* 이미지 리스트 */}
+                <FlatList
+                    data={fashionList}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity
+                            style={styles.notificationItem}
+                            onPress={() => {
+                                if (route.params?.setFor === 'main') {
+                                    route.params.setMainImage(item.imageUrl);
+                                } else if (route.params?.setFor === 'sub') {
+                                    route.params.setSubImage(item.imageUrl);
+                                }
+                                navigation.goBack();
+                            }}
+                        >
+                            <Image style={styles.notificationImage} source={{ uri: item.imageUrl }} />
+                        </TouchableOpacity>
+                    )}
+                    numColumns={2}
+                />
+            </View>
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        resizeMode: 'cover', // 배경 이미지가 뷰의 크기에 맞게 조정됨
+    },
     container: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#121212',
+        // backgroundColor: '#121212',
     },
     imageIconBox: {
-        borderColor: '#0D99FF',
-        borderWidth: 5,
+        // borderColor: '#ffffff',
+        // borderWidth: 5,
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
+        shadowColor: 'black', // 그림자 색상
         borderRadius: 10,
         padding: 30,
         margin: 30,

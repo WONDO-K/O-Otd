@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Image, FlatList } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Image, FlatList, ImageBackground } from 'react-native';
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
 import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -32,6 +32,10 @@ function StyleView({ navigation, route }): React.JSX.Element {
     const isButtonDisabled = !mainImage || !subImage;
 
     return (
+        <ImageBackground 
+            source={require('../assets/Images/bg_img.jpg')}  // 배경 이미지 경로 설정
+            style={styles.background}  // 스타일 설정
+        >
         <ScrollView style={styles.container}>
             <View style={styles.recommend}>
                 <TitleText style={styles.title}><TitleBoldText>AI</TitleBoldText> Style Maker</TitleText>
@@ -93,13 +97,18 @@ function StyleView({ navigation, route }): React.JSX.Element {
                 </View>
             )}
         </ScrollView>
+    </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        resizeMode: 'cover', // 배경 이미지가 뷰의 크기에 맞게 조정됨
+    },
     container: {
         flex: 1,
-        backgroundColor: '#121212',
+        // backgroundColor: '#121212',
     },
     recommend: {
         marginTop: 40,
@@ -132,11 +141,17 @@ const styles = StyleSheet.create({
             { rotateY: '10deg' }
         ],
         zIndex: 1,
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
+        shadowColor: 'black', // 그림자 색상
     },
     subImage: {
         width: 150,
         height: 200,
-        backgroundColor: '#121212',
+        // backgroundColor: '#121212',
+        backgroundColor: 'rgba(88, 88, 88, 0.7)',
+        elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
+        shadowColor: 'black', // 그림자 색상
         borderColor: 'white',
         borderWidth: 5,
         borderRadius: 10,
