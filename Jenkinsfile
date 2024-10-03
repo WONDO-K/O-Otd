@@ -216,8 +216,8 @@ pipeline {
 def getChangedServices(services) {
     def changedServices = []
     
-    changedServices.add("eureka")
-    changedServices.add("apigateway")
+    // changedServices.add("eureka")
+    // changedServices.add("apigateway")
     changedServices.add("user")
     for (service in services) {
         def changes = sh(script: "git diff --name-only HEAD~1 HEAD | grep 'be/${service}' || true", returnStdout: true).trim()
