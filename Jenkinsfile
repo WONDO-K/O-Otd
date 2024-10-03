@@ -71,7 +71,7 @@ pipeline {
             steps {
                 script {
                     // getChangedServices를 한 번만 호출하여 전역 변수에 저장
-                    def services = ['user', 'battle', 'gallery']
+                    def services = ['apigateway','eureka','user', 'battle', 'gallery']
                     changedServices = getChangedServices(services)
                     echo "Changed Services: ${changedServices}"
                 }
@@ -86,12 +86,12 @@ pipeline {
                         dir("be/${service}/ootd") {
                             // 설정 파일 복사
                             withCredentials([file(credentialsId: "ootd-be-${service}-properties", variable: 'properties')]) {
-                                echo "Copying application.properties for ${service}"
+                                echo "Copying application.yml for ${service}"
                                 sh 'pwd'
                                 sh 'ls'
                                 sh 'chmod +r $properties'
                                 sh 'chmod -R 777 src/main/resources'
-                                sh 'cp $properties src/main/resources/application.properties'
+                                sh 'cp $properties src/main/resources/application.yml'
                                 sh 'ls'
                             }
                             //docker-compose.yml 복사
@@ -105,6 +105,34 @@ pipeline {
 
                                     // Docker Compose 파일을 프로젝트 루트로 복사 (여기서 목적지 경로를 명시)
                                     sh "cp $compose ."
+
+                                    // 복사 후 작업 디렉토리의 파일 목록 출력
+                                    sh 'ls'
+                                }
+                            }
+                            if(service==user){
+                                withCredentials([file(credentialsId: "ootd-be-${service}-oauth", variable: 'properties')]) {
+                                    echo "Copying oauth.yml for ${service}"
+                                    sh 'pwd'
+                                    sh 'ls'
+                                    sh 'chmod +r $properties'
+                                    sh 'chmod -R 777 src/main/resources'
+                                    sh 'cp $properties src/main/resources/application-oauth.yml'
+                                    sh 'ls'
+                                }
+
+
+                            }
+                            if(service==user || service==battle){
+                                withCredentials([file(credentialsId: "ootd-be-${service}-env", variable: 'env')]) {
+                                    // 현재 작업 디렉토리 출력
+                                    sh 'pwd'
+
+                                    // 작업 디렉토리의 파일 목록 출력
+                                    sh 'ls'
+
+                                    // Docker Compose 파일을 프로젝트 루트로 복사 (여기서 목적지 경로를 명시)
+                                    sh "cp $env ."
 
                                     // 복사 후 작업 디렉토리의 파일 목록 출력
                                     sh 'ls'
@@ -198,8 +226,9 @@ def getChangedServices(services) {
 
 //fe
 def getChangedFe(){
-    if(sh(script: "git diff --name-only HEAD~1 HEAD | grep 'fe' || true", returnStdout: true).trim()){
-        return true
-    }
+    // if(sh(script: "git diff --name-only HEAD~1 HEAD | grep 'fe' || true", returnStdout: true).trim()){
+    //     return true
+    // }
+    // return false;
     return false;
 }
