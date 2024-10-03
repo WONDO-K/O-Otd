@@ -70,7 +70,7 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // 도커 개발 환경에서 사용, 추후 배포 환경에서 주소 변경 필요
-        configuration.setAllowedOrigins(List.of("https://j11e104.p.ssafy.io")); // 허용할 도메인 설정
+        configuration.setAllowedOrigins(List.of("https://j11e104.p.ssafy.io","http://j11e104.p.ssafy.io")); // 허용할 도메인 설정
         // TODO: 배포 환경에서는 실제 도메인으로 변경 필요
         // 예시: configuration.setAllowedOrigins(List.of("https://yourdomain.com"));
 
