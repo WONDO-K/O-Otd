@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, Switch, StyleSheet, ScrollView, Image } from 'react-native'; 
+import { Text, View, TouchableOpacity, Switch, StyleSheet, ScrollView, ImageBackground } from 'react-native'; 
 import { FlatList } from 'react-native-gesture-handler';
 import BattleIcon from '../assets/Icons/Battle_Icon.svg';
 import { TitleText } from '../components/CustomTexts';
@@ -161,114 +161,123 @@ function Battle({ navigation }): React.JSX.Element {
         }, [selectedCategory, selectedSort]);
   
     return (
-        <ScrollView style={styles.container}>
-            {/* 배틀 헤더 */}
-            <View style={styles.battleHeader}>
-                <TitleText style={styles.battleHeaderText}>
-                    Beyond U
-                </TitleText>
-            </View>
-            <TouchableOpacity style={styles.battleHeaderButton} onPress={() => navigation.navigate('Challenge')}>
-                <BattleIcon/>
-            </TouchableOpacity>
-            {/* 배틀 카테고리 */}
-            <View style={styles.battleTab}>
-                <View style={styles.battleCategory}>
-                    <TouchableOpacity
-                        style={styles.battleCategoryButton}
-                        onPress={() => selectCategory('진행 중')}
-                    >
-                        <Text
-                            style={[
-                                styles.battleCategoryButtonText,
+        <ImageBackground 
+            source={require('../assets/Images/bg_img.jpg')}  // 배경 이미지 경로 설정
+            style={styles.background}  // 스타일 설정
+        >
+            <ScrollView style={styles.container}>
+                {/* 배틀 헤더 */}
+                <View style={styles.battleHeader}>
+                    <TitleText style={styles.battleHeaderText}>
+                        Beyond U
+                    </TitleText>
+                </View>
+                <TouchableOpacity style={styles.battleHeaderButton} onPress={() => navigation.navigate('Challenge')}>
+                    <BattleIcon/>
+                </TouchableOpacity>
+                {/* 배틀 카테고리 */}
+                <View style={styles.battleTab}>
+                    <View style={styles.battleCategory}>
+                        <TouchableOpacity
+                            style={styles.battleCategoryButton}
+                            onPress={() => selectCategory('진행 중')}
+                        >
+                            <Text
+                                style={[
+                                    styles.battleCategoryButtonText,
+                                    {
+                                        color: selectedCategory === '진행 중' ? 'white' : 'gray',
+                                        padding: selectedCategory === '진행 중' ? 5 : 0,
+                                        borderBottomWidth: selectedCategory === '진행 중' ? 3 : 0,
+                                        borderColor: selectedCategory === '진행 중' ? 'white' : 'transparent',
+                                    },
+                                ]}
+                            >진행 중</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity 
+                            style={styles.battleCategoryButton}
+                            onPress={() => selectCategory('결과')}
+                        >
+                            <Text
+                                style={[
+                                    styles.battleCategoryButtonText,
+                                    {
+                                        color: selectedCategory === '결과' ? 'white' : 'gray',
+                                        padding: selectedCategory === '결과' ? 5 : 0,
+                                        borderBottomWidth: selectedCategory === '결과' ? 3 : 0,
+                                        borderColor: selectedCategory === '결과' ? 'white' : 'transparent',
+                                    },
+                                ]}
+                            >결과</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={styles.myBattle}>
+                        <Text style={styles.switchText}>My    </Text>
+                        <Switch
+                            trackColor={{ false: "#767577", true: "#81b0ff" }} // 트랙 색상 설정
+                            thumbColor={isEnabled ? "#ffffff" : "#ffffff"} // 스위치 원 색상 설정
+                            onValueChange={toggleSwitch} // 스위치가 변경될 때 호출되는 함수
+                            value={isEnabled} // 현재 스위치 상태
+                        />
+                    </View>
+                </View>
+                {/* 배틀 정렬 */}
+                <View style={styles.battleSort}>
+                    <TouchableOpacity style={[
+                                styles.battleSortButton,
                                 {
-                                    color: selectedCategory === '진행 중' ? 'white' : 'gray',
-                                    padding: selectedCategory === '진행 중' ? 5 : 0,
-                                    borderBottomWidth: selectedCategory === '진행 중' ? 3 : 0,
-                                    borderColor: selectedCategory === '진행 중' ? 'white' : 'transparent',
+                                    backgroundColor: selectedSort === '최신순' ? 'white' : 'gray',
                                 },
                             ]}
-                        >진행 중</Text>
+                            onPress={() => selectSort('최신순')}>
+                        <Text style={styles.battleSortButtonText}>최신순</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity 
-                        style={styles.battleCategoryButton}
-                        onPress={() => selectCategory('결과')}
-                    >
-                        <Text
-                            style={[
-                                styles.battleCategoryButtonText,
+                    <TouchableOpacity style={[
+                                styles.battleSortButton,
                                 {
-                                    color: selectedCategory === '결과' ? 'white' : 'gray',
-                                    padding: selectedCategory === '결과' ? 5 : 0,
-                                    borderBottomWidth: selectedCategory === '결과' ? 3 : 0,
-                                    borderColor: selectedCategory === '결과' ? 'white' : 'transparent',
+                                    backgroundColor: selectedSort === '인기순' ? 'white' : 'gray',
                                 },
                             ]}
-                        >결과</Text>
+                            onPress={() => selectSort('인기순')}>
+                        <Text style={styles.battleSortButtonText}>인기순</Text>
                     </TouchableOpacity>
                 </View>
-                <View style={styles.myBattle}>
-                    <Text style={styles.switchText}>My    </Text>
-                    <Switch
-                        trackColor={{ false: "#767577", true: "#81b0ff" }} // 트랙 색상 설정
-                        thumbColor={isEnabled ? "#ffffff" : "#ffffff"} // 스위치 원 색상 설정
-                        onValueChange={toggleSwitch} // 스위치가 변경될 때 호출되는 함수
-                        value={isEnabled} // 현재 스위치 상태
-                    />
-                </View>
-            </View>
-            {/* 배틀 정렬 */}
-            <View style={styles.battleSort}>
-                <TouchableOpacity style={[
-                            styles.battleSortButton,
-                            {
-                                backgroundColor: selectedSort === '최신순' ? 'white' : 'gray',
-                            },
-                        ]}
-                        onPress={() => selectSort('최신순')}>
-                    <Text style={styles.battleSortButtonText}>최신순</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[
-                            styles.battleSortButton,
-                            {
-                                backgroundColor: selectedSort === '인기순' ? 'white' : 'gray',
-                            },
-                        ]}
-                        onPress={() => selectSort('인기순')}>
-                    <Text style={styles.battleSortButtonText}>인기순</Text>
-                </TouchableOpacity>
-            </View>
-            {/* 배틀 목록 */}
-            <FlatList
-                data={battleList}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                    selectedCategory === '진행 중' ? (
-                        <BattleItemProgress
-                            item={item}
-                            onPress={() => navigation.navigate('BattleDetail', item)}
-                            calculateRemainingTime={calculateRemainingTime}
-                            nameSlice={nameSlice}
-                        />
-                    ) : (
-                        <BattleItemComplete
-                            item={item}
-                            onPress={() => navigation.navigate('BattleResult', item)}
-                            calculateRemainingTime={calculateRemainingTime}
-                            nameSlice={nameSlice}
-                        />
-                    )
-                )}
-                style={styles.battleList}
-                nestedScrollEnabled={true}
-            />
-        </ScrollView>
+                {/* 배틀 목록 */}
+                <FlatList
+                    data={battleList}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                        selectedCategory === '진행 중' ? (
+                            <BattleItemProgress
+                                item={item}
+                                onPress={() => navigation.navigate('BattleDetail', item)}
+                                calculateRemainingTime={calculateRemainingTime}
+                                nameSlice={nameSlice}
+                            />
+                        ) : (
+                            <BattleItemComplete
+                                item={item}
+                                onPress={() => navigation.navigate('BattleResult', item)}
+                                calculateRemainingTime={calculateRemainingTime}
+                                nameSlice={nameSlice}
+                            />
+                        )
+                    )}
+                    style={styles.battleList}
+                    nestedScrollEnabled={true}
+                />
+            </ScrollView>
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        resizeMode: 'cover', // 배경 이미지가 뷰의 크기에 맞게 조정됨
+    },
     container: {
-        backgroundColor: '#121212',
+        // backgroundColor: '#121212',
     },
     battleHeader: {
         display: 'flex',
@@ -297,7 +306,7 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     battleTab:{
-        backgroundColor: '#121212',
+        // backgroundColor: '#121212',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
