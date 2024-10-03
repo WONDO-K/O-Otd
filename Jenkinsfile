@@ -71,7 +71,7 @@ pipeline {
             steps {
                 script {
                     // getChangedServices를 한 번만 호출하여 전역 변수에 저장
-                    def services = ['apigateway','eureka','user', 'battle', 'gallery']
+                    def services = ['eureka','apigateway','user', 'battle', 'gallery']
                     changedServices = getChangedServices(services)
                     echo "Changed Services: ${changedServices}"
                 }
