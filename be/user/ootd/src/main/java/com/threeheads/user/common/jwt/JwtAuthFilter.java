@@ -24,7 +24,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.List;
-
 @RequiredArgsConstructor
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -34,12 +33,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // 추가: 모든 헤더 정보를 로그로 출력
-        Enumeration<String> headerNames = request.getHeaderNames();
-        while (headerNames.hasMoreElements()) {
-            String headerName = headerNames.nextElement();
-            log.info("들어온 Header: {} = {}", headerName, request.getHeader(headerName));
-        }
+        log.info("JwtAuthFilter 실행됨");
 
         // 헤더에서 사용자 정보를 가져옴 (게이트웨이에서 전달됨)
         String userId = request.getHeader("X-User-ID");
@@ -71,7 +65,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-
     public static SecurityUserDto getUser() {
         return (SecurityUserDto) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
@@ -83,6 +76,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         // /auth/ 또는 /user-service/auth/ 경로에 대해서는 필터를 적용하지 않음
         String requestURI = request.getRequestURI();
         log.info("Request URI: " + requestURI);
-        return requestURI.startsWith("/auth/") || requestURI.startsWith("/user-service/auth/");
+        return requestURI.startsWith("/auth/");
     }
 }

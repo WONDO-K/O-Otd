@@ -223,15 +223,15 @@ public class AuthServiceImpl implements AuthService {
 
         log.info("token: {}", token);
 
-        // JWT 토큰을 이용한 Authentication 객체 생성 (UserDetailsService가 필요 없을 경우)
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-                user.getEmail(), // principal
-                null, // credentials (비밀번호는 불필요)
-                List.of(new SimpleGrantedAuthority(user.getRole().name())) // 사용자 권한 설정
-        );
-
-        // SecurityContext에 Authentication 객체 설정
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+//        // JWT 토큰을 이용한 Authentication 객체 생성 (UserDetailsService가 필요 없을 경우)
+//        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+//                user.getId(), // principal
+//                null, // credentials (비밀번호는 불필요)
+//                List.of(new SimpleGrantedAuthority(user.getRole().name())) // 사용자 권한 설정
+//        );
+//
+//        // SecurityContext에 Authentication 객체 설정
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         response.setHeader("X-User-ID", String.valueOf(user.getId()));
         response.setHeader("X-User-Role", String.valueOf(user.getRole()));

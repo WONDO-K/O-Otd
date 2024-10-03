@@ -17,7 +17,7 @@ public class Vote {
     private Long id;
 
     private Long battleId;
-    private Long voterId;
+    private Long userId; // 누가 투표했는지 (requester 또는 responder)
     private Long votedFor; // 누구에게 투표했는지 (requester 또는 responder)
 
 }

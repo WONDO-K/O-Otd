@@ -45,9 +45,17 @@ public class SecurityConfig {
                 .formLogin(AbstractHttpConfigurer::disable) // 폼 로그인 비활성화
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        // 인증이 필요 없는 경로들
-                        .requestMatchers("/user-service/auth/**", "/swagger-ui/**", "/v3/api-docs/**", "/", "/css/**", "/images/**", "/js/**", "/favicon.ico", "/h2-console/**").permitAll()
-                        // 그 외 나머지 모든 요청은 인증 필요
+                        .requestMatchers(
+                                "/auth/**","login/oauth2/code/kakao",  // 변경된 경로
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/",
+                                "/css/**",
+                                "/images/**",
+                                "/js/**",
+                                "/favicon.ico",
+                                "/h2-console/**"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 추가
@@ -60,7 +68,12 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:8081")); // 허용할 도메인 설정
+
+        // 도커 개발 환경에서 사용, 추후 배포 환경에서 주소 변경 필요
+        configuration.setAllowedOrigins(List.of("http://host.docker.internal:8080", "http://localhost:8080")); // 허용할 도메인 설정
+        // TODO: 배포 환경에서는 실제 도메인으로 변경 필요
+        // 예시: configuration.setAllowedOrigins(List.of("https://yourdomain.com"));
+
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")); // 허용할 HTTP 메서드 설정
         configuration.setAllowedHeaders(List.of("Authorization","refreshToken", "Content-Type", "X-User-ID", "X-User-Role")); // 허용할 헤더 추가
 

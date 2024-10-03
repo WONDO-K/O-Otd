@@ -31,7 +31,7 @@ public class BattleController {
         return ResponseEntity.ok(battleDetailResponseDto);
     }
 
-    @PostMapping("/{battleId}/vote")
+    @PostMapping("/vote/{battleId}")
     @Operation(summary = "배틀 투표", description = "배틀에 투표합니다.")
     public ResponseEntity<?> voteBattle(@PathVariable Long battleId, @RequestBody VoteRequestDto voteRequestDto) {
         battleService.voteBattle(battleId, voteRequestDto);
@@ -47,7 +47,7 @@ public class BattleController {
     }
 
     // 배틀 응답 API (수락 또는 거절)
-    @PostMapping("/{battleId}/response")
+    @PostMapping("/response/{battleId}")
     @Operation(summary = "배틀 응답", description = "배틀을 수락하거나 거절합니다.")
     public ResponseEntity<BattleResponseDto> respondToBattle(
             @RequestBody BattleResponseRequestDto responseDto,
@@ -57,24 +57,38 @@ public class BattleController {
         return ResponseEntity.ok(response);
     }
 
-    // 최신 배틀 리스트 조회 API
-    @GetMapping("/recent")
-    @Operation(summary = "최신 배틀 리스트 조회", description = "최신 배틀 리스트를 조회합니다.")
-    public ResponseEntity<List<BattleDto>> getRecentBattles() {
-        List<BattleDto> recentBattles = battleService.getRecentBattles();
-        return ResponseEntity.ok(recentBattles);
+    /**
+     * 1. ACTIVE 상태인 배틀 리스트 최신순 조회
+     */
+    @GetMapping("/list/active/recent")
+    @Operation(summary = "ACTIVE 배틀 리스트 최신순 조회", description = "ACTIVE 상태인 배틀을 생성 시간 기준 최신순으로 조회합니다.")
+    public ResponseEntity<List<BattleDto>> getActiveBattlesByRecent() {
+        List<BattleDto> battles = battleService.getActiveBattlesByRecent();
+        return ResponseEntity.ok(battles);
     }
 
-    // 투표수 많은 배틀 리스트 조회 API
-    @GetMapping("/popular")
-    @Operation(summary = "투표수가 많은 배틀 리스트 조회", description = "투표수가 많은 배틀 리스트를 조회합니다.")
-    public ResponseEntity<List<BattleDto>> getPopularBattles() {
-        List<BattleDto> popularBattles = battleService.getBattlesByVoteCount();
-        return ResponseEntity.ok(popularBattles);
+    /**
+     * 2. ACTIVE 상태인 배틀 리스트 투표순 조회
+     */
+    @GetMapping("/list/active/popular")
+    @Operation(summary = "ACTIVE 배틀 리스트 투표순 조회", description = "ACTIVE 상태인 배틀을 투표 수 기준 내림차순으로 조회합니다.")
+    public ResponseEntity<List<BattleDto>> getActiveBattlesByVote() {
+        List<BattleDto> battles = battleService.getActiveBattlesByVote();
+        return ResponseEntity.ok(battles);
+    }
+
+    /**
+     * 3. COMPLETE 상태인 배틀 리스트 완료순 조회
+     */
+    @GetMapping("/list/completed")
+    @Operation(summary = "COMPLETE 배틀 리스트 완료순 조회", description = "COMPLETE 상태인 배틀을 완료 시간 기준 내림차순으로 조회합니다.")
+    public ResponseEntity<List<BattleDto>> getCompletedBattlesByCompletionTime() {
+        List<BattleDto> battles = battleService.getCompletedBattlesByCompletionTime();
+        return ResponseEntity.ok(battles);
     }
 
     // 특정 사용자의 배틀 리스트 조회 API
-    @GetMapping("/user/{userId}")
+    @GetMapping("/list/{userId}")
     @Operation(summary = "특정 사용자의 배틀 리스트 조회", description = "특정 사용자의 배틀 리스트를 조회합니다.")
     public ResponseEntity<List<BattleDto>> getUserBattles(@PathVariable Long userId) {
         List<BattleDto> userBattles = battleService.getUserBattles(userId);
