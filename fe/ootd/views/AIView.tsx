@@ -10,12 +10,11 @@ import {
   Alert,
   ImageBackground,
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { TitleText, TitleBoldText } from '../components/CustomTexts';
 
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
-import CameraIcon from '../assets/Icons/Camera_Icon.svg';
 import useAIStore from '../stores/AIStore';
 
 // 카메라 권한 요청 함수
@@ -111,13 +110,15 @@ function AIView(): React.JSX.Element {
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
               <TouchableOpacity style={styles.modalButton} onPress={handleCamera}>
-                <Text style={styles.modalButtonText}>촬영하기</Text>
+                <Text style={[styles.modalButtonText, {color:'#3b97f5'}]}>촬영하기</Text>
               </TouchableOpacity>
+              <View style={styles.modalDivider} />
               <TouchableOpacity style={styles.modalButton} onPress={handleUpload}>
-                <Text style={styles.modalButtonText}>갤러리에서 가져오기</Text>
+                <Text style={[styles.modalButtonText, {color:'#3b97f5'}]}>갤러리에서 가져오기</Text>
               </TouchableOpacity>
+              <View style={styles.modalDivider} />
               <TouchableOpacity style={styles.modalButton} onPress={toggleModal}>
-                <Text style={styles.modalButtonText}>취소</Text>
+                <Text style={[styles.modalButtonText, {color:'#fe443b'}]}>취소</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -177,7 +178,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   uploadBox: {
-    width: "90%",
+    width: "50%",
     height: "45%",
     borderRadius: 10,
     alignItems: 'center',
@@ -196,31 +197,34 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'flex-end', // 모달이 화면 아래에서 올라오도록 설정
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)', // 전체 화면의 배경을 어둡게 투명하게 설정
   },
   modalContent: {
-    width: '80%',
-    backgroundColor: '#ffffff',
-    borderRadius: 10,
-    padding: 20,
+    width: '90%', // 폭을 90%로 설정
+    backgroundColor: '#e6e7e6', // 반투명 흰색 배경
+    borderRadius: 20,
     alignItems: 'center',
+    marginBottom: 30, // 화면 하단과의 간격
+    marginHorizontal: 20, // 화면 좌우와의 간격
   },
   modalButton: {
-    width: '100%',
     padding: 15,
-    backgroundColor: '#1e90ff',
-    borderRadius: 10,
-    marginVertical: 10,
+    width: '100%',
     alignItems: 'center',
   },
   modalButtonText: {
-    color: '#ffffff',
+    color: '#fff', // 글자 색상 흰색으로 설정
     fontSize: 18,
   },
+  modalDivider: {
+    width: '100%',
+    height: 1,
+    backgroundColor: '#d2d2d2', 
+  },
   textContents: {
-    width: '90%',
+    width: '80%',
     borderRadius: 10,
     marginTop: 10,
     fontSize: 20,
