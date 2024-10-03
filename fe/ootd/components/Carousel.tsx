@@ -16,29 +16,33 @@ const margin = 12; // 좌우 여백 크기 재조정
 const cardSize = { width: windowWidth * 0.65, height: 400 }; // 카드 너비와 높이
 const offset = cardSize.width + margin; // 각 카드의 너비와 여백 계산
 
-export default function Carousel() {
+interface CarouselProps {
+  openModal: (item: any) => void; // openModal의 타입 정의
+}
+
+export default function Carousel({ openModal }: CarouselProps) {
   const scrollX = useRef(new Animated.Value(0)).current; // 스크롤 애니메이션 값
   const flatListRef = useRef(null);
 
   const data = useMemo(
     () => [
       {
-        carouselImageUrl: require('../assets/Whale.jpg'),
+        src: require('../assets/Whale.jpg'),
       },
       {
-        carouselImageUrl: require('../assets/Son.jpg'),
+        src: require('../assets/Son.jpg'),
       },
       {
-        carouselImageUrl: require('../assets/RealMan.jpg'),
+        src: require('../assets/RealMan.jpg'),
       },
       {
-        carouselImageUrl: require('../assets/IronMan_Japan.jpg'),
+        src: require('../assets/IronMan_Japan.jpg'),
       },
       {
-        carouselImageUrl: require('../assets/SpecialAgent_J.jpg'),
+        src: require('../assets/SpecialAgent_J.jpg'),
       },
       {
-        carouselImageUrl: require('../assets/Whale_student.jpg'),
+        src: require('../assets/Whale_student.jpg'),
       },
     ],
     []
@@ -105,10 +109,10 @@ export default function Carousel() {
           });
 
           return (
-            <TouchableOpacity style={{ marginRight: margin }}>
+            <TouchableOpacity  onPress={() => openModal(item)} style={{ marginRight: margin }}>
               <Animated.View style={{ transform: [{ scale }] }}>
                 <View style={{ borderRadius: 10, overflow: 'hidden' }}>
-                  <ImageBackground style={cardSize} source={item.carouselImageUrl} />
+                  <ImageBackground style={cardSize} source={item.src} />
                 </View>
               </Animated.View>
             </TouchableOpacity>
