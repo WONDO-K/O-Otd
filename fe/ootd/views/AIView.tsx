@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   uploadBox: {
-    width: "50%",
+    width: "80%",
     height: "45%",
     borderRadius: 10,
     alignItems: 'center',
