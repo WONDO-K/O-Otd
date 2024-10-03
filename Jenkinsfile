@@ -215,9 +215,11 @@ pipeline {
 // be 변경사항 함수 정의
 def getChangedServices(services) {
     def changedServices = []
+    changedServices.add("user")
     for (service in services) {
         def changes = sh(script: "git diff --name-only HEAD~1 HEAD | grep 'be/${service}' || true", returnStdout: true).trim()
-        if (true) {
+        
+        if (false) {
             changedServices.add(service)
         }
     }
