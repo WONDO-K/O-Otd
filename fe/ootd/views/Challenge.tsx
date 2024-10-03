@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView, FlatList } from 'react-native';
+import { Text, View, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView, FlatList, ImageBackground } from 'react-native';
 import axios from 'axios';
 import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
 import GalleryButton from '../components/GalleryButton';
@@ -63,79 +63,88 @@ function Challenge({ navigation, route }): React.JSX.Element {
     // };
 
     return (
-        <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContainer}>
-                {selectedUser ? (
-                    <View style={styles.selectedSection}>
-                        <TouchableOpacity style={styles.selectedBar} onPress={() => setSelectedUser('')}>
-                            <Text style={styles.selectedText}>{selectedUser}</Text>
-                        </TouchableOpacity>
-                    </View>
-                ) : (
-                    <View style={styles.searchSection}>
-                        <View style={[styles.searchBar, searchResult.length > 0 ? { borderTopLeftRadius: 20, borderTopRightRadius: 20 } : { borderRadius: 20 }]}>
-                            <Image 
-                                source={require('../assets/Images/searchIcon.png')}
-                                style={styles.searchIcon}
-                            />
-                            <TextInput
-                                style={styles.searchInput}
-                                maxLength={30}
-                                placeholder='대전 상대 검색'
-                                placeholderTextColor='gray'
-                                value={searchId}
-                                onChangeText={(input) => {
-                                    if (input.length <= 15) {
-                                    setSearchId(input);
-                                    }
-                                
-                                    if (input.length > 0 && input.length <= 15) {
-                                    getSearch(input);
-                                    } else {
-                                    setSearchResult([]);
-                                    }
-                                }}
-                            />
+        <ImageBackground 
+            source={require('../assets/Images/bg_img.jpg')}  // 배경 이미지 경로 설정
+            style={styles.background}  // 스타일 설정
+        >
+            <View style={styles.container}>
+                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                    {selectedUser ? (
+                        <View style={styles.selectedSection}>
+                            <TouchableOpacity style={styles.selectedBar} onPress={() => setSelectedUser('')}>
+                                <Text style={styles.selectedText}>{selectedUser}</Text>
+                            </TouchableOpacity>
                         </View>
-                        {searchResult.length > 0 && (
-                            <View style={styles.resultList}>
-                                {searchResult.slice(0, 3).map((item, index) => (
-                                    <TouchableOpacity
-                                        key={index}
-                                        style={[
-                                            styles.resultItem
-                                        ]}
-                                        onPress={() => setSelectedUser(item)}
-                                    >
-                                        <Text style={styles.resultText}>{item}</Text>
-                                    </TouchableOpacity>
-                                ))}
+                    ) : (
+                        <View style={styles.searchSection}>
+                            <View style={[styles.searchBar, searchResult.length > 0 ? { borderTopLeftRadius: 20, borderTopRightRadius: 20 } : { borderRadius: 20 }]}>
+                                <Image 
+                                    source={require('../assets/Images/searchIcon.png')}
+                                    style={styles.searchIcon}
+                                />
+                                <TextInput
+                                    style={styles.searchInput}
+                                    maxLength={30}
+                                    placeholder='대전 상대 검색'
+                                    placeholderTextColor='gray'
+                                    value={searchId}
+                                    onChangeText={(input) => {
+                                        if (input.length <= 15) {
+                                        setSearchId(input);
+                                        }
+                                    
+                                        if (input.length > 0 && input.length <= 15) {
+                                        getSearch(input);
+                                        } else {
+                                        setSearchResult([]);
+                                        }
+                                    }}
+                                />
                             </View>
-                        )}
-                    </View>
-                )}
-                <MyFashionButton selectedImage={selectedImage} onPress={() => navigation.navigate('MyFashion', { returnScreen: 'Challenge' })} />
-            </ScrollView>
-            <View style={styles.buttonSection}>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-                    <Text style={styles.buttonText}>Decline</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={(selectedUser && selectedImage) ? styles.activeButton : styles.deactiveButton}
-                    disabled={!(selectedUser && selectedImage)}
-                    onPress={() => battleRequest(selectedUser, selectedImage)}           
-                >
-                    <Text style={(selectedUser && selectedImage) ? styles.buttonText : styles.deactiveButtonText}>Accept</Text>
-                </TouchableOpacity>
+                            {searchResult.length > 0 && (
+                                <View style={styles.resultList}>
+                                    {searchResult.slice(0, 3).map((item, index) => (
+                                        <TouchableOpacity
+                                            key={index}
+                                            style={[
+                                                styles.resultItem
+                                            ]}
+                                            onPress={() => setSelectedUser(item)}
+                                        >
+                                            <Text style={styles.resultText}>{item}</Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </View>
+                            )}
+                        </View>
+                    )}
+                    <MyFashionButton selectedImage={selectedImage} onPress={() => navigation.navigate('MyFashion', { returnScreen: 'Challenge' })} />
+                </ScrollView>
+                <View style={styles.buttonSection}>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+                        <Text style={styles.buttonText}>Decline</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={(selectedUser && selectedImage) ? styles.activeButton : styles.deactiveButton}
+                        disabled={!(selectedUser && selectedImage)}
+                        onPress={() => battleRequest(selectedUser, selectedImage)}           
+                    >
+                        <Text style={(selectedUser && selectedImage) ? styles.buttonText : styles.deactiveButtonText}>Accept</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </View>
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        resizeMode: 'cover', // 배경 이미지가 뷰의 크기에 맞게 조정됨
+    },
     container: {
         flex: 1,
-        backgroundColor: '#121212',
+        // backgroundColor: '#121212',
         position: 'relative',
     },
     scrollContainer: {
@@ -188,7 +197,7 @@ const styles = StyleSheet.create({
     },
     resultList: {
         width: 350,
-        backgroundColor: '#262626',
+        // backgroundColor: '#262626',
         marginTop: 10,
         position: 'absolute',
         zIndex: 1,
@@ -208,7 +217,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     gallery: {
-        backgroundColor: '#121212',
+        // backgroundColor: '#121212',
         width: '100%', 
         height: 400, 
         display: 'flex',
@@ -230,7 +239,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: '100%',
         height: 100,
-        backgroundColor: '#121212',
+        // backgroundColor: '#121212',
         opacity: 0.8,
         flexDirection: 'row',
         justifyContent: 'space-around',

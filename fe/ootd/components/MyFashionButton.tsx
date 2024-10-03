@@ -26,7 +26,7 @@ const MyFashion: React.FC<MyFashionProps> = ({ selectedImage, onPress }) => {
 
 const styles = StyleSheet.create({
     gallery: {
-        backgroundColor: '#121212',
+        // backgroundColor: '#121212',
         width: '100%', 
         height: 400, 
         display: 'flex',
@@ -42,6 +42,9 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
+        shadowColor: 'black', // 그림자 색상
     },
     image: {
         width: 250,

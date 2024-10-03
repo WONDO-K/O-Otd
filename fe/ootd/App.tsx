@@ -51,7 +51,7 @@ function App(): React.JSX.Element {
       <NavigationContainer onStateChange={handleStateChange}>
         <Navbar />
         <Stack.Navigator
-          initialRouteName="MainView"
+          initialRouteName="LoginView"
           screenOptions={{
             headerShown: false, // 모든 화면에서 헤더를 제거
             animationEnabled: false, // 모든 화면에서 전환 애니메이션 비활성화

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, View, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView } from 'react-native';
+import { Text, View, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView, ImageBackground } from 'react-native';
 import axios from 'axios';
 import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
 import GalleryButton from '../components/GalleryButton';
@@ -66,36 +66,45 @@ function ChallengeDetail({ navigation, route }): React.JSX.Element {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.scrollContainer}>
-                <View style={styles.selectedSection}>
-                    {/* <View style={styles.selectedBar}> */}
-                        <Text style={styles.selectedText}>{selectedUser} 님이 </Text>
-                        <Text style={styles.selectedText}> 대전을 신청하셨습니다.</Text>
-                    {/* </View> */}
+        <ImageBackground 
+            source={require('../assets/Images/bg_img.jpg')}  // 배경 이미지 경로 설정
+            style={styles.background}  // 스타일 설정
+        >
+            <View style={styles.container}>
+                <View style={styles.scrollContainer}>
+                    <View style={styles.selectedSection}>
+                        {/* <View style={styles.selectedBar}> */}
+                            <Text style={styles.selectedText}>{selectedUser} 님이 </Text>
+                            <Text style={styles.selectedText}> 대전을 신청하셨습니다.</Text>
+                        {/* </View> */}
+                    </View>
+                    <MyFashionButton selectedImage={selectedImage} onPress={() => navigation.navigate('MyFashion', { returnScreen: 'ChallengeDetail' })} />
                 </View>
-                <MyFashionButton selectedImage={selectedImage} onPress={() => navigation.navigate('MyFashion', { returnScreen: 'ChallengeDetail' })} />
+                <View style={styles.buttonSection}>
+                    <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+                        <Text style={styles.buttonText}>Decline</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={(selectedUser && selectedImage) ? styles.activeButton : styles.deactiveButton}
+                        disabled={!(selectedUser && selectedImage)}
+                        onPress={() => battleRequest(selectedUser, selectedImage)}           
+                    >
+                        <Text style={(selectedUser && selectedImage) ? styles.buttonText : styles.deactiveButtonText}>Accept</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-            <View style={styles.buttonSection}>
-                <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-                    <Text style={styles.buttonText}>Decline</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={(selectedUser && selectedImage) ? styles.activeButton : styles.deactiveButton}
-                    disabled={!(selectedUser && selectedImage)}
-                    onPress={() => battleRequest(selectedUser, selectedImage)}           
-                >
-                    <Text style={(selectedUser && selectedImage) ? styles.buttonText : styles.deactiveButtonText}>Accept</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+        </ImageBackground>
     );
 }
 
 const styles = StyleSheet.create({
+    background: {
+        flex: 1,
+        resizeMode: 'cover', // 배경 이미지가 뷰의 크기에 맞게 조정됨
+    },
     container: {
         flex: 1,
-        backgroundColor: '#121212',
+        // backgroundColor: '#121212',
         position: 'relative',
     },
     scrollContainer: {
@@ -123,7 +132,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         width: 350,
         height: 60,
-        backgroundColor: '#262626',
+        // backgroundColor: '#262626',
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
+        shadowColor: 'black', // 그림자 색상
         borderRadius: 20,
         padding: 10,
     },
@@ -159,7 +171,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
     },
     gallery: {
-        backgroundColor: '#121212',
+        // backgroundColor: '#121212',
         width: '100%', 
         height: 400, 
         display: 'flex',
@@ -181,7 +193,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         width: '100%',
         height: 100,
-        backgroundColor: '#121212',
+        // backgroundColor: '#121212',
         opacity: 0.8,
         flexDirection: 'row',
         justifyContent: 'space-around',

@@ -236,6 +236,11 @@ function LoginView(): React.JSX.Element {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
+
+      {/* [메인으로] 버튼 추가 */}
+      <TouchableOpacity style={styles.mainButton} onPress={navigateToMainView}>
+        <Text style={styles.mainButtonText}>메인으로</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -399,6 +404,23 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
     marginBottom: 20,
+  },
+  // [메인으로] 버튼 스타일
+  mainButton: {
+    position: 'absolute',
+    bottom: 30,
+    right: 30,
+    backgroundColor: 'rgba(255, 255, 255, 0.65)',
+    elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
+    shadowColor: 'black', // 그림자 색상
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 15,
+  },
+  mainButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
 
