@@ -110,7 +110,7 @@ pipeline {
                                     sh 'ls'
                                 }
                             }
-                            if(service==user){
+                            if(service=="user"){
                                 withCredentials([file(credentialsId: "ootd-be-${service}-oauth", variable: 'properties')]) {
                                     echo "Copying oauth.yml for ${service}"
                                     sh 'pwd'
@@ -123,7 +123,7 @@ pipeline {
 
 
                             }
-                            if(service==user || service==battle){
+                            if(service=="user" || service=="battle"){
                                 withCredentials([file(credentialsId: "ootd-be-${service}-env", variable: 'env')]) {
                                     // 현재 작업 디렉토리 출력
                                     sh 'pwd'
