@@ -124,15 +124,15 @@ pipeline {
 
                             }
                             if(service=="user" || service=="battle"){
-                                withCredentials([file(credentialsId: "ootd-be-${service}-env", variable: 'env')]) {
+                                withCredentials([file(credentialsId: "ootd-be-${service}-env", variable: 'envFile')]) {
                                     // 현재 작업 디렉토리 출력
                                     sh 'pwd'
 
                                     // 작업 디렉토리의 파일 목록 출력
                                     sh 'ls'
 
-                                    // Docker Compose 파일을 프로젝트 루트로 복사 (여기서 목적지 경로를 명시)
-                                    sh "cp $env ."
+                                    // .env 파일을 프로젝트 루트로 복사 (여기서 목적지 경로를 명시)
+                                    sh "cp $envFile ."
 
                                     // 복사 후 작업 디렉토리의 파일 목록 출력
                                     sh 'ls'
