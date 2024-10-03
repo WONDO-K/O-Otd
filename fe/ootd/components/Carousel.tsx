@@ -9,6 +9,7 @@ import {
   FlatList,
   Text,
 } from 'react-native';
+import { TitleText } from '../components/CustomTexts';
 
 const windowWidth = Dimensions.get('window').width;
 const margin = 12; // 좌우 여백 크기 재조정
@@ -76,7 +77,7 @@ export default function Carousel() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>금주의 스타일</Text>
+      <TitleText style={styles.title}>Weekly Styles</TitleText>
       <Animated.FlatList
         ref={flatListRef}
         data={infiniteData}
@@ -136,13 +137,14 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     width: windowWidth,
-    height: cardSize.height + 80,
+    height: cardSize.height + 120,
     paddingBottom: 10,
   },
   title: {
-    fontFamily: 'Pretendard-Regular',
+    marginVertical: 20,
     fontSize: 40,
     textAlign: 'center',
     color: '#ffffff',
+    zIndex: 2,
   },
 });
