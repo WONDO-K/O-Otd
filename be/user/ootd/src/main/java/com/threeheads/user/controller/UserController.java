@@ -120,7 +120,7 @@ public class UserController {
     // 인증이 필요 없는 경로 (카카오 로그인)
     @GetMapping("/auth/kakao-login")
     @Operation(summary = "카카오 로그인", description = "카카오 인가 코드를 받아 로그인 처리")
-    public ResponseEntity<Map<String,String>> kakaoLogin(@RequestParam String code, HttpServletResponse response) {
+    public ResponseEntity<Map<String, String>> kakaoLogin(@RequestParam String code, HttpServletResponse response) {
         try {
             KakaoUserInfoDto kakaoUserInfoDto = authService.requestAccessTokenAndUserInfo(code);
 
@@ -129,13 +129,20 @@ public class UserController {
                 return ResponseEntity.status(400).body(Map.of("error", "카카오 사용자 정보를 가져오는 데 실패했습니다."));
             }
 
+            // 3. 사용자 등록 또는 로그인 처리 (회원가입 여부와 User 객체를 함께 반환)
+            Map<String, Object> loginResult = authService.kakaoRegisterOrLoginUser(kakaoUserInfoDto.getKakaoAccount().getEmail());
+            User user = (User) loginResult.get("user");
+            boolean existed = (boolean) loginResult.get("existed");
+
             // 사용자 등록 또는 로그인 처리
-            GeneratedToken token = authService.handleKakaoLoginSuccess(kakaoUserInfoDto.getKakaoAccount().getEmail(), response);
+            GeneratedToken token = authService.handleKakaoLoginSuccess(user.getEmail(), response);
 
             // 액세스 토큰을 응답으로 반환
             Map<String, String> responseBody = new HashMap<>();
             responseBody.put("accessToken", token.getAccessToken());
             responseBody.put("refreshToken", token.getRefreshToken());
+            responseBody.put("existed", String.valueOf(existed));  // 회원가입 여부 추가
+
             return ResponseEntity.ok(responseBody);
 
         } catch (Exception e) {

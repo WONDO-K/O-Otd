@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 public class NotificationDto {
     private Long id; // 알림의 고유 ID
     private Long userId; // 알림을 받을 사용자 ID
+    private Long battleId; // 알림과 연관된 배틀 ID
     private String title; // 알림 제목
     private String message; // 알림 메시지
     private LocalDateTime timestamp; // 알림 발생 시간
