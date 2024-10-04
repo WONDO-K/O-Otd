@@ -47,20 +47,12 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
-                                "/auth/**","login/oauth2/code/kakao", // 변경된 경로
-                                "/battles/**",
-                                "/swagger-ui/**",
-                                "/v3/api-docs/**",
-                                "/",
-                                "/css/**",
-                                "/images/**",
-                                "/js/**",
-                                "/favicon.ico",
-                                "/h2-console/**"
+                            "/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .cors(cors -> cors.configurationSource(corsConfigurationSource())) // CORS 설정 추가
+
                 // JwtAuthFilter를 UsernamePasswordAuthenticationFilter 앞에 추가
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
