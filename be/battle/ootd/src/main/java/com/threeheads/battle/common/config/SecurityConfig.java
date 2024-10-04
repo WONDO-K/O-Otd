@@ -48,7 +48,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/auth/**","login/oauth2/code/kakao", // 변경된 경로
-                                "/battle/**",
+                                "/battles/**",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/",

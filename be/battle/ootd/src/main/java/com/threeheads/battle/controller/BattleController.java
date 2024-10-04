@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/battle")
+@RequestMapping("/battles")
 @Tag(name = "BattleController", description = "배틀 관련 API")
 public class BattleController {
 
