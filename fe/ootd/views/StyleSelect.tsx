@@ -102,17 +102,18 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
         }
     }, [selectedCategory, allFashionData]);
 
+    
     const sortFashionList = (sortType) => {
         let sortedList = [...fashionList];
 
         if (sortType === '최신순') {
             sortedList.sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
+        } else if (sortType === '출전 수') {
+            sortedList.sort((a, b) => b.battleCount - a.battleCount); // 출전 수 기준 정렬
+        } else if (sortType === '승리 수') {
+            sortedList.sort((a, b) => b.winCount - a.winCount); // 승리 수 기준 정렬
         } else if (sortType === '인기순') {
-            if (selectedCategory === 'myFashion') {
-                sortedList.sort((a, b) => b.battleCount - a.battleCount);
-            } else if (selectedCategory === 'myCollection') {
-                sortedList.sort((a, b) => b.addedCount - a.addedCount);
-            }
+            sortedList.sort((a, b) => b.addedCount - a.addedCount); // myCollection의 인기순(추가 수) 정렬
         }
 
         setFashionList(sortedList);
@@ -165,12 +166,32 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
                     >
                         <Text style={styles.battleSortButtonText}>최신순</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.battleSortButton, { backgroundColor: selectedSort === '인기순' ? 'white' : 'gray' }]}
-                        onPress={() => setSelectedSort('인기순')}
-                    >
-                        <Text style={styles.battleSortButtonText}>인기순</Text>
-                    </TouchableOpacity>
+
+                    {selectedCategory === 'myFashion' && (
+                        <>
+                            <TouchableOpacity
+                                style={[styles.battleSortButton, { backgroundColor: selectedSort === '출전 수' ? 'white' : 'gray' }]}
+                                onPress={() => setSelectedSort('출전 수')}
+                            >
+                                <Text style={styles.battleSortButtonText}>출전 수</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[styles.battleSortButton, { backgroundColor: selectedSort === '승리 수' ? 'white' : 'gray' }]}
+                                onPress={() => setSelectedSort('승리 수')}
+                            >
+                                <Text style={styles.battleSortButtonText}>승리 수</Text>
+                            </TouchableOpacity>
+                        </>
+                    )}
+
+                    {selectedCategory === 'myCollection' && (
+                        <TouchableOpacity
+                            style={[styles.battleSortButton, { backgroundColor: selectedSort === '인기순' ? 'white' : 'gray' }]}
+                            onPress={() => setSelectedSort('인기순')}
+                        >
+                            <Text style={styles.battleSortButtonText}>인기순</Text>
+                        </TouchableOpacity>
+                    )}
                 </View>
 
                 {/* 이미지 리스트 */}
@@ -225,8 +246,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         paddingBottom: 10,
-        borderWidth: 1,
-        borderBottomColor: '#949494',
     },
     notificationItem: {
         width: '50%',
