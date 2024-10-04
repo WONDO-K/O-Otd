@@ -55,6 +55,7 @@ public class NotificationServiceImpl implements NotificationService {
         // 알림을 데이터베이스에 저장
         Notification notification = Notification.builder()
                 .userId(userId)
+                .battleId(notificationDto.getBattleId())
                 .title(notificationDto.getTitle())
                 .message(notificationDto.getMessage())
                 .timestamp(notificationDto.getTimestamp())
@@ -83,6 +84,7 @@ public class NotificationServiceImpl implements NotificationService {
                 .map(notification -> NotificationDto.builder()
                         .id(notification.getId())
                         .userId(notification.getUserId())
+                        .battleId(notification.getBattleId())
                         .title(notification.getTitle())
                         .message(notification.getMessage())
                         .timestamp(notification.getTimestamp())
