@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -30,20 +31,26 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             log.info("들어온 Header: {} = {}", headerName, request.getHeader(headerName));
         }
 
-        // 헤더에서 사용자 정보를 가져옴
-        String userId = request.getHeader("X-User-ID");
-        String role = request.getHeader("X-User-Role");
-        log.info("사용자 정보: ID={}, Role={}", userId, role);
-
-        // 사용자 정보가 없으면 필터 통과
-        if (userId == null || role == null) {
-            log.info("유저 정보가 없습니다. 필터를 통과합니다.");
-            filterChain.doFilter(request, response);
+        // Authorization 헤더에서 JWT 토큰을 추출
+        String jwtToken = extractToken(request);
+        log.info("JWT 토큰: {}", jwtToken);
+        if (!StringUtils.hasText(jwtToken)) {
+            log.warn("토큰이 없습니다. 요청을 차단합니다.");
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);  // 401 에러 반환
+            response.getWriter().write("액세스 토큰이 필요합니다.");
             return;
         }
 
-        // 추가 로직을 여기에 추가 (예: 유저 정보 로드 또는 로그)
-
+        // JWT 토큰이 존재하는 경우 필터 통과
         filterChain.doFilter(request, response);
+    }
+
+    // Authorization 헤더에서 토큰 추출하는 메서드
+    private String extractToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            return bearerToken.substring(7); // "Bearer " 이후의 실제 토큰 값 반환
+        }
+        return null;
     }
 }
