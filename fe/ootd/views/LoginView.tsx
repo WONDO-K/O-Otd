@@ -28,7 +28,7 @@ function LoginView(): React.JSX.Element {
   const navigation = useNavigation();
 
   // Kakao OAuth URL
-  const KAKAO_AUTH_URL = 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=fb7d24f77e374b62fe33b066aac83003&redirect_uri=http://localhost:8080/login/oauth2/code/kakao';
+  const KAKAO_AUTH_URL = 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=fb7d24f77e374b62fe33b066aac83003&redirect_uri=http://j11e104a.p.ssafy.io:8088/login/oauth2/code/kakao';
 
   // Kakao 로그인 처리 함수
   const handleKakaoLogin = async (code: string) => {
