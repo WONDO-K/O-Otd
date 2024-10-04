@@ -19,5 +19,5 @@ public interface AuthService {
     ResponseEntity<TokenResponseStatus> refresh(String accessToken, String refreshToken);
     KakaoUserInfoDto requestAccessTokenAndUserInfo(String code);
     GeneratedToken handleKakaoLoginSuccess(String email, HttpServletResponse response);
-    User kakaoRegisterOrLoginUser(String userEmail);
+    Map<String, Object> kakaoRegisterOrLoginUser(String userEmail);
 }

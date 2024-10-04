@@ -163,39 +163,92 @@ public class AuthServiceImpl implements AuthService {
             throw new CustomException(ErrorCode.KAKAO_USER_INFO_NOT_FOUND);
         }
     }
+//
+//    @Override
+//    public Map<String, Object> kakaoRegisterOrLoginUser(String userEmail) {
+//        Map<String, Object> result = new HashMap<>();
+//        boolean existed = false;
+//        try {
+//            Optional<User> userOptional = userRepository.findByEmail(userEmail);
+//            User user;
+//
+//            if (userOptional.isPresent()) {
+//                existed = true;
+//                // 로그인 처리
+//                user = userOptional.get();
+//                log.info("로그인 처리: {}", user);
+//                log.info("db 존재 여부 : {}", existed);
+//            } else {
+//                // 회원가입 처리
+//                user = User.builder()
+//                        .email(userEmail)
+//                        .username(userEmail)
+//                        .passwordHash(passwordEncoder.encode(GenerateRandomPassword.createRandomPassword())) // 소셜 로그인에서는 사용하지 않는 값 -> 랜덤 값 삽입
+//                        .role(Role.USER)
+//                        .socialType("kakao")
+//                        .attributeKey("")
+//                        .createdAt(LocalDateTime.now())
+//                        .build();
+//                userRepository.save(user);
+//                log.info("회원가입 처리: {}", user);
+//                log.info("db 존재 여부 : {}", existed);
+//            }
+//
+//            // 결과를 Map에 저장
+//            result.put("user", user);
+//            result.put("existed", existed);
+//
+//            return result;
+//        } catch (Exception e) {
+//            log.error("회원가입 또는 로그인 처리 중 오류 발생", e);
+//            throw new CustomException(ErrorCode.LOGIN_OR_REGISTER_FAILED);
+//        }
+//    }
+@Override
+public Map<String, Object> kakaoRegisterOrLoginUser(String userEmail) {
+    Map<String, Object> result = new HashMap<>();
+    boolean existed = false;  // 기본적으로 false로 설정
+    try {
+        Optional<User> userOptional = userRepository.findByEmail(userEmail);
+        User user;
 
-    @Override
-    public User kakaoRegisterOrLoginUser(String userEmail) {
-        try {
-            Optional<User> userOptional = userRepository.findByEmail(userEmail);
+        if (userOptional.isPresent()) {
+            // 기존 유저이므로 로그인 처리
+            existed = true;  // 기존 유저면 true
+            user = userOptional.get();
+            log.info("로그인 처리: {}", user);
+            log.info("db 존재 여부 : {}", existed);
+        } else {
 
-            User user;
-            if (userOptional.isPresent()) {
-                // 로그인 처리
-                user = userOptional.get();
-                log.info("로그인 처리: {}", user);
-            } else {
-                // 회원가입 처리
-                user = User.builder()
-                        .email(userEmail)
-                        .username(userEmail)
-                        .passwordHash(passwordEncoder.encode(GenerateRandomPassword.createRandomPassword())) // 소셜 로그인에서는 사용하지 않는 값 -> 랜덤 값 삽입
-                        .role(Role.USER)
-                        .socialType("kakao")
-                        .attributeKey("")
-                        .createdAt(LocalDateTime.now())
-                        .build();
-                userRepository.save(user);
-                log.info("회원가입 처리: {}", user);
-            }
-
-            // 토큰 생성 (액세스, 리프레쉬)
-            return user;
-        } catch (Exception e) {
-            log.error("회원가입 또는 로그인 처리 중 오류 발생", e);
-            throw new CustomException(ErrorCode.LOGIN_OR_REGISTER_FAILED);
+            user = User.builder()
+                    .email(userEmail)
+                    .username(userEmail)
+                    .passwordHash(passwordEncoder.encode(GenerateRandomPassword.createRandomPassword())) // 소셜 로그인에서는 사용하지 않는 값 -> 랜덤 값 삽입
+                    .role(Role.USER)
+                    .socialType("kakao")
+                    .attributeKey("")
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            userRepository.save(user);
+            // 새로 회원가입하는 유저
+            existed = false;  // 새 유저는 false로 유지
+            log.info("회원가입 처리: {}", user);
+            log.info("db 존재 여부 : {}", existed);
         }
+
+        // 결과를 Map에 저장
+        result.put("user", user);
+        result.put("existed", existed);
+
+        return result;
+    } catch (Exception e) {
+        log.error("회원가입 또는 로그인 처리 중 오류 발생", e);
+        throw new CustomException(ErrorCode.LOGIN_OR_REGISTER_FAILED);
     }
+}
+
+
+
 //    // 쿠키에 리프레시 토큰 저장
 //    @Override
 //    public GeneratedToken handleKakaoLoginSuccess(String email, HttpServletResponse response) {
@@ -217,8 +270,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public GeneratedToken handleKakaoLoginSuccess(String email, HttpServletResponse response) {
         log.info("카카오 로그인 성공 처리 진입");
+
+        // 로그인 또는 회원가입 처리 (Map으로 받기)
+        Map<String, Object> loginResult = kakaoRegisterOrLoginUser(email);
+        User user = (User) loginResult.get("user"); // User 객체
+        boolean existed = (boolean) loginResult.get("existed"); // 회원가입 여부
         
-        User user = kakaoRegisterOrLoginUser(email);
         GeneratedToken token = jwtProvider.generateToken(user.getId(),user.getEmail(), user.getRole());
 
         log.info("token: {}", token);
