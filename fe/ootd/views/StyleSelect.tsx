@@ -94,6 +94,11 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
         setFashionList(myFashion);
     };
 
+    function updateCategory(category: string) {
+        setSelectedCategory(category);
+        setSelectedSort('최신순');
+    }
+
     useEffect(() => {
         if (selectedCategory === 'myFashion') {
             setFashionList(allFashionData.myFashion);
@@ -142,14 +147,14 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
 
                 {/* 카테고리 선택 버튼 */}
                 <View style={styles.categoryContainer}>
-                    <TouchableOpacity onPress={() => setSelectedCategory('myFashion')}>
+                    <TouchableOpacity onPress={() => updateCategory('myFashion')}>
                         <MyFashionIcon 
                             width={30} 
                             height={30} 
                             fill={selectedCategory === 'myFashion' ? 'white' : 'gray'}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setSelectedCategory('myCollection')}>
+                    <TouchableOpacity onPress={() => updateCategory('myCollection')}>
                         <WishIcon 
                             width={30} 
                             height={30}

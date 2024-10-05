@@ -57,6 +57,7 @@ function Battle({ navigation }): React.JSX.Element {
   
     const selectCategory = (category: string) => {
         setSelectedCategory(category);
+        setSelectedSort('최신순');
     };
     const selectSort = (sort: string) => {
         setSelectedSort(sort);
