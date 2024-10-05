@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -43,6 +43,30 @@ function AIView(): React.JSX.Element {
   const { setImage } = useAIStore();
   const [photo, setPhoto] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [loadingText, setLoadingText] = useState('Loading');
+
+  const fetchAIResult = async () => {
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+      navigation.navigate('AIReport');
+    }, 2000); // 임시 딜레이
+  };
+
+  useEffect(() => {
+      const textList = ['Loading', 'Loading.', 'Loading..', 'Loading...'];
+      let index = 0;
+
+      const interval = setInterval(() => {
+          setLoadingText(textList[index % 4]);
+          index += 1;
+      }, 300);
+
+      // 컴포넌트가 언마운트되면 interval을 정리
+      return () => clearInterval(interval);
+  }, []);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible); // 모달 상태를 토글
@@ -137,8 +161,8 @@ function AIView(): React.JSX.Element {
         </TouchableOpacity>
 
         <Text style={styles.textContents}>
-        AI가 당신의 패션을 분석하고,{"\n"}
-        유사한 스타일의 룩을 추천해줍니다.{"\n"}
+          AI가 당신의 패션을 분석하고,{"\n"}
+          유사한 스타일을 추천합니다.{"\n"}
         </Text>
 
         <View style={styles.btnContainer}>
@@ -149,12 +173,12 @@ function AIView(): React.JSX.Element {
             ]}
             onPress={() => {
               if (photo) {
-                navigation.navigate('AIReport'); // photo가 있을 때만 실행
+                fetchAIResult();
               }
             }}
             disabled={!photo}
           >
-            <Text style={[styles.btnText, { color: photo ? 'white' : '#949494' }]}>Analysis</Text>
+            <Text style={[styles.btnText, { color: photo ? 'white' : '#949494' }]}>{ loading ? loadingText : 'Analyze !'}</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -178,7 +202,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   uploadBox: {
-    width: "80%",
+    width: "60%",
     height: "45%",
     borderRadius: 10,
     alignItems: 'center',
@@ -186,9 +210,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
-  
-    elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
-    shadowColor: 'black', // 그림자 색상
+    borderColor: '#ffffff',
+    borderWidth: 5,
   },
   uploadedImage: {
     width: '100%',

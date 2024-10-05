@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Image, FlatList, ImageBackground } from 'react-native';
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
-import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { TitleText, TitleBoldText } from '../components/CustomTexts';
 
@@ -11,6 +10,20 @@ function StyleView({ navigation, route }): React.JSX.Element {
     const [subImage, setSubImage] = useState<string | null>(null);
     const [recommendedImages, setRecommendedImages] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [loadingText, setLoadingText] = useState('Loading');
+
+    useEffect(() => {
+        const textList = ['Loading', 'Loading.', 'Loading..', 'Loading...'];
+        let index = 0;
+
+        const interval = setInterval(() => {
+            setLoadingText(textList[index % 4]);
+            index += 1;
+        }, 300);
+
+        // 컴포넌트가 언마운트되면 interval을 정리
+        return () => clearInterval(interval);
+    }, []);
 
     const fetchRecommendedImages = async (mainImage: string, subImage: string) => {
         setLoading(true);
@@ -65,6 +78,11 @@ function StyleView({ navigation, route }): React.JSX.Element {
                     </TouchableOpacity>
                 </View>
 
+                <Text style={styles.textContents}>
+                    AI가 두 패션의 색깔을 더해,{"\n"}
+                    유사한 감각의 스타일을 제공합니다.{"\n"}
+                </Text>
+
                 {/* 추천 받기 버튼 */}
                 <TouchableOpacity
                     style={[styles.recommendButton, isButtonDisabled ? styles.disabledButton : styles.enabledButton]}
@@ -76,13 +94,13 @@ function StyleView({ navigation, route }): React.JSX.Element {
                     }}
                 >
                     <Text style={isButtonDisabled ? styles.disabledButtonText : styles.enabledButtonText}>
-                        {loading ? '추천 중...' : '추천 받기'}
+                        {loading ? loadingText : 'Try !'}
                     </Text>
                 </TouchableOpacity>
             </View>
             {recommendedImages.length > 0 && (
                 <View style={styles.recommendationList}>
-                    <Text style={styles.listTitle}>추천된 이미지</Text>
+                    <TitleText style={styles.listTitle}><TitleBoldText>AI</TitleBoldText> Picks</TitleText>
                     <FlatList
                         data={recommendedImages}
                         keyExtractor={(item) => item.id}
@@ -121,10 +139,10 @@ const styles = StyleSheet.create({
         marginBottom: 50,
     },
     imageContainer: {
-        width: 200,
-        height: 300,
+        width: 180,
+        height: 270,
         position: 'relative',
-        marginBottom: 50,
+        marginBottom: 40,
     },
     mainImage: {
         width: '100%',
@@ -136,7 +154,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
         overflow: 'hidden',
-        left: -20,
+        left: -15,
         transform: [
             { rotateY: '10deg' }
         ],
@@ -146,12 +164,10 @@ const styles = StyleSheet.create({
         shadowColor: 'black', // 그림자 색상
     },
     subImage: {
-        width: 150,
-        height: 200,
+        width: 120,
+        height: 160,
         // backgroundColor: '#121212',
         backgroundColor: 'rgba(88, 88, 88, 0.7)',
-        elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
-        shadowColor: 'black', // 그림자 색상
         borderColor: 'white',
         borderWidth: 5,
         borderRadius: 10,
@@ -159,7 +175,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
         top: 120,
-        left: 120,
+        left: 115,
         transform: [{ rotateY: '-30deg' }],
         zIndex: 2,
         overflow: 'hidden',
@@ -169,35 +185,36 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     recommendButton: {
+        borderColor: '#ffffff',
+        borderWidth: 1,
         width: 150,
         height: 50,
+        borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 10,
-        borderRadius: 10,
         marginTop: 20,
     },
     enabledButton: {
-        backgroundColor: 'white',
-        borderColor: 'black',
-        borderWidth: 2,
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     disabledButton: {
-        backgroundColor: 'gray',
-        borderColor: 'gray',
-        borderWidth: 2,
+         backgroundColor: 'rgba(128, 128, 128, 0.7)'
     },
     enabledButtonText: {
-        color: 'black',
+        color: 'white',
+        fontSize: 24,
+        fontWeight: 'bold',
     },
     disabledButtonText: {
-        color: 'darkgray',
+        color: '#949494',
+        fontSize: 24,
+        fontWeight: 'bold',
     },
     recommendationList: {
         marginTop: 20,
     },
     listTitle: {
-        fontSize: 24,
+        fontSize: 30,
         color: 'white',
         marginBottom: 20,
         textAlign: 'center',
@@ -209,7 +226,17 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 350,
     },
-    
+    textContents: {
+        width: '80%',
+        borderRadius: 10,
+        fontSize: 20,
+        color: '#ffffff',
+        textAlign: 'center',
+        paddingTop: 20,
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
+        shadowColor: 'black', // 그림자 색상
+    },
 });
 
 export default StyleView;
