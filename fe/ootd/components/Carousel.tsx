@@ -9,7 +9,7 @@ import {
   FlatList,
   Text,
 } from 'react-native';
-import { TitleText } from '../components/CustomTexts';
+import { TitleText, TitleBoldText } from '../components/CustomTexts';
 
 const windowWidth = Dimensions.get('window').width;
 const margin = 12; // 좌우 여백 크기 재조정
@@ -81,7 +81,7 @@ export default function Carousel({ openModal }: CarouselProps) {
 
   return (
     <View style={styles.container}>
-      <TitleText style={styles.title}>Weekly Styles</TitleText>
+      <TitleText style={styles.title}><TitleBoldText>Weekly</TitleBoldText> Styles</TitleText>
       <Animated.FlatList
         ref={flatListRef}
         data={infiniteData}

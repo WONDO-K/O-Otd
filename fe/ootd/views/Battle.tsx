@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Switch, StyleSheet, ScrollView, ImageBackground } from 'react-native'; 
 import { FlatList } from 'react-native-gesture-handler';
-import BattleIcon from '../assets/Icons/Battle_Icon.svg';
-import { TitleText } from '../components/CustomTexts';
+// import BattleIcon from '../assets/Icons/Battle_Icon.svg';
+import BattleIcon from '../assets/Icons/Battle_Icon1.svg';
+// import BattleIcon from '../assets/Icons/Battle_Icon2.svg';
+// import BattleIcon from '../assets/Icons/Battle_Icon3.svg';
+// import BattleIcon from '../assets/Icons/Battle_Icon4.svg';
+import { TitleText, TitleBoldText } from '../components/CustomTexts';
 import axios from 'axios';
 
 import BattleItemProgress from '../components/BattleItemProgress';
@@ -116,8 +120,8 @@ function Battle({ navigation }): React.JSX.Element {
                         "leftImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_9/img_184930.png",
                         "rightImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_9/img_18493.png",
                         "myPick": "right",
-                        "leftName": "유저네임5",
-                        "rightName": "유저네임6",
+                        "leftName": "악질유저기무동현사마",
+                        "rightName": "쌀선대원군",
                         "leftVote": 49,
                         "rightVote": 78,
                         "winner": "right",
@@ -168,9 +172,9 @@ function Battle({ navigation }): React.JSX.Element {
             <ScrollView style={styles.container}>
                 {/* 배틀 헤더 */}
                 <View style={styles.battleHeader}>
-                    <TitleText style={styles.battleHeaderText}>
+                    <TitleBoldText style={styles.battleHeaderText}>
                         Beyond U
-                    </TitleText>
+                    </TitleBoldText>
                 </View>
                 <TouchableOpacity style={styles.battleHeaderButton} onPress={() => navigation.navigate('Challenge')}>
                     <BattleIcon/>

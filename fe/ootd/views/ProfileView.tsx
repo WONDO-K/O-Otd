@@ -16,7 +16,7 @@ import WishFullIcon from '../assets/Icons/WishFull_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
 import PencilIcon from '../assets/Icons/Pencil_Icon.svg';
 import MyFashionIcon from '../assets/Icons/MyFashion_Icon.svg';
-import BattleIcon from '../assets/Icons/Battle_Icon.svg';
+import BattleIcon from '../assets/Icons/Battle_Icon1.svg';
 
 // 메인 페이지
 function ProfileView(): React.JSX.Element {
