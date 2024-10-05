@@ -39,34 +39,28 @@ function Notification({ navigation }): React.JSX.Element {
             // }
             const data = [
                 {
-                    notificationId: 10,
-                    battleId: 1,
-                    senderUserId: 123,
-                    senderUserName: "부산맘스터치앞을서성이는손우혁",
-                    receiverUserId: 124,
-                    message: "부산맘스터치앞을서성이는손우혁님이 대결을 신청했습니다.",
-                    status: "SENT",
-                    createdAt: "2024-09-20T07:00:00"
+                    id: 1,
+                    userId: 12345, // 수신자의 아이디
+                    title: "request",
+                    message: "가소롭다는표정의손우혁님께서 대전을 신청하셨습니다.",
+                    timestamp: "2024-10-04T12:00:00",
+                    isRead: false
                 },
                 {
-                    notificationId: 10,
-                    battleId: 1,
-                    senderUserId: 125,
-                    senderUserName: "부산피시방이유식단속반손우혁",
-                    receiverUserId: 124,
-                    message: "부산피시방이유식단속반손우혁님이 대결을 신청했습니다.",
-                    status: "READ",
-                    createdAt: "2024-09-18T10:00:00"
+                    id: 2,
+                    userId: 12345, // 수신자의 아이디
+                    title: "request",
+                    message: "다해줬잖아표정의손우혁님께서 대전을 신청하셨습니다.",
+                    timestamp: "2024-10-04T12:00:00",
+                    isRead: false
                 },
                 {
-                    notificationId: 10,
-                    battleId: 1,
-                    senderUserId: 126,
-                    senderUserName: "부산롯데리아진상손님김동현",
-                    receiverUserId: 124,
-                    message: "부산롯데리아진상손님김동현님이 대결을 신청했습니다.",
-                    status: "READ",
-                    createdAt: "2024-09-07T10:00:00"
+                    id: 3,
+                    userId: 12345, // 수신자의 아이디
+                    title: "request",
+                    message: "한심하다는표정의손우혁님께서 대전을 신청하셨습니다.",
+                    timestamp: "2024-10-04T12:00:00",
+                    isRead: false
                 },
             ];
             setNotifications(data);
@@ -89,7 +83,7 @@ function Notification({ navigation }): React.JSX.Element {
                         }}
                     >
                         <Text style={styles.notificationText}>{item.message}</Text>
-                        <Text style={styles.notificationTime}>{timeSince(item.createdAt)}</Text>
+                        <Text style={styles.notificationTime}>{timeSince(item.timestamp)}</Text>
                     </TouchableOpacity>
                 )}
             />

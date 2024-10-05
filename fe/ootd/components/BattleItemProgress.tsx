@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         height: 300,
     },
     pickedImage: {
-        borderColor: '#ABDEE6',
+        borderColor: 'rgba(255,209,102,0.8)',
         borderWidth: 3,
     },
     unPickedImage: {
