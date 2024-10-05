@@ -49,7 +49,7 @@ dependencies {
 // 개발 및 편의성 도구
 	compileOnly 'org.projectlombok:lombok'  // Lombok 사용을 위한 의존성 (컴파일 시 사용)
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'  // 개발 시 핫스왑 지원을 위한 DevTools
-	implementation 'com.mysql:mysql-connector-j'  // MySQL 데이터베이스 연결을 위한 드라이버
+	runtimeOnly 'com.mysql:mysql-connector-j'  // MySQL 데이터베이스 연결을 위한 드라이버
 
 // 애노테이션 프로세서
 	annotationProcessor 'org.projectlombok:lombok'  // Lombok 애노테이션 처리를 위한 프로세서
