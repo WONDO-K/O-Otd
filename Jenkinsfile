@@ -92,6 +92,7 @@ pipeline {
                                 sh 'chmod +r $properties'
                                 sh 'chmod -R 777 src/main/resources'
                                 sh 'cp $properties src/main/resources/application.yml'
+                                sh 'cat src/main/resources/application.yml'
                                 sh 'ls'
                             }
                             //docker-compose.yml 복사
@@ -224,7 +225,7 @@ def getChangedServices(services) {
     for (service in services) {
         def changes = sh(script: "git diff --name-only HEAD~1 HEAD | grep 'be/${service}' || true", returnStdout: true).trim()
         
-        if (changes) {
+        if (false) {
             changedServices.add(service)
         }
     }
