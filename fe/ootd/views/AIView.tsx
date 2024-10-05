@@ -137,8 +137,8 @@ function AIView(): React.JSX.Element {
         </TouchableOpacity>
 
         <Text style={styles.textContents}>
-        AI가 당신의 패션을 분석하고,{"\n"}
-        유사한 스타일의 룩을 추천해줍니다.{"\n"}
+          AI가 당신의 패션을 분석하고,{"\n"}
+          유사한 스타일을 추천합니다.{"\n"}
         </Text>
 
         <View style={styles.btnContainer}>
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   uploadBox: {
-    width: "80%",
+    width: "60%",
     height: "45%",
     borderRadius: 10,
     alignItems: 'center',
@@ -186,9 +186,8 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
-  
-    elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
-    shadowColor: 'black', // 그림자 색상
+    borderColor: '#ffffff',
+    borderWidth: 5,
   },
   uploadedImage: {
     width: '100%',

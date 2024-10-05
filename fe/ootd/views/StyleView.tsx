@@ -65,6 +65,11 @@ function StyleView({ navigation, route }): React.JSX.Element {
                     </TouchableOpacity>
                 </View>
 
+                <Text style={styles.textContents}>
+                    AI가 스타일을 조화롭게 합성하여,{"\n"}
+                    유사한 스타일을 제공합니다.{"\n"}
+                </Text>
+
                 {/* 추천 받기 버튼 */}
                 <TouchableOpacity
                     style={[styles.recommendButton, isButtonDisabled ? styles.disabledButton : styles.enabledButton]}
@@ -121,10 +126,10 @@ const styles = StyleSheet.create({
         marginBottom: 50,
     },
     imageContainer: {
-        width: 200,
-        height: 300,
+        width: 180,
+        height: 270,
         position: 'relative',
-        marginBottom: 50,
+        marginBottom: 40,
     },
     mainImage: {
         width: '100%',
@@ -136,7 +141,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
         overflow: 'hidden',
-        left: -20,
+        left: -15,
         transform: [
             { rotateY: '10deg' }
         ],
@@ -146,12 +151,10 @@ const styles = StyleSheet.create({
         shadowColor: 'black', // 그림자 색상
     },
     subImage: {
-        width: 150,
-        height: 200,
+        width: 120,
+        height: 160,
         // backgroundColor: '#121212',
         backgroundColor: 'rgba(88, 88, 88, 0.7)',
-        elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
-        shadowColor: 'black', // 그림자 색상
         borderColor: 'white',
         borderWidth: 5,
         borderRadius: 10,
@@ -159,7 +162,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
         top: 120,
-        left: 120,
+        left: 115,
         transform: [{ rotateY: '-30deg' }],
         zIndex: 2,
         overflow: 'hidden',
@@ -209,7 +212,17 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 350,
     },
-    
+    textContents: {
+        width: '80%',
+        borderRadius: 10,
+        fontSize: 20,
+        color: '#ffffff',
+        textAlign: 'center',
+        paddingTop: 20,
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
+        shadowColor: 'black', // 그림자 색상
+    },
 });
 
 export default StyleView;
