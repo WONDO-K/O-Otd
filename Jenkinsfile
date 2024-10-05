@@ -217,7 +217,7 @@ def getChangedServices(services) {
     def changedServices = []
     
     // changedServices.add("eureka")
-    // changedServices.add("apigateway")
+    changedServices.add("apigateway")
     // changedServices.add("user")
     changedServices.add("user")
     changedServices.add("battle")
