@@ -256,7 +256,7 @@ function Battle({ navigation }): React.JSX.Element {
                                 styles.battleSortButton,
                                 {
                                     // backgroundColor: selectedSort === '최신순' ? '#5b5b5b' : '#6f6f6f',
-                                    borderColor: '#white',
+                                    
                                     borderWidth: selectedSort === '최신순' ? 2 : 0,
                                 },
                             ]}
@@ -272,7 +272,6 @@ function Battle({ navigation }): React.JSX.Element {
                                 styles.battleSortButton,
                                 {
                                     // backgroundColor: selectedSort === '인기순' ? '#5b5b5b' : '#6f6f6f',
-                                    borderColor: 'white',
                                     borderWidth: selectedSort === '인기순' ? 2 : 0,
                                 },
                             ]}
@@ -380,6 +379,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         marginHorizontal: 7,
         borderRadius: 22,
+        borderColor: 'white',
         width: 90,
         height: 43,
         display: 'flex',
