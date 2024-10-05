@@ -34,43 +34,49 @@ dependencyManagement {
 }
 
 dependencies {
-	// 공통 라이브러리 의존성 추가
+// 공통 라이브러리 의존성 추가
 	implementation 'com.threeheads:common-library:0.0.1-SNAPSHOT'
 
-	// Feign 의존성 추가
-	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
+// Spring Boot 스타터 의존성
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'  // JPA를 위한 의존성
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'  // Redis 사용을 위한 의존성
+	implementation 'org.springframework.boot:spring-boot-starter-security'  // Spring Security 의존성
+	implementation 'org.springframework.boot:spring-boot-starter-web'  // Spring MVC 및 REST API 지원을 위한 의존성
+	implementation 'org.springframework.boot:spring-boot-starter-quartz' //	Quartz 스케줄러를 위한 의존성
+// Kafka 관련 의존성
+	implementation 'org.springframework.kafka:spring-kafka'  // Kafka 통합을 위한 의존성
 
-	// Spring Boot 기본 의존성
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
+// 개발 및 편의성 도구
+	compileOnly 'org.projectlombok:lombok'  // Lombok 사용을 위한 의존성 (컴파일 시 사용)
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'  // 개발 시 핫스왑 지원을 위한 DevTools
+	implementation 'com.mysql:mysql-connector-j'  // MySQL 데이터베이스 연결을 위한 드라이버
 
-	// Spring Cloud 및 Eureka 관련 의존성
+// 애노테이션 프로세서
+	annotationProcessor 'org.projectlombok:lombok'  // Lombok 애노테이션 처리를 위한 프로세서
+
+// Spring Cloud 및 Eureka 관련 의존성
 	implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
 
-	// Swagger
+// Swagger
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 
-	// 개발 및 런타임 의존성
-	implementation 'org.springframework.kafka:spring-kafka'
-	compileOnly 'org.projectlombok:lombok'
-	annotationProcessor 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'com.mysql:mysql-connector-j'
 
-	// JWT
+// JWT
 	implementation group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.5'
 	runtimeOnly group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.5'
 
-	// 테스트 의존성
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.kafka:spring-kafka-test'
-	testImplementation 'org.springframework.security:spring-security-test'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+// 테스트 관련 의존성
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'  // Spring Boot 테스트 지원 의존성
+	testImplementation 'org.springframework.kafka:spring-kafka-test'  // Kafka 관련 테스트 지원 의존성
+	testImplementation 'org.springframework.security:spring-security-test'  // Spring Security 테스트 지원 의존성
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'  // JUnit 플랫폼 실행기
 	testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.3'
 	testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.3'
+
+// Swagger 의존성 (API 문서화)
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'  // Swagger UI 및 OpenAPI 문서화를 위한 의존성
+
 }
 
 tasks.named('test') {
