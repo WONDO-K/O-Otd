@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Image, FlatList, ImageBackground } from 'react-native';
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
-import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { TitleText, TitleBoldText } from '../components/CustomTexts';
 
@@ -11,6 +10,20 @@ function StyleView({ navigation, route }): React.JSX.Element {
     const [subImage, setSubImage] = useState<string | null>(null);
     const [recommendedImages, setRecommendedImages] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [loadingText, setLoadingText] = useState('Loading');
+
+    useEffect(() => {
+        const textList = ['Loading', 'Loading.', 'Loading..', 'Loading...'];
+        let index = 0;
+
+        const interval = setInterval(() => {
+            setLoadingText(textList[index % 4]);
+            index += 1;
+        }, 300);
+
+        // 컴포넌트가 언마운트되면 interval을 정리
+        return () => clearInterval(interval);
+    }, []);
 
     const fetchRecommendedImages = async (mainImage: string, subImage: string) => {
         setLoading(true);
@@ -66,8 +79,8 @@ function StyleView({ navigation, route }): React.JSX.Element {
                 </View>
 
                 <Text style={styles.textContents}>
-                    AI가 스타일을 조화롭게 합성하여,{"\n"}
-                    유사한 스타일을 제공합니다.{"\n"}
+                    AI가 두 패션의 색깔을 더해,{"\n"}
+                    유사한 감각의 스타일을 제공합니다.{"\n"}
                 </Text>
 
                 {/* 추천 받기 버튼 */}
@@ -81,13 +94,13 @@ function StyleView({ navigation, route }): React.JSX.Element {
                     }}
                 >
                     <Text style={isButtonDisabled ? styles.disabledButtonText : styles.enabledButtonText}>
-                        {loading ? '추천 중...' : '추천 받기'}
+                        {loading ? loadingText : 'Try !'}
                     </Text>
                 </TouchableOpacity>
             </View>
             {recommendedImages.length > 0 && (
                 <View style={styles.recommendationList}>
-                    <Text style={styles.listTitle}>추천된 이미지</Text>
+                    <TitleText style={styles.listTitle}><TitleBoldText>AI</TitleBoldText> Picks</TitleText>
                     <FlatList
                         data={recommendedImages}
                         keyExtractor={(item) => item.id}
@@ -172,35 +185,36 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     recommendButton: {
+        borderColor: '#ffffff',
+        borderWidth: 1,
         width: 150,
         height: 50,
+        borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 10,
-        borderRadius: 10,
         marginTop: 20,
     },
     enabledButton: {
-        backgroundColor: 'white',
-        borderColor: 'black',
-        borderWidth: 2,
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     disabledButton: {
-        backgroundColor: 'gray',
-        borderColor: 'gray',
-        borderWidth: 2,
+         backgroundColor: 'rgba(128, 128, 128, 0.7)'
     },
     enabledButtonText: {
-        color: 'black',
+        color: 'white',
+        fontSize: 24,
+        fontWeight: 'bold',
     },
     disabledButtonText: {
-        color: 'darkgray',
+        color: '#949494',
+        fontSize: 24,
+        fontWeight: 'bold',
     },
     recommendationList: {
         marginTop: 20,
     },
     listTitle: {
-        fontSize: 24,
+        fontSize: 30,
         color: 'white',
         marginBottom: 20,
         textAlign: 'center',

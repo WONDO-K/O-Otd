@@ -11,6 +11,7 @@ import axios from 'axios';
 
 import BattleItemProgress from '../components/BattleItemProgress';
 import BattleItemComplete from '../components/BattleItemComplete';
+import LinearGradient from 'react-native-linear-gradient';
 
 type Battle = {
     battleId: number;
@@ -61,11 +62,11 @@ function Battle({ navigation }): React.JSX.Element {
   
     const selectCategory = (category: string) => {
         setSelectedCategory(category);
+        setSelectedSort('최신순');
     };
     const selectSort = (sort: string) => {
         setSelectedSort(sort);
     };
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
     const nameSlice = (name: string) => {
         if (name.length > 6) {
@@ -177,7 +178,14 @@ function Battle({ navigation }): React.JSX.Element {
                     </TitleBoldText>
                 </View>
                 <TouchableOpacity style={styles.battleHeaderButton} onPress={() => navigation.navigate('Challenge')}>
-                    <BattleIcon/>
+                    {/* <BattleIcon/> */}
+                    <Text
+                        style={{
+                            fontSize: 16,
+                            color: 'blcak',
+                            fontWeight: 'bold',
+                        }}
+                    >신청</Text>
                 </TouchableOpacity>
                 {/* 배틀 카테고리 */}
                 <View style={styles.battleTab}>
@@ -192,11 +200,23 @@ function Battle({ navigation }): React.JSX.Element {
                                     {
                                         color: selectedCategory === '진행 중' ? 'white' : 'gray',
                                         padding: selectedCategory === '진행 중' ? 5 : 0,
-                                        borderBottomWidth: selectedCategory === '진행 중' ? 3 : 0,
-                                        borderColor: selectedCategory === '진행 중' ? 'white' : 'transparent',
                                     },
                                 ]}
-                            >진행 중</Text>
+                            >
+                                진행 중
+                            </Text>
+                            {selectedCategory === '진행 중' &&
+                                <LinearGradient
+                                    style={{
+                                        width: '63%',
+                                        alignSelf : 'center',
+                                        height: 3 
+                                    }}
+                                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                />
+                            }
                         </TouchableOpacity>
                         <TouchableOpacity 
                             style={styles.battleCategoryButton}
@@ -208,21 +228,26 @@ function Battle({ navigation }): React.JSX.Element {
                                     {
                                         color: selectedCategory === '결과' ? 'white' : 'gray',
                                         padding: selectedCategory === '결과' ? 5 : 0,
-                                        borderBottomWidth: selectedCategory === '결과' ? 3 : 0,
-                                        borderColor: selectedCategory === '결과' ? 'white' : 'transparent',
                                     },
                                 ]}
-                            >결과</Text>
+                            >
+                                결과
+                            </Text>
+                            {selectedCategory === '결과' &&
+                                <LinearGradient
+                                    style={{
+                                        width: '40%',
+                                        alignSelf : 'center',
+                                        height: 3 
+                                    }}
+                                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                />
+                            }
                         </TouchableOpacity>
                     </View>
                     <View style={styles.myBattle}>
-                        <Text style={styles.switchText}>My    </Text>
-                        <Switch
-                            trackColor={{ false: "#767577", true: "#81b0ff" }} // 트랙 색상 설정
-                            thumbColor={isEnabled ? "#ffffff" : "#ffffff"} // 스위치 원 색상 설정
-                            onValueChange={toggleSwitch} // 스위치가 변경될 때 호출되는 함수
-                            value={isEnabled} // 현재 스위치 상태
-                        />
                     </View>
                 </View>
                 {/* 배틀 정렬 */}
@@ -230,20 +255,34 @@ function Battle({ navigation }): React.JSX.Element {
                     <TouchableOpacity style={[
                                 styles.battleSortButton,
                                 {
-                                    backgroundColor: selectedSort === '최신순' ? 'white' : 'gray',
+                                    // backgroundColor: selectedSort === '최신순' ? '#5b5b5b' : '#6f6f6f',
+                                    borderColor: '#white',
+                                    borderWidth: selectedSort === '최신순' ? 2 : 0,
                                 },
                             ]}
                             onPress={() => selectSort('최신순')}>
-                        <Text style={styles.battleSortButtonText}>최신순</Text>
+                            <Text style={[
+                                styles.battleSortButtonText,
+                                {
+                                    color: selectedSort === '최신순' ? 'white' : 'gray'
+                                }
+                            ]}>최신순</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[
                                 styles.battleSortButton,
                                 {
-                                    backgroundColor: selectedSort === '인기순' ? 'white' : 'gray',
+                                    // backgroundColor: selectedSort === '인기순' ? '#5b5b5b' : '#6f6f6f',
+                                    borderColor: 'white',
+                                    borderWidth: selectedSort === '인기순' ? 2 : 0,
                                 },
                             ]}
                             onPress={() => selectSort('인기순')}>
-                        <Text style={styles.battleSortButtonText}>인기순</Text>
+                        <Text style={[
+                            styles.battleSortButtonText,
+                            {
+                                color: selectedSort === '인기순' ? 'white' : 'gray'
+                            }
+                        ]}>인기순</Text>
                     </TouchableOpacity>
                 </View>
                 {/* 배틀 목록 */}
@@ -296,6 +335,7 @@ const styles = StyleSheet.create({
     },
     battleHeaderButton: {
         backgroundColor: 'white',
+        // backgroundColor: '#FFFFFF',
         borderRadius: 10,
         width: 80,
         height: 50,
@@ -310,10 +350,8 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     battleTab:{
-        // backgroundColor: '#121212',
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between',
         marginTop: 10,
         borderBottomWidth: 1,
         borderColor: 'gray',
@@ -323,14 +361,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     battleCategoryButton:{ 
-        width: 100,
-        height: 40,
+        width: '50%',
+        height: 45,
         justifyContent: 'center',
-        alignItems: 'center',
     },
     battleCategoryButtonText:{
         color: 'black',
-        fontSize: 20,
+        fontSize: 25,
         fontWeight: 'bold',
         textAlign: 'center',
     },
@@ -339,17 +376,19 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     battleSortButton: {
-        margin: 10,
-        borderRadius: 10,
-        width: 80,
-        height: 32,
+        marginTop: 15,
+        marginBottom: 5,
+        marginHorizontal: 7,
+        borderRadius: 22,
+        width: 90,
+        height: 43,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
     },
     battleSortButtonText: {
         fontSize: 20,
-        color: 'black',
+        color: 'white',
         fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 2,

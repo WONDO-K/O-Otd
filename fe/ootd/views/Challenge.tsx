@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView, FlatList, ImageBackground } from 'react-native';
 import axios from 'axios';
-import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
-import GalleryButton from '../components/GalleryButton';
 import MyFashionButton from '../components/MyFashionButton';
 
 function Challenge({ navigation, route }): React.JSX.Element {
@@ -197,7 +195,7 @@ const styles = StyleSheet.create({
     },
     resultList: {
         width: 350,
-        // backgroundColor: '#262626',
+        backgroundColor: '#262626',
         marginTop: 10,
         position: 'absolute',
         zIndex: 1,
