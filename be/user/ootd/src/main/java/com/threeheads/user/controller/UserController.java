@@ -6,6 +6,7 @@ import com.threeheads.user.common.jwt.GeneratedToken;
 import com.threeheads.user.dto.kakao.KakaoUserInfoDto;
 import com.threeheads.user.dto.login.reqeust.SignupRequestDto;
 import com.threeheads.user.dto.login.response.TokenResponseStatus;
+import com.threeheads.user.dto.users.reqeust.UserListResponseDto;
 import com.threeheads.user.dto.users.reqeust.UserUpdateRequestDto;
 import com.threeheads.user.dto.users.response.UserResponseDto;
 import com.threeheads.user.entity.User;
@@ -25,6 +26,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -37,6 +39,29 @@ public class UserController {
     private final UserService userService;
     private final TokenBlacklistService tokenBlacklistService;
     private final Logger log = LoggerFactory.getLogger(getClass());
+
+    // 닉네임 존재 여부 확인 API -> 닉네임 중복 검사
+    @GetMapping("/check/nickname")
+    @Operation(summary = "닉네임 중복 검색", description = "닉네임을 검색하여 일치하는 유저가 있는지 확인합니다.")
+    public ResponseEntity<Boolean> existsByNickname(@RequestParam String nickname) {
+        boolean isExist = userService.existsByNickname(nickname);
+        return ResponseEntity.ok(isExist);
+    }
+
+    // 우선순위를 반영한 닉네임 검색 API (최대 5개 반환)
+    @GetMapping("/user-list/search")
+    @Operation(summary = "닉네임 검색", description = "닉네임을 검색하여 일치하는 유저 목록을 반환합니다.")
+    public List<UserListResponseDto> searchUsers(@RequestParam String nickname) {
+        return userService.searchUsersByNicknameWithPriority(nickname);
+    }
+
+    // 전화번호 중복 여부 확인
+    @GetMapping("/check/phone")
+    @Operation(summary = "전화번호 중복 검색", description = "전화번호를 검색하여 일치하는 유저가 있는지 확인합니다.")
+    public ResponseEntity<Boolean> existsByPhone(@RequestParam String phone) {
+        boolean isExist = userService.existsByPhone(phone);
+        return ResponseEntity.ok(isExist);
+    }
 
     // 인증이 필요 없는 경로 (로그아웃)
     @PostMapping("/auth/logout")
@@ -85,8 +110,6 @@ public class UserController {
         }
         log.info("토큰 갱신 호출");
         return authService.refresh(accessToken,refreshToken);
-
-
     }
 
     // 인증이 필요한 경로 (내 정보 조회)
