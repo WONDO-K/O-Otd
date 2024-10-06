@@ -66,6 +66,8 @@ public class BattleServiceImpl implements BattleService {
         // 배틀 수신자에게 알림 전송
         NotificationDto notification = NotificationDto.builder()
                 .userId(battle.getResponderId())
+                .senderId(battle.getRequesterId())
+                .senderNickname(battle.getRequesterName()) // 보낸 사람 닉네임 반환
                 .battleId(battle.getId())
                 .title("새로운 배틀 요청")
                 .message("새로운 배틀 요청이 도착했습니다.")
@@ -144,8 +146,10 @@ public class BattleServiceImpl implements BattleService {
 
             // 배틀 수락 알림
             NotificationDto acceptNotification = NotificationDto.builder()
-                    .userId(battle.getRequesterId())
                     .battleId(battle.getId())
+                    .userId(battle.getRequesterId())
+                    .senderId(battle.getResponderId())
+                    .senderNickname(battle.getResponderName()) // 보낸 사람 닉네임 반환
                     .title("배틀 수락")
                     .message("배틀이 수락되었습니다.")
                     .timestamp(LocalDateTime.now())
@@ -156,6 +160,8 @@ public class BattleServiceImpl implements BattleService {
             NotificationDto startNotification = NotificationDto.builder()
                     .battleId(battle.getId())
                     .userId(battle.getResponderId())
+                    .senderId(battle.getRequesterId())
+                    .senderNickname(battle.getRequesterName()) // 보낸 사람 닉네임 반환
                     .title("배틀 시작")
                     .message("배틀이 시작되었습니다!")
                     .timestamp(LocalDateTime.now())
@@ -175,6 +181,8 @@ public class BattleServiceImpl implements BattleService {
             // 배틀 거절 알림
             NotificationDto cancelNotification = NotificationDto.builder()
                     .userId(battle.getRequesterId())
+                    .senderId(battle.getResponderId())
+                    .senderNickname(battle.getResponderName()) // 보낸 사람 닉네임 반환
                     .battleId(battle.getId())
                     .title("배틀 거절")
                     .message("배틀이 거절되었습니다.")
@@ -185,6 +193,8 @@ public class BattleServiceImpl implements BattleService {
 
             NotificationDto cancelResponderNotification = NotificationDto.builder()
                     .userId(battle.getResponderId())
+                    .senderId(battle.getRequesterId())
+                    .senderNickname(battle.getRequesterName()) // 보낸 사람 닉네임 반환
                     .battleId(battle.getId())
                     .title("배틀 거절")
                     .message("배틀이 거절되었습니다.")
@@ -206,7 +216,7 @@ public class BattleServiceImpl implements BattleService {
                 .battleId(battle.getId())
                 .responderId(battle.getResponderId())
                 .responderImage(battle.getResponderImageUrl())
-                .responderName(battle.getResponderName())  // 수신자 이름 반환
+                .responderName(battle.getResponderName())  // 보낸 사람 닉네임 반환
                 .status(battle.getStatus())
                 .createdAt(battle.getCreatedAt())
                 .expiresAt(battle.getExpiresAt())

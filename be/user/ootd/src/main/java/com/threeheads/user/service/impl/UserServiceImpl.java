@@ -12,6 +12,7 @@ import com.threeheads.user.common.jwt.JwtAuthFilter;
 import com.threeheads.user.dto.users.response.UserResponseDto;
 import com.threeheads.user.repository.UserRepository;
 import com.threeheads.user.service.UserService;
+import jakarta.persistence.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,23 +109,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserListResponseDto> searchUsersByNicknameWithPriority(String nickname) {
-        // 1. 닉네임이 정확히 일치하는 닉네임 검색
-        Optional<String> exactMatch = userRepository.findNicknameByExactMatch(nickname);
+        Optional<Tuple> exactMatch = userRepository.findUserByExactMatch(nickname);
+        List<Tuple> similarMatches = userRepository.findUsersByStartingWith(nickname);
 
-        // 2. 닉네임이 입력된 문자열로 시작하는 유사한 사용자 목록
-        List<UserListResponseDto> similarMatches = userRepository.findNicknamesByStartingWith(nickname)
-                .stream()
-                .filter(nick -> !nick.equals(nickname)) // 정확히 일치하는 닉네임을 제외
-                .map(UserListResponseDto::new)
+        List<UserListResponseDto> result = similarMatches.stream()
+                .filter(user -> !user.get("nickname", String.class).equals(nickname))
+                .map(user -> new UserListResponseDto(
+                        user.get("id", Long.class),
+                        user.get("nickname", String.class)
+                ))
                 .collect(Collectors.toList());
 
-        // 3. 정확히 일치하는 닉네임이 있으면 추가하고, 없으면 빈 리스트
-        // 정확히 일치하는 닉네임을 리스트의 맨 앞에 추가
-        exactMatch.ifPresent(s -> similarMatches.add(0, new UserListResponseDto(s)));
+        exactMatch.ifPresent(user -> result.add(0, new UserListResponseDto(
+                user.get("id", Long.class),
+                user.get("nickname", String.class)
+        )));
 
-        // 4. 최대 5개까지만 결과 반환
-        return similarMatches.stream()
-                .limit(5) // 최대 5개까지만 반환
+        return result.stream()
+                .limit(5)
                 .collect(Collectors.toList());
     }
+
+
+
 }
