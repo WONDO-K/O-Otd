@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Image, View, Text, StyleSheet, Touchable, TouchableOpacity, ImageBackground } from 'react-native';
 import Svg, { Defs, LinearGradient, Stop, Circle } from 'react-native-svg';
+import { ContentText, ContentBoldText } from '../components/CustomTexts';
 
 function BattleResult({ navigation, route }): React.JSX.Element {
     
@@ -50,14 +51,14 @@ function BattleResult({ navigation, route }): React.JSX.Element {
                         <Image style={styles.image} source={{ uri: item.leftImage }} />
                         <View style={{flexDirection:'row', alignItems: 'center'}}>
                             <View style={styles.leftColor}></View>
-                            <Text style={styles.userNameText}>{item.leftName}</Text>
+                            <ContentBoldText style={styles.userNameText}>{item.leftName}</ContentBoldText>
                         </View>
                     </View>
                     <View style={styles.rightSide}>
                         <Image style={styles.image} source={{ uri: item.rightImage }} />
                         <View style={{flexDirection:'row'}}>
                             <View style={styles.rightColor}></View>
-                            <Text style={styles.userNameText}>{item.rightName}</Text>
+                            <ContentBoldText style={styles.userNameText}>{item.rightName}</ContentBoldText>
                         </View>
                     </View>
                 </View>
@@ -108,17 +109,15 @@ function BattleResult({ navigation, route }): React.JSX.Element {
                         </Svg>
                     </View>
                     <View style={styles.resultLog}>
-                        <Text style={styles.allVoteCount}>총 투표 수 : {item.leftVote + item.rightVote}</Text>
+                        <ContentText style={styles.allVoteCount}>총 투표 수 : {item.leftVote + item.rightVote}</ContentText>
                         <View style={styles.resultLegend}>
-                            {/* <View style={styles.leftColor}></View>
-                            <Text style={styles.resultText}>{item.leftName}</Text> */}
                             <View style={{flexDirection:'row'}}>
                                 <View style={styles.leftColor}></View>
-                                <Text style={styles.voteCount}>{Math.round(leftPercentage)}%</Text>
+                                <ContentText style={styles.voteCount}>{Math.round(leftPercentage)}%</ContentText>
                             </View>
                             <View style={{flexDirection:'row'}}>
                                 <View style={styles.rightColor}></View>
-                                <Text style={styles.voteCount}>{Math.round(rightPercentage)}%</Text>
+                                <ContentText style={styles.voteCount}>{Math.round(rightPercentage)}%</ContentText>
                             </View>
                         </View>
                     </View>
@@ -157,7 +156,6 @@ const styles = StyleSheet.create({
     userNameText: {
         color: 'white',
         fontSize: 16,
-        fontWeight: 'bold',
         marginVertical: 15,
     },
     image: {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView, ImageBackground } from 'react-native';
 import axios from 'axios';
 import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
-import GalleryButton from '../components/GalleryButton';
+import { ContentText, ContentBoldText } from '../components/CustomTexts';
 import MyFashionButton from '../components/MyFashionButton';
 
 function ChallengeDetail({ navigation, route }): React.JSX.Element {
@@ -74,22 +74,22 @@ function ChallengeDetail({ navigation, route }): React.JSX.Element {
                 <View style={styles.scrollContainer}>
                     <View style={styles.selectedSection}>
                         {/* <View style={styles.selectedBar}> */}
-                            <Text style={styles.selectedText}>{selectedUser} 님이 </Text>
-                            <Text style={styles.selectedText}> 대전을 신청하셨습니다.</Text>
+                            <ContentBoldText style={styles.selectedText}>{selectedUser} 님이 </ContentBoldText>
+                            <ContentBoldText style={styles.selectedText}> 대전을 신청하셨습니다.</ContentBoldText>
                         {/* </View> */}
                     </View>
                     <MyFashionButton selectedImage={selectedImage} onPress={() => navigation.navigate('MyFashion', { returnScreen: 'ChallengeDetail' })} />
                 </View>
                 <View style={styles.buttonSection}>
                     <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-                        <Text style={styles.buttonText}>Decline</Text>
+                        <ContentText style={styles.buttonText}>Decline</ContentText>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={(selectedUser && selectedImage) ? styles.activeButton : styles.deactiveButton}
                         disabled={!(selectedUser && selectedImage)}
                         onPress={() => battleRequest(selectedUser, selectedImage)}           
                     >
-                        <Text style={(selectedUser && selectedImage) ? styles.buttonText : styles.deactiveButtonText}>Accept</Text>
+                        <ContentText style={(selectedUser && selectedImage) ? styles.buttonText : styles.deactiveButtonText}>Accept</ContentText>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -119,7 +119,6 @@ const styles = StyleSheet.create({
         paddingHorizontal: 40,
         color: '#C8D3F1',
         fontSize: 20,
-        fontWeight: 'bold',
     },
     searchSection: {
         justifyContent: 'center',

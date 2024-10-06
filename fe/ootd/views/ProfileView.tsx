@@ -15,6 +15,7 @@ import PencilIcon from '../assets/Icons/Pencil_Icon.svg';
 import MyFashionIcon from '../assets/Icons/MyFashion_Icon.svg';
 import BattleIcon from '../assets/Icons/Battle_Icon.svg';
 import LinearGradient from 'react-native-linear-gradient';
+import { ContentBoldText } from '../components/CustomTexts';
 
 // 메인 페이지
 function ProfileView(): React.JSX.Element {
@@ -131,7 +132,7 @@ const getPictureList = (category: string, sort: string) => {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
         <TouchableOpacity style={styles.nicknameBox}>
-          <Text style={styles.nickname}>신주쿠헌옷수거함지배자</Text>
+          <ContentBoldText style={styles.nickname}>신주쿠헌옷수거함지배자</ContentBoldText>
           <PencilIcon width={30} height={30} style={styles.pencil} />
         </TouchableOpacity>
 
@@ -241,7 +242,7 @@ const getPictureList = (category: string, sort: string) => {
           ]}
           onPress={() => selectSort(sort)}
         >
-          <Text style={styles.profileSortButtonText}>{sort}</Text>
+          <ContentBoldText style={styles.profileSortButtonText}>{sort}</ContentBoldText>
         </TouchableOpacity>
       ))}
 
@@ -256,7 +257,7 @@ const getPictureList = (category: string, sort: string) => {
           ]}
           onPress={() => selectSort(sort)}
         >
-          <Text style={styles.profileSortButtonText}>{sort}</Text>
+          <ContentBoldText style={styles.profileSortButtonText}>{sort}</ContentBoldText>
         </TouchableOpacity>
       ))}
 
@@ -271,7 +272,7 @@ const getPictureList = (category: string, sort: string) => {
           ]}
           onPress={() => selectSort(sort)}
         >
-          <Text style={styles.profileSortButtonText}>{sort}</Text>
+          <ContentBoldText style={styles.profileSortButtonText}>{sort}</ContentBoldText>
         </TouchableOpacity>
         ))}
       </View>
@@ -381,7 +382,6 @@ const styles = StyleSheet.create({
   profileSortButtonText: {
       fontSize: 20,
       color: 'white',
-      fontWeight: 'bold',
       textAlign: 'center',
       marginBottom: 2,
   },

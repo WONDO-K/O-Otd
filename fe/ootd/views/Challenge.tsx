@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView, FlatList, ImageBackground } from 'react-native';
 import axios from 'axios';
 import MyFashionButton from '../components/MyFashionButton';
+import { ContentText, ContentBoldText } from '../components/CustomTexts';
 
 function Challenge({ navigation, route }): React.JSX.Element {
     const selectedSrc = route.params?.selectedImage;
@@ -70,7 +71,7 @@ function Challenge({ navigation, route }): React.JSX.Element {
                     {selectedUser ? (
                         <View style={styles.selectedSection}>
                             <TouchableOpacity style={styles.selectedBar} onPress={() => setSelectedUser('')}>
-                                <Text style={styles.selectedText}>{selectedUser}</Text>
+                                <ContentBoldText style={styles.selectedText}>{selectedUser}</ContentBoldText>
                             </TouchableOpacity>
                         </View>
                     ) : (
@@ -109,7 +110,7 @@ function Challenge({ navigation, route }): React.JSX.Element {
                                             ]}
                                             onPress={() => setSelectedUser(item)}
                                         >
-                                            <Text style={styles.resultText}>{item}</Text>
+                                            <ContentText style={styles.resultText}>{item}</ContentText>
                                         </TouchableOpacity>
                                     ))}
                                 </View>
@@ -120,14 +121,14 @@ function Challenge({ navigation, route }): React.JSX.Element {
                 </ScrollView>
                 <View style={styles.buttonSection}>
                     <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-                        <Text style={styles.buttonText}>Cancle</Text>
+                        <ContentText style={styles.buttonText}>Cancle</ContentText>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={(selectedUser && selectedImage) ? styles.activeButton : styles.deactiveButton}
                         disabled={!(selectedUser && selectedImage)}
                         onPress={() => battleRequest(selectedUser, selectedImage)}           
                     >
-                        <Text style={(selectedUser && selectedImage) ? styles.buttonText : styles.deactiveButtonText}>Accept</Text>
+                        <ContentText style={(selectedUser && selectedImage) ? styles.buttonText : styles.deactiveButtonText}>Accept</ContentText>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -170,7 +171,6 @@ const styles = StyleSheet.create({
     selectedText: {
         color: 'white',
         fontSize: 20,
-        fontWeight: 'bold',
     },
     searchSection: {
         justifyContent: 'center',
@@ -196,6 +196,7 @@ const styles = StyleSheet.create({
         height: 60,
         color: 'white',
         fontSize: 20,
+        fontFamily: 'SUIT-Regular',
     },
     resultList: {
         width: 350,

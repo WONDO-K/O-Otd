@@ -283,7 +283,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
   },
   modalCloseButton: {
-    padding: 15,
     width: '100%',
     alignItems: 'center',
   },

@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity, Image, StyleSheet, FlatList, ImageBackgro
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
 import MyFashionIcon from '../assets/Icons/MyFashion_Icon.svg';
+import { ContentBoldText } from '../components/CustomTexts';
 
 function StyleSelect({ navigation, route }): React.JSX.Element {
 
@@ -175,7 +176,7 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
                         style={[styles.battleSortButton, { borderWidth: selectedSort === '최신순' ? 2 : 0 }]}
                         onPress={() => setSelectedSort('최신순')}
                     >
-                        <Text style={styles.battleSortButtonText}>최신순</Text>
+                        <ContentBoldText style={styles.battleSortButtonText}>최신순</ContentBoldText>
                     </TouchableOpacity>
 
                     {selectedCategory === 'myFashion' && (
@@ -184,13 +185,13 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
                                 style={[styles.battleSortButton, { borderWidth: selectedSort === '출전 수' ? 2 : 0 }]}
                                 onPress={() => setSelectedSort('출전 수')}
                             >
-                                <Text style={styles.battleSortButtonText}>출전 수</Text>
+                                <ContentBoldText style={styles.battleSortButtonText}>출전 수</ContentBoldText>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={[styles.battleSortButton, { borderWidth: selectedSort === '승리 수' ? 2 : 0 }]}
                                 onPress={() => setSelectedSort('승리 수')}
                             >
-                                <Text style={styles.battleSortButtonText}>승리 수</Text>
+                                <ContentBoldText style={styles.battleSortButtonText}>승리 수</ContentBoldText>
                             </TouchableOpacity>
                         </>
                     )}
@@ -200,7 +201,7 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
                             style={[styles.battleSortButton, { borderWidth: selectedSort === '인기순' ? 2 : 0 }]}
                             onPress={() => setSelectedSort('인기순')}
                         >
-                            <Text style={styles.battleSortButtonText}>인기순</Text>
+                            <ContentBoldText style={styles.battleSortButtonText}>인기순</ContentBoldText>
                         </TouchableOpacity>
                     )}
                 </View>
@@ -288,7 +289,6 @@ const styles = StyleSheet.create({
     battleSortButtonText: {
         fontSize: 20,
         color: 'white',
-        fontWeight: 'bold',
     },
 });
 

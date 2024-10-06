@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import { ContentText } from './CustomTexts';
 
 type BattleItemProgressProps = {
   item: any;
@@ -16,9 +17,9 @@ const BattleItemProgress: React.FC<BattleItemProgressProps> = ({ item, onPress, 
             onPress={onPress}
         >
             <View style={styles.battleTitle}>
-                <Text style={styles.battleNameText}>{nameSlice(item.leftName)}</Text>
-                <Text style={styles.battleTimeText}>{calculateRemainingTime(item.startedAt)}</Text>
-                <Text style={styles.battleNameText}>{nameSlice(item.rightName)}</Text>
+                <ContentText style={styles.battleNameText}>{nameSlice(item.leftName)}</ContentText>
+                <ContentText style={styles.battleTimeText}>{calculateRemainingTime(item.startedAt)}</ContentText>
+                <ContentText style={styles.battleNameText}>{nameSlice(item.rightName)}</ContentText>
             </View>
             <View style={styles.progressBarContainer}>
                 {/* 왼쪽 그라데이션 진행 바 */}
@@ -64,20 +65,20 @@ const BattleItemProgress: React.FC<BattleItemProgressProps> = ({ item, onPress, 
         
             <View style={styles.battleContent}>
                 <Image 
-                style={[
-                    styles.battleImage,
-                    item.myPick === 'left' && styles.pickedImage,
-                    item.myPick === 'right' && styles.unPickedImage
-                ]} 
-                source={{ uri: item.leftImage }} 
+                    style={[
+                        styles.battleImage,
+                        item.myPick === 'left' && styles.pickedImage,
+                        item.myPick === 'right' && styles.unPickedImage
+                    ]} 
+                    source={{ uri: item.leftImage }} 
                 />
                 <Image 
-                style={[
-                    styles.battleImage,
-                    item.myPick === 'left' && styles.unPickedImage,
-                    item.myPick === 'right' && styles.pickedImage
-                ]} 
-                source={{ uri: item.rightImage }} 
+                    style={[
+                        styles.battleImage,
+                        item.myPick === 'left' && styles.unPickedImage,
+                        item.myPick === 'right' && styles.pickedImage
+                    ]} 
+                    source={{ uri: item.rightImage }} 
                 />
             </View>
         </TouchableOpacity>
