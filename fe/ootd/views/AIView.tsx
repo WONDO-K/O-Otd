@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import { TitleText, TitleBoldText } from '../components/CustomTexts';
+import { TitleText, TitleBoldText, ContentText, ContentBoldText } from '../components/CustomTexts';
 
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
 import useAIStore from '../stores/AIStore';
@@ -124,25 +124,28 @@ function AIView(): React.JSX.Element {
       <View style={styles.container}>
         <TitleText style={styles.title}><TitleBoldText>AI</TitleBoldText> Lens</TitleText>
 
-        {/* 모달창 */}
+        {/* 모달창 */}  
         <Modal
           transparent={true}
           visible={isModalVisible}
           animationType="slide"
           onRequestClose={toggleModal}
         >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <TouchableOpacity style={styles.modalButton} onPress={handleCamera}>
-                <Text style={[styles.modalButtonText, {color:'#3b97f5'}]}>촬영하기</Text>
-              </TouchableOpacity>
-              <View style={styles.modalDivider} />
-              <TouchableOpacity style={styles.modalButton} onPress={handleUpload}>
-                <Text style={[styles.modalButtonText, {color:'#3b97f5'}]}>갤러리에서 가져오기</Text>
-              </TouchableOpacity>
-              <View style={styles.modalDivider} />
-              <TouchableOpacity style={styles.modalButton} onPress={toggleModal}>
-                <Text style={[styles.modalButtonText, {color:'#fe443b'}]}>취소</Text>
+          <View style={styles.modalBackground}>
+            <View style={styles.modalContainer}>
+              <ContentBoldText style={styles.modalTitle}>연결 프로그램</ContentBoldText>
+              <View style={styles.appOptions}>
+                <TouchableOpacity style={styles.appOption} onPress={handleCamera}>
+                  <Image source={require('../assets/Icons/Camera_Icon.png')} style={styles.appIcon} />
+                  <ContentText style={styles.appName}>카메라</ContentText>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.appOption} onPress={handleUpload}>
+                  <Image source={require('../assets/Icons/Gallery_Icon.png')} style={styles.appIcon} />
+                  <ContentText style={styles.appName}>갤러리</ContentText>
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity style={styles.modalCloseButton} onPress={toggleModal}>
+                <ContentBoldText style={styles.modalCloseButtonText}>취소</ContentBoldText>
               </TouchableOpacity>
             </View>
           </View>
@@ -160,10 +163,10 @@ function AIView(): React.JSX.Element {
           )}
         </TouchableOpacity>
 
-        <Text style={styles.textContents}>
+        <ContentText style={styles.textContents}>
           AI가 당신의 패션을 분석하고,{"\n"}
           유사한 스타일을 추천합니다.{"\n"}
-        </Text>
+        </ContentText>
 
         <View style={styles.btnContainer}>
           <TouchableOpacity
@@ -178,7 +181,7 @@ function AIView(): React.JSX.Element {
             }}
             disabled={!photo}
           >
-            <Text style={[styles.btnText, { color: photo ? 'white' : '#949494' }]}>{ loading ? loadingText : 'Analyze !'}</Text>
+            <ContentBoldText style={[styles.btnText, { color: photo ? 'white' : '#949494' }]}>{ loading ? loadingText : 'Analyze !'}</ContentBoldText>
           </TouchableOpacity>
         </View>
       </View>
@@ -218,34 +221,6 @@ const styles = StyleSheet.create({
     height: '100%',
     borderRadius: 10,
   },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'flex-end', // 모달이 화면 아래에서 올라오도록 설정
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)', // 전체 화면의 배경을 어둡게 투명하게 설정
-  },
-  modalContent: {
-    width: '90%', // 폭을 90%로 설정
-    backgroundColor: '#e6e7e6', // 반투명 흰색 배경
-    borderRadius: 20,
-    alignItems: 'center',
-    marginBottom: 30, // 화면 하단과의 간격
-    marginHorizontal: 20, // 화면 좌우와의 간격
-  },
-  modalButton: {
-    padding: 15,
-    width: '100%',
-    alignItems: 'center',
-  },
-  modalButtonText: {
-    color: '#fff', // 글자 색상 흰색으로 설정
-    fontSize: 18,
-  },
-  modalDivider: {
-    width: '100%',
-    height: 1,
-    backgroundColor: '#d2d2d2', 
-  },
   textContents: {
     width: '80%',
     borderRadius: 10,
@@ -278,7 +253,52 @@ const styles = StyleSheet.create({
   },
   btnText: {
     fontSize: 20,
-    fontWeight: 'bold',
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)', // 반투명 어두운 배경
+  },
+  modalContainer: {
+    backgroundColor: '#2C2C2E', // 어두운 색상 모달
+    padding: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontSize: 20,
+    color: 'white',
+    marginBottom: 20,
+  },
+  appOptions: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginBottom: 20,
+  },
+  appOption: {
+    alignItems: 'center',
+    flex: 1,
+    marginHorizontal: 10,
+  },
+  modalCloseButton: {
+    padding: 15,
+    width: '100%',
+    alignItems: 'center',
+  },
+  modalCloseButtonText: {
+    color: 'white',
+    fontSize: 18,
+  },
+  appIcon: {
+    width: 70,
+    height: 70,
+    marginBottom: 10,
+  },
+  appName: {
+    color: 'white',
+    fontSize: 16,
   },
 });
 

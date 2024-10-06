@@ -195,6 +195,7 @@ const styles = StyleSheet.create({
     height: 60,
     color: 'white',
     fontSize: 20,
+    fontFamily: 'SUIT-Regular',
   },
   notificationItem: {
     width: '50%',

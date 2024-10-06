@@ -49,7 +49,7 @@ function App(): React.JSX.Element {
   return (
     <SafeAreaView style={styles.safeArea}>
       <NavigationContainer onStateChange={handleStateChange}>
-        <Navbar />
+        <Navbar currentRoute={currentRoute} />
         <Stack.Navigator
           initialRouteName="LoginView"
           screenOptions={{

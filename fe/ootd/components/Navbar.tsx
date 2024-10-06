@@ -24,14 +24,23 @@ const styles = StyleSheet.create({
     }
 })
 
-function Navbar(): React.JSX.Element {
+function Navbar({ currentRoute }: { currentRoute: string }): React.JSX.Element {
     const navigation = useNavigation();
+    const isActive = (screens: string[]) => screens.includes(currentRoute);
+    const handleNotificationPress = () => {
+        if (isActive(['Notification'])) {
+            navigation.goBack(); // Notification 화면일 경우 뒤로가기
+        } else {
+            navigation.navigate('Notification'); // 그 외의 경우 Notification 화면으로 이동
+        }
+    };
+    
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.navigate('MainView')}>
                 <LogoIcon width={120} height={60} />
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
+            <TouchableOpacity onPress={handleNotificationPress}>
                 <NoticeIcon width={30} height={30} />
             </TouchableOpacity>
         </View>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { ContentText } from '../components/CustomTexts';
 import axios from 'axios';
 
 function Notification({ navigation }): React.JSX.Element {
@@ -82,8 +83,8 @@ function Notification({ navigation }): React.JSX.Element {
                             }, 0);  // 렌더링 후에 navigation 호출
                         }}
                     >
-                        <Text style={styles.notificationText}>{item.message}</Text>
-                        <Text style={styles.notificationTime}>{timeSince(item.timestamp)}</Text>
+                        <ContentText style={styles.notificationText}>{item.message}</ContentText>
+                        <ContentText style={styles.notificationTime}>{timeSince(item.timestamp)}</ContentText>
                     </TouchableOpacity>
                 )}
             />

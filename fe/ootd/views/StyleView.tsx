@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Text, View, StyleSheet, TouchableOpacity, Image, FlatList, ImageBackground } from 'react-native';
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
 import { ScrollView } from 'react-native-gesture-handler';
-import { TitleText, TitleBoldText } from '../components/CustomTexts';
+import { TitleText, TitleBoldText, ContentText, ContentBoldText } from '../components/CustomTexts';
 
 function StyleView({ navigation, route }): React.JSX.Element {
     // Main 이미지와 Sub 이미지 상태 관리
@@ -11,6 +11,8 @@ function StyleView({ navigation, route }): React.JSX.Element {
     const [recommendedImages, setRecommendedImages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [loadingText, setLoadingText] = useState('Loading');
+
+    const scrollViewRef = useRef<ScrollView>(null);
 
     useEffect(() => {
         const textList = ['Loading', 'Loading.', 'Loading..', 'Loading...'];
@@ -26,6 +28,7 @@ function StyleView({ navigation, route }): React.JSX.Element {
     }, []);
 
     const fetchRecommendedImages = async (mainImage: string, subImage: string) => {
+        setRecommendedImages([])
         setLoading(true);
     
         // 실제 API 요청을 위한 로직 작성 (여기서는 임시로 데이터를 사용)
@@ -39,6 +42,13 @@ function StyleView({ navigation, route }): React.JSX.Element {
         setTimeout(() => {
             setLoading(false);
             setRecommendedImages(data);
+
+            if (scrollViewRef.current) {
+                scrollViewRef.current.scrollTo({
+                    y: 630,
+                    animated: true,
+                });
+            }
         }, 1500); // 임시 딜레이
     };
 
@@ -49,7 +59,7 @@ function StyleView({ navigation, route }): React.JSX.Element {
             source={require('../assets/Images/bg_img.jpg')}  // 배경 이미지 경로 설정
             style={styles.background}  // 스타일 설정
         >
-        <ScrollView style={styles.container}>
+        <ScrollView  ref={scrollViewRef} style={styles.container}>
             <View style={styles.recommend}>
                 <TitleText style={styles.title}><TitleBoldText>AI</TitleBoldText> Style Maker</TitleText>
                 <View style={styles.imageContainer}>
@@ -78,10 +88,10 @@ function StyleView({ navigation, route }): React.JSX.Element {
                     </TouchableOpacity>
                 </View>
 
-                <Text style={styles.textContents}>
+                <ContentText style={styles.textContents}>
                     AI가 두 패션의 색깔을 더해,{"\n"}
                     유사한 감각의 스타일을 제공합니다.{"\n"}
-                </Text>
+                </ContentText>
 
                 {/* 추천 받기 버튼 */}
                 <TouchableOpacity
@@ -93,9 +103,9 @@ function StyleView({ navigation, route }): React.JSX.Element {
                         }
                     }}
                 >
-                    <Text style={isButtonDisabled ? styles.disabledButtonText : styles.enabledButtonText}>
+                    <ContentBoldText style={isButtonDisabled ? styles.disabledButtonText : styles.enabledButtonText}>
                         {loading ? loadingText : 'Try !'}
-                    </Text>
+                    </ContentBoldText>
                 </TouchableOpacity>
             </View>
             {recommendedImages.length > 0 && (
@@ -203,12 +213,10 @@ const styles = StyleSheet.create({
     enabledButtonText: {
         color: 'white',
         fontSize: 24,
-        fontWeight: 'bold',
     },
     disabledButtonText: {
         color: '#949494',
         fontSize: 24,
-        fontWeight: 'bold',
     },
     recommendationList: {
         marginTop: 20,
