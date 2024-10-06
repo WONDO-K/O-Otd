@@ -52,7 +52,7 @@ public class BattleCompletionJob implements Job {
                     battle.setStatus(BattleStatus.EXPIRED);
                     battleRepository.save(battle);
                     // 알림 전송
-                    sendNotificationToUsers(battle.getRequesterId(), battle.getResponderId(),
+                    sendNotificationToUsers(battle.getRequesterId(), battle.getRequesterName(), battle.getResponderId(), battle.getResponderName(),
                             "배틀 요청이 만료되었습니다.", "배틀 요청 만료");
                     logger.info("배틀 ID {}의 상태가 EXPIRED로 변경되었습니다.", battleId);
                     break;
@@ -61,7 +61,7 @@ public class BattleCompletionJob implements Job {
                     battle.setStatus(BattleStatus.COMPLETED);
                     battleRepository.save(battle);
                     // 알림 전송
-                    sendNotificationToUsers(battle.getRequesterId(), battle.getResponderId(),
+                    sendNotificationToUsers(battle.getRequesterId(), battle.getRequesterName(), battle.getResponderId(), battle.getResponderName(),
                             "배틀이 종료되었습니다.", "배틀 종료");
                     logger.info("배틀 ID {}의 상태가 COMPLETED로 변경되었습니다.", battleId);
                     break;
@@ -84,9 +84,11 @@ public class BattleCompletionJob implements Job {
      * @param message 알림 메시지
      * @param title 알림 제목
      */
-    private void sendNotificationToUsers(Long requesterId, Long responderId, String message, String title) {
+    private void sendNotificationToUsers(Long requesterId,String requesterName, Long responderId, String responderName, String message, String title) {
         NotificationDto notificationRequester = NotificationDto.builder()
                 .userId(requesterId)
+                .senderId(responderId)
+                .senderNickname(responderName)
                 .title(title)
                 .message(message)
                 .timestamp(LocalDateTime.now())
@@ -95,6 +97,8 @@ public class BattleCompletionJob implements Job {
 
         NotificationDto notificationResponder = NotificationDto.builder()
                 .userId(responderId)
+                .senderId(requesterId)
+                .senderNickname(requesterName)
                 .title(title)
                 .message(message)
                 .timestamp(LocalDateTime.now())

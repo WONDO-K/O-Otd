@@ -26,14 +26,14 @@ public class Battle {
     @Column(nullable = false)
     private Long requesterId; // 배틀 신청자 ID
 
-    @Column(nullable = true)
-    private Long responderId; // 배틀 수락자 ID (수락 전에는 null일 수 있음)
+    @Column(nullable = false)
+    private Long responderId; // 배틀 수락자 ID
 
     @Column(nullable = false)
     private String requesterName; // 신청자의 이름
 
-    @Column(nullable = true)
-    private String responderName; // 수락자의 이름 (수락 전에는 null일 수 있음)
+    @Column(nullable = false)
+    private String responderName; // 수락자의 이름
 
     @Column(nullable = false)
     private String requesterImageUrl; // 신청자의 이미지 URL

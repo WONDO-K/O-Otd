@@ -25,6 +25,12 @@ public class Notification {
     private Long userId; // 알림을 받을 사용자 ID
 
     @Column(nullable = false)
+    private String senderNickname; // 알림을 보낸 사용자 닉네임
+
+    @Column(nullable = false)
+    private Long senderId; // 알림을 보낸 사용자 ID
+
+    @Column(nullable = false)
     private Long battleId; // 알림과 연관된 배틀 ID
 
     @Column(nullable = false)
