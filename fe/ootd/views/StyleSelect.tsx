@@ -94,6 +94,11 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
         setFashionList(myFashion);
     };
 
+    function updateCategory(category: string) {
+        setSelectedCategory(category);
+        setSelectedSort('최신순');
+    }
+
     useEffect(() => {
         if (selectedCategory === 'myFashion') {
             setFashionList(allFashionData.myFashion);
