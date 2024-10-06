@@ -84,10 +84,16 @@ public class JwtAuthFilter implements WebFilter {
 
     // JWT 토큰을 Authorization 헤더에서 추출
     private String extractToken(ServerWebExchange exchange) {
-        String bearerToken = exchange.getRequest().getHeaders().getFirst("Authorization");
-        log.info("받아온 Authorization Header: {}", bearerToken);
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+        String token = exchange.getRequest().getHeaders().getFirst("Authorization");
+        log.info("받아온 Authorization Header: {}", token);
+
+        if (token != null) {
+            // 만약 토큰이 "Bearer "로 시작하지 않으면, 자동으로 "Bearer "를 추가해줍니다.
+            if (!token.startsWith("Bearer ")) {
+                log.info("Bearer 접두사가 없는 토큰입니다. 자동으로 Bearer를 추가합니다.");
+                return "Bearer " + token;
+            }
+            return token;
         }
         return null;
     }
