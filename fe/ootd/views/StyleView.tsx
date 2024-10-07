@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Image, FlatList, ImageBackground } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { Animated, Text, View, StyleSheet, TouchableOpacity, Image, FlatList, ImageBackground } from 'react-native';
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
 import { ScrollView } from 'react-native-gesture-handler';
-import { TitleText, TitleBoldText } from '../components/CustomTexts';
+import { TitleText, TitleBoldText, ContentText, ContentBoldText } from '../components/CustomTexts';
 
 function StyleView({ navigation, route }): React.JSX.Element {
     // Main 이미지와 Sub 이미지 상태 관리
@@ -11,6 +11,9 @@ function StyleView({ navigation, route }): React.JSX.Element {
     const [recommendedImages, setRecommendedImages] = useState([]);
     const [loading, setLoading] = useState(false);
     const [loadingText, setLoadingText] = useState('Loading');
+
+    const scrollViewRef = useRef<ScrollView>(null);
+    const scrollY = new Animated.Value(0);
 
     useEffect(() => {
         const textList = ['Loading', 'Loading.', 'Loading..', 'Loading...'];
@@ -26,6 +29,7 @@ function StyleView({ navigation, route }): React.JSX.Element {
     }, []);
 
     const fetchRecommendedImages = async (mainImage: string, subImage: string) => {
+        setRecommendedImages([])
         setLoading(true);
     
         // 실제 API 요청을 위한 로직 작성 (여기서는 임시로 데이터를 사용)
@@ -39,6 +43,27 @@ function StyleView({ navigation, route }): React.JSX.Element {
         setTimeout(() => {
             setLoading(false);
             setRecommendedImages(data);
+
+            // if (scrollViewRef.current) {
+            //     scrollViewRef.current.scrollTo({
+            //         y: 660,
+            //         animated: true,
+            //     });
+            // }
+            if (scrollViewRef.current) {
+                Animated.timing(scrollY, {
+                    toValue: 660,
+                    duration: 750, // 애니메이션 지속 시간 (밀리초 단위)
+                    useNativeDriver: false,
+                }).start();
+    
+                scrollY.addListener(({ value }) => {
+                    scrollViewRef.current.scrollTo({
+                        y: value,
+                        animated: false,
+                    });
+                });
+            }
         }, 1500); // 임시 딜레이
     };
 
@@ -49,7 +74,7 @@ function StyleView({ navigation, route }): React.JSX.Element {
             source={require('../assets/Images/bg_img.jpg')}  // 배경 이미지 경로 설정
             style={styles.background}  // 스타일 설정
         >
-        <ScrollView style={styles.container}>
+        <ScrollView  ref={scrollViewRef} style={styles.container}>
             <View style={styles.recommend}>
                 <TitleText style={styles.title}><TitleBoldText>AI</TitleBoldText> Style Maker</TitleText>
                 <View style={styles.imageContainer}>
@@ -68,7 +93,10 @@ function StyleView({ navigation, route }): React.JSX.Element {
                     {/* Sub 이미지 */}
                     <TouchableOpacity
                         style={styles.subImage}
-                        onPress={() => navigation.navigate('StyleSelect', { setFor: 'sub', setSubImage })}
+                        onPress={() => {
+                            setRecommendedImages([])
+                            navigation.navigate('StyleSelect', { setFor: 'sub', setSubImage })
+                        }}
                     >
                         {subImage ? (
                             <Image source={{ uri: subImage }} style={styles.image} />
@@ -78,10 +106,10 @@ function StyleView({ navigation, route }): React.JSX.Element {
                     </TouchableOpacity>
                 </View>
 
-                <Text style={styles.textContents}>
+                {/* <ContentText style={styles.textContents}>
                     AI가 두 패션의 색깔을 더해,{"\n"}
                     유사한 감각의 스타일을 제공합니다.{"\n"}
-                </Text>
+                </ContentText> */}
 
                 {/* 추천 받기 버튼 */}
                 <TouchableOpacity
@@ -93,9 +121,9 @@ function StyleView({ navigation, route }): React.JSX.Element {
                         }
                     }}
                 >
-                    <Text style={isButtonDisabled ? styles.disabledButtonText : styles.enabledButtonText}>
+                    <ContentBoldText style={isButtonDisabled ? styles.disabledButtonText : styles.enabledButtonText}>
                         {loading ? loadingText : 'Try !'}
-                    </Text>
+                    </ContentBoldText>
                 </TouchableOpacity>
             </View>
             {recommendedImages.length > 0 && (
@@ -136,13 +164,12 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 40,
         color: 'white',
-        marginBottom: 50,
     },
     imageContainer: {
-        width: 180,
-        height: 270,
+        width: 225,
+        height: 330,
         position: 'relative',
-        marginBottom: 40,
+        margin: 60,
     },
     mainImage: {
         width: '100%',
@@ -154,16 +181,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
         overflow: 'hidden',
-        left: -15,
+        left: -45,
         transform: [
-            { rotateY: '10deg' }
+            { rotateY: '15deg' },
         ],
         zIndex: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.3)',
     },
     subImage: {
-        width: 120,
-        height: 160,
+        width: 170,
+        height: 230,
         // backgroundColor: '#121212',
         backgroundColor: 'rgba(88, 88, 88, 0.7)',
         borderColor: 'white',
@@ -173,8 +200,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
         top: 120,
-        left: 115,
-        transform: [{ rotateY: '-30deg' }],
+        left: 110,
+        transform: [
+            { rotateY: '-30deg' },
+        ],
         zIndex: 2,
         overflow: 'hidden',
     },
@@ -184,7 +213,7 @@ const styles = StyleSheet.create({
     },
     recommendButton: {
         borderColor: '#ffffff',
-        borderWidth: 1,
+        borderWidth: 2,
         width: 150,
         height: 50,
         borderRadius: 10,
@@ -201,15 +230,13 @@ const styles = StyleSheet.create({
     enabledButtonText: {
         color: 'white',
         fontSize: 24,
-        fontWeight: 'bold',
     },
     disabledButtonText: {
         color: '#949494',
         fontSize: 24,
-        fontWeight: 'bold',
     },
     recommendationList: {
-        marginTop: 20,
+        marginTop: 50,
     },
     listTitle: {
         fontSize: 30,

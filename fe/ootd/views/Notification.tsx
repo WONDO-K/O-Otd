@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import { ContentText } from '../components/CustomTexts';
 import axios from 'axios';
 
 function Notification({ navigation }): React.JSX.Element {
@@ -42,6 +43,7 @@ function Notification({ navigation }): React.JSX.Element {
                     id: 1,
                     userId: 12345, // 수신자의 아이디
                     title: "request",
+                    senderUserName: "가소롭다는표정의손우혁",
                     message: "가소롭다는표정의손우혁님께서 대전을 신청하셨습니다.",
                     timestamp: "2024-10-04T12:00:00",
                     isRead: false
@@ -50,6 +52,7 @@ function Notification({ navigation }): React.JSX.Element {
                     id: 2,
                     userId: 12345, // 수신자의 아이디
                     title: "request",
+                    senderUserName: "다해줬잖아표정의손우혁",
                     message: "다해줬잖아표정의손우혁님께서 대전을 신청하셨습니다.",
                     timestamp: "2024-10-04T12:00:00",
                     isRead: false
@@ -58,6 +61,7 @@ function Notification({ navigation }): React.JSX.Element {
                     id: 3,
                     userId: 12345, // 수신자의 아이디
                     title: "request",
+                    senderUserName: "한심하다는표정의손우혁",
                     message: "한심하다는표정의손우혁님께서 대전을 신청하셨습니다.",
                     timestamp: "2024-10-04T12:00:00",
                     isRead: false
@@ -82,8 +86,8 @@ function Notification({ navigation }): React.JSX.Element {
                             }, 0);  // 렌더링 후에 navigation 호출
                         }}
                     >
-                        <Text style={styles.notificationText}>{item.message}</Text>
-                        <Text style={styles.notificationTime}>{timeSince(item.timestamp)}</Text>
+                        <ContentText style={styles.notificationText}>{item.message}</ContentText>
+                        <ContentText style={styles.notificationTime}>{timeSince(item.timestamp)}</ContentText>
                     </TouchableOpacity>
                 )}
             />

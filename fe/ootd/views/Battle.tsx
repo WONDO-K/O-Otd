@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Switch, StyleSheet, ScrollView, ImageBackground } from 'react-native'; 
 import { FlatList } from 'react-native-gesture-handler';
-// import BattleIcon from '../assets/Icons/Battle_Icon.svg';
-import BattleIcon from '../assets/Icons/Battle_Icon1.svg';
-// import BattleIcon from '../assets/Icons/Battle_Icon2.svg';
-// import BattleIcon from '../assets/Icons/Battle_Icon3.svg';
-// import BattleIcon from '../assets/Icons/Battle_Icon4.svg';
-import { TitleText, TitleBoldText } from '../components/CustomTexts';
+import SendIcon from '../assets/Icons/Send_Icon'
+
+import { TitleBoldText, ContentBoldText } from '../components/CustomTexts';
 import axios from 'axios';
 
 import BattleItemProgress from '../components/BattleItemProgress';
@@ -123,9 +120,8 @@ function Battle({ navigation }): React.JSX.Element {
                         "myPick": "right",
                         "leftName": "악질유저기무동현사마",
                         "rightName": "쌀선대원군",
-                        "leftVote": 49,
-                        "rightVote": 78,
-                        "winner": "right",
+                        "leftVote": 50,
+                        "rightVote": 50,
                     },
                     {
                         "battleId": 4,
@@ -141,7 +137,6 @@ function Battle({ navigation }): React.JSX.Element {
                         "rightName": "유저네임8",
                         "leftVote": 35,
                         "rightVote": 15,
-                        "winner": "left",
                     }
                 ]
             }
@@ -179,13 +174,10 @@ function Battle({ navigation }): React.JSX.Element {
                 </View>
                 <TouchableOpacity style={styles.battleHeaderButton} onPress={() => navigation.navigate('Challenge')}>
                     {/* <BattleIcon/> */}
-                    <Text
-                        style={{
-                            fontSize: 16,
-                            color: 'blcak',
-                            fontWeight: 'bold',
-                        }}
-                    >신청</Text>
+                    <ContentBoldText
+                        style={styles.battleHeaderButtonText}
+                    >Challenge </ContentBoldText>
+                    <SendIcon width={20} height={20} />
                 </TouchableOpacity>
                 {/* 배틀 카테고리 */}
                 <View style={styles.battleTab}>
@@ -194,7 +186,7 @@ function Battle({ navigation }): React.JSX.Element {
                             style={styles.battleCategoryButton}
                             onPress={() => selectCategory('진행 중')}
                         >
-                            <Text
+                            <ContentBoldText
                                 style={[
                                     styles.battleCategoryButtonText,
                                     {
@@ -204,7 +196,7 @@ function Battle({ navigation }): React.JSX.Element {
                                 ]}
                             >
                                 진행 중
-                            </Text>
+                            </ContentBoldText>
                             {selectedCategory === '진행 중' &&
                                 <LinearGradient
                                     style={{
@@ -222,7 +214,7 @@ function Battle({ navigation }): React.JSX.Element {
                             style={styles.battleCategoryButton}
                             onPress={() => selectCategory('결과')}
                         >
-                            <Text
+                            <ContentBoldText
                                 style={[
                                     styles.battleCategoryButtonText,
                                     {
@@ -232,7 +224,7 @@ function Battle({ navigation }): React.JSX.Element {
                                 ]}
                             >
                                 결과
-                            </Text>
+                            </ContentBoldText>
                             {selectedCategory === '결과' &&
                                 <LinearGradient
                                     style={{
@@ -256,33 +248,32 @@ function Battle({ navigation }): React.JSX.Element {
                                 styles.battleSortButton,
                                 {
                                     // backgroundColor: selectedSort === '최신순' ? '#5b5b5b' : '#6f6f6f',
-                                    borderColor: '#white',
+                                    
                                     borderWidth: selectedSort === '최신순' ? 2 : 0,
                                 },
                             ]}
                             onPress={() => selectSort('최신순')}>
-                            <Text style={[
+                            <ContentBoldText style={[
                                 styles.battleSortButtonText,
                                 {
                                     color: selectedSort === '최신순' ? 'white' : 'gray'
                                 }
-                            ]}>최신순</Text>
+                            ]}>최신순</ContentBoldText>
                     </TouchableOpacity>
                     <TouchableOpacity style={[
                                 styles.battleSortButton,
                                 {
                                     // backgroundColor: selectedSort === '인기순' ? '#5b5b5b' : '#6f6f6f',
-                                    borderColor: 'white',
                                     borderWidth: selectedSort === '인기순' ? 2 : 0,
                                 },
                             ]}
                             onPress={() => selectSort('인기순')}>
-                        <Text style={[
+                        <ContentBoldText style={[
                             styles.battleSortButtonText,
                             {
                                 color: selectedSort === '인기순' ? 'white' : 'gray'
                             }
-                        ]}>인기순</Text>
+                        ]}>인기순</ContentBoldText>
                     </TouchableOpacity>
                 </View>
                 {/* 배틀 목록 */}
@@ -327,27 +318,30 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 30,
+        marginTop: 40,
+        marginBottom: 30,
     },
     battleHeaderText: {
         color: 'white',
         fontSize: 40,
     },
     battleHeaderButton: {
-        backgroundColor: 'white',
-        // backgroundColor: '#FFFFFF',
+        backgroundColor: 'rgba(255, 255, 255, 0.45)',
+        width: 120,
+        height: 40,
         borderRadius: 10,
-        width: 80,
-        height: 50,
+        borderColor: 'white',
+        borderWidth: 2,
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'flex-end',
         marginRight: 20,
+        marginBottom: 10,
     },
     battleHeaderButtonText:{
-        fontSize: 20,
-        color: 'black',
-        fontWeight: 'bold',
+        fontSize: 16,
+        color: 'white',
     },
     battleTab:{
         display: 'flex',
@@ -368,7 +362,6 @@ const styles = StyleSheet.create({
     battleCategoryButtonText:{
         color: 'black',
         fontSize: 25,
-        fontWeight: 'bold',
         textAlign: 'center',
     },
     battleSort: {
@@ -378,18 +371,18 @@ const styles = StyleSheet.create({
     battleSortButton: {
         marginTop: 15,
         marginBottom: 5,
-        marginHorizontal: 7,
+        marginHorizontal: 5,
         borderRadius: 22,
-        width: 90,
-        height: 43,
+        borderColor: 'white',
+        width: 70,
+        height: 37,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
     },
     battleSortButtonText: {
-        fontSize: 20,
+        fontSize: 16,
         color: 'white',
-        fontWeight: 'bold',
         textAlign: 'center',
         marginBottom: 2,
     },

@@ -19,6 +19,8 @@ import WishIcon from '../assets/Icons/Wish_Icon.svg';
 import PencilIcon from '../assets/Icons/Pencil_Icon.svg';
 import MyFashionIcon from '../assets/Icons/MyFashion_Icon.svg';
 import BattleIcon from '../assets/Icons/Battle_Icon.svg';
+import LinearGradient from 'react-native-linear-gradient';
+import { ContentBoldText } from '../components/CustomTexts';
 
 // 메인 페이지
 function ProfileView(): React.JSX.Element {
@@ -166,10 +168,6 @@ const getPictureList = (category: string, sort: string) => {
               <View
                 style={[
                   styles.iconWrapper,
-                  {
-                    borderBottomWidth: selectedCategory === '마이 패션' ? 3 : 0,
-                    borderColor: selectedCategory === '마이 패션' ? 'white' : 'transparent',
-                  },
                 ]}
               >
                 <MyFashionIcon
@@ -177,6 +175,18 @@ const getPictureList = (category: string, sort: string) => {
                   width={30}
                   height={30}
                 />
+                {selectedCategory === '마이 패션' &&
+                  <LinearGradient
+                    style={{
+                      width: '63%',
+                      alignSelf : 'center',
+                      height: 3,
+                    }}
+                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                  />
+                }
               </View>
             </TouchableOpacity>
           </View>
@@ -189,10 +199,6 @@ const getPictureList = (category: string, sort: string) => {
               <View
                 style={[
                   styles.iconWrapper,
-                  {
-                    borderBottomWidth: selectedCategory === '마이 갤러리' ? 3 : 0,
-                    borderColor: selectedCategory === '마이 갤러리' ? 'white' : 'transparent',
-                  },
                 ]}
               >
                 <WishIcon
@@ -200,6 +206,18 @@ const getPictureList = (category: string, sort: string) => {
                   width={30}
                   height={30}
                 />
+                {selectedCategory === '마이 갤러리' &&
+                  <LinearGradient
+                    style={{
+                      width: '63%',
+                      alignSelf : 'center',
+                      height: 3,
+                    }}
+                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                  />
+                }
               </View>
             </TouchableOpacity>
           </View>
@@ -212,10 +230,6 @@ const getPictureList = (category: string, sort: string) => {
               <View
                 style={[
                   styles.iconWrapper,
-                  {
-                    borderBottomWidth: selectedCategory === '마이 문철' ? 3 : 0,
-                    borderColor: selectedCategory === '마이 문철' ? 'white' : 'transparent',
-                  },
                 ]}
               >
                 <BattleIcon
@@ -223,6 +237,18 @@ const getPictureList = (category: string, sort: string) => {
                   width={30}
                   height={30}
                 />
+                {selectedCategory === '마이 문철' &&
+                  <LinearGradient
+                    style={{
+                      width: '63%',
+                      alignSelf : 'center',
+                      height: 3,
+                    }}
+                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                  />
+                }
               </View>
             </TouchableOpacity>
           </View>
@@ -234,12 +260,12 @@ const getPictureList = (category: string, sort: string) => {
           style={[
             styles.profileSortButton,
             {
-              backgroundColor: selectedSort === sort ? 'white' : 'gray',
+              borderWidth: selectedSort === sort ? 2 : 0,
             },
           ]}
           onPress={() => selectSort(sort)}
         >
-          <Text style={styles.profileSortButtonText}>{sort}</Text>
+          <ContentBoldText style={styles.profileSortButtonText}>{sort}</ContentBoldText>
         </TouchableOpacity>
       ))}
 
@@ -249,12 +275,12 @@ const getPictureList = (category: string, sort: string) => {
           style={[
             styles.profileSortButton,
             {
-              backgroundColor: selectedSort === sort ? 'white' : 'gray',
+              borderWidth: selectedSort === sort ? 2 : 0,
             },
           ]}
           onPress={() => selectSort(sort)}
         >
-          <Text style={styles.profileSortButtonText}>{sort}</Text>
+          <ContentBoldText style={styles.profileSortButtonText}>{sort}</ContentBoldText>
         </TouchableOpacity>
       ))}
 
@@ -264,12 +290,12 @@ const getPictureList = (category: string, sort: string) => {
           style={[
             styles.profileSortButton,
             {
-              backgroundColor: selectedSort === sort ? 'white' : 'gray',
+              borderWidth: selectedSort === sort ? 2 : 0,
             },
           ]}
           onPress={() => selectSort(sort)}
         >
-          <Text style={styles.profileSortButtonText}>{sort}</Text>
+          <ContentBoldText style={styles.profileSortButtonText}>{sort}</ContentBoldText>
         </TouchableOpacity>
         ))}
       </View>
@@ -365,18 +391,20 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
   },
   profileSortButton: {
-      margin: 10,
-      borderRadius: 10,
-      width: 80,
-      height: 32,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
+    marginTop: 15,
+    marginBottom: 5,
+    marginHorizontal: 5,
+    borderRadius: 22,
+    borderColor: 'white',
+    width: 70,
+    height: 37,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   profileSortButtonText: {
-      fontSize: 20,
-      color: 'black',
-      fontWeight: 'bold',
+      fontSize: 16,
+      color: 'white',
       textAlign: 'center',
       marginBottom: 2,
   },
@@ -404,8 +432,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 60,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
+    justifyContent: 'space-between',
+    marginBottom: 3,
   },
 });
 

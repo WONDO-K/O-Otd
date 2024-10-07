@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity, Image, StyleSheet, FlatList, ImageBackgro
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
 import MyFashionIcon from '../assets/Icons/MyFashion_Icon.svg';
+import { ContentBoldText } from '../components/CustomTexts';
 
 function StyleSelect({ navigation, route }): React.JSX.Element {
 
@@ -147,14 +148,18 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
 
                 {/* 카테고리 선택 버튼 */}
                 <View style={styles.categoryContainer}>
-                    <TouchableOpacity onPress={() => updateCategory('myFashion')}>
+                    <TouchableOpacity onPress={() => {
+                        updateCategory('myFashion')
+                    }}>
                         <MyFashionIcon 
                             width={30} 
                             height={30} 
                             fill={selectedCategory === 'myFashion' ? 'white' : 'gray'}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => updateCategory('myCollection')}>
+                    <TouchableOpacity onPress={() => {
+                        updateCategory('myCollection')
+                    }}>
                         <WishIcon 
                             width={30} 
                             height={30}
@@ -166,35 +171,35 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
                 {/* 정렬 버튼 */}
                 <View style={styles.battleSort}>
                     <TouchableOpacity
-                        style={[styles.battleSortButton, { backgroundColor: selectedSort === '최신순' ? 'white' : 'gray' }]}
+                        style={[styles.battleSortButton, { borderWidth: selectedSort === '최신순' ? 2 : 0 }]}
                         onPress={() => setSelectedSort('최신순')}
                     >
-                        <Text style={styles.battleSortButtonText}>최신순</Text>
+                        <ContentBoldText style={styles.battleSortButtonText}>최신순</ContentBoldText>
                     </TouchableOpacity>
 
                     {selectedCategory === 'myFashion' && (
                         <>
                             <TouchableOpacity
-                                style={[styles.battleSortButton, { backgroundColor: selectedSort === '출전 수' ? 'white' : 'gray' }]}
+                                style={[styles.battleSortButton, { borderWidth: selectedSort === '출전 수' ? 2 : 0 }]}
                                 onPress={() => setSelectedSort('출전 수')}
                             >
-                                <Text style={styles.battleSortButtonText}>출전 수</Text>
+                                <ContentBoldText style={styles.battleSortButtonText}>출전 수</ContentBoldText>
                             </TouchableOpacity>
                             <TouchableOpacity
-                                style={[styles.battleSortButton, { backgroundColor: selectedSort === '승리 수' ? 'white' : 'gray' }]}
+                                style={[styles.battleSortButton, { borderWidth: selectedSort === '승리 수' ? 2 : 0 }]}
                                 onPress={() => setSelectedSort('승리 수')}
                             >
-                                <Text style={styles.battleSortButtonText}>승리 수</Text>
+                                <ContentBoldText style={styles.battleSortButtonText}>승리 수</ContentBoldText>
                             </TouchableOpacity>
                         </>
                     )}
 
                     {selectedCategory === 'myCollection' && (
                         <TouchableOpacity
-                            style={[styles.battleSortButton, { backgroundColor: selectedSort === '인기순' ? 'white' : 'gray' }]}
+                            style={[styles.battleSortButton, { borderWidth: selectedSort === '인기순' ? 2 : 0 }]}
                             onPress={() => setSelectedSort('인기순')}
                         >
-                            <Text style={styles.battleSortButtonText}>인기순</Text>
+                            <ContentBoldText style={styles.battleSortButtonText}>인기순</ContentBoldText>
                         </TouchableOpacity>
                     )}
                 </View>
@@ -265,19 +270,23 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-start',
+        marginBottom: 10,
     },
     battleSortButton: {
-        margin: 10,
-        borderRadius: 10,
-        width: 80,
-        height: 32,
+        marginTop: 15,
+        marginBottom: 5,
+        marginHorizontal: 5,
+        borderRadius: 22,
+        borderColor: 'white',
+        width: 70,
+        height: 37,
+        display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
     },
     battleSortButtonText: {
-        fontSize: 20,
-        color: 'black',
-        fontWeight: 'bold',
+        fontSize: 16,
+        color: 'white',
     },
 });
 
