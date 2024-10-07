@@ -9,7 +9,9 @@ import com.threeheads.battle.dto.response.VoteRequestDto;
 import com.threeheads.battle.service.BattleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +40,22 @@ public class BattleController {
         return ResponseEntity.ok().body("투표가 완료되었습니다.");
     }
 
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<String> handleIllegalStateException(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleDuplicateVoteException(DataIntegrityViolationException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
+    }
+
+
     // 배틀 신청 API
     @PostMapping("/create")
     @Operation(summary = "배틀 신청", description = "배틀을 신청합니다.")
@@ -50,10 +68,10 @@ public class BattleController {
     @PostMapping("/response/{battleId}")
     @Operation(summary = "배틀 응답", description = "배틀을 수락하거나 거절합니다.")
     public ResponseEntity<BattleResponseDto> respondToBattle(
-            @RequestBody BattleResponseRequestDto responseDto,
-            @RequestParam("userId") Long userId) {
+            @PathVariable Long battleId,
+            @RequestBody BattleResponseRequestDto responseDto) {
 
-        BattleResponseDto response = battleService.handleBattleResponse(responseDto, userId);
+        BattleResponseDto response = battleService.handleBattleResponse(responseDto, battleId);
         return ResponseEntity.ok(response);
     }
 

@@ -20,7 +20,7 @@ public interface BattleService {
     BattleDto createBattle(BattleRequestDto dto);
 
     // 배틀 응답 처리 (수락 또는 거절)
-    BattleResponseDto handleBattleResponse(BattleResponseRequestDto responseDto, Long userId);
+    BattleResponseDto handleBattleResponse(BattleResponseRequestDto responseDto, Long battleId);
 
     // 1. ACTIVE 상태인 배틀 리스트 최신순 조회
     List<BattleDto> getActiveBattlesByRecent();
