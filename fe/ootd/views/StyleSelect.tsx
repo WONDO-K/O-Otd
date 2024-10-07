@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity, Image, StyleSheet, FlatList, ImageBackgro
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
 import MyFashionIcon from '../assets/Icons/MyFashion_Icon.svg';
+import { ContentBoldText } from '../components/CustomTexts';
 
 function StyleSelect({ navigation, route }): React.JSX.Element {
 
@@ -94,6 +95,11 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
         setFashionList(myFashion);
     };
 
+    function updateCategory(category: string) {
+        setSelectedCategory(category);
+        setSelectedSort('최신순');
+    }
+
     useEffect(() => {
         if (selectedCategory === 'myFashion') {
             setFashionList(allFashionData.myFashion);
@@ -102,17 +108,18 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
         }
     }, [selectedCategory, allFashionData]);
 
+    
     const sortFashionList = (sortType) => {
         let sortedList = [...fashionList];
 
         if (sortType === '최신순') {
             sortedList.sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
+        } else if (sortType === '출전 수') {
+            sortedList.sort((a, b) => b.battleCount - a.battleCount); // 출전 수 기준 정렬
+        } else if (sortType === '승리 수') {
+            sortedList.sort((a, b) => b.winCount - a.winCount); // 승리 수 기준 정렬
         } else if (sortType === '인기순') {
-            if (selectedCategory === 'myFashion') {
-                sortedList.sort((a, b) => b.battleCount - a.battleCount);
-            } else if (selectedCategory === 'myCollection') {
-                sortedList.sort((a, b) => b.addedCount - a.addedCount);
-            }
+            sortedList.sort((a, b) => b.addedCount - a.addedCount); // myCollection의 인기순(추가 수) 정렬
         }
 
         setFashionList(sortedList);
@@ -141,14 +148,18 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
 
                 {/* 카테고리 선택 버튼 */}
                 <View style={styles.categoryContainer}>
-                    <TouchableOpacity onPress={() => setSelectedCategory('myFashion')}>
+                    <TouchableOpacity onPress={() => {
+                        updateCategory('myFashion')
+                    }}>
                         <MyFashionIcon 
                             width={30} 
                             height={30} 
                             fill={selectedCategory === 'myFashion' ? 'white' : 'gray'}
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setSelectedCategory('myCollection')}>
+                    <TouchableOpacity onPress={() => {
+                        updateCategory('myCollection')
+                    }}>
                         <WishIcon 
                             width={30} 
                             height={30}
@@ -160,17 +171,37 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
                 {/* 정렬 버튼 */}
                 <View style={styles.battleSort}>
                     <TouchableOpacity
-                        style={[styles.battleSortButton, { backgroundColor: selectedSort === '최신순' ? 'white' : 'gray' }]}
+                        style={[styles.battleSortButton, { borderWidth: selectedSort === '최신순' ? 2 : 0 }]}
                         onPress={() => setSelectedSort('최신순')}
                     >
-                        <Text style={styles.battleSortButtonText}>최신순</Text>
+                        <ContentBoldText style={styles.battleSortButtonText}>최신순</ContentBoldText>
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        style={[styles.battleSortButton, { backgroundColor: selectedSort === '인기순' ? 'white' : 'gray' }]}
-                        onPress={() => setSelectedSort('인기순')}
-                    >
-                        <Text style={styles.battleSortButtonText}>인기순</Text>
-                    </TouchableOpacity>
+
+                    {selectedCategory === 'myFashion' && (
+                        <>
+                            <TouchableOpacity
+                                style={[styles.battleSortButton, { borderWidth: selectedSort === '출전 수' ? 2 : 0 }]}
+                                onPress={() => setSelectedSort('출전 수')}
+                            >
+                                <ContentBoldText style={styles.battleSortButtonText}>출전 수</ContentBoldText>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={[styles.battleSortButton, { borderWidth: selectedSort === '승리 수' ? 2 : 0 }]}
+                                onPress={() => setSelectedSort('승리 수')}
+                            >
+                                <ContentBoldText style={styles.battleSortButtonText}>승리 수</ContentBoldText>
+                            </TouchableOpacity>
+                        </>
+                    )}
+
+                    {selectedCategory === 'myCollection' && (
+                        <TouchableOpacity
+                            style={[styles.battleSortButton, { borderWidth: selectedSort === '인기순' ? 2 : 0 }]}
+                            onPress={() => setSelectedSort('인기순')}
+                        >
+                            <ContentBoldText style={styles.battleSortButtonText}>인기순</ContentBoldText>
+                        </TouchableOpacity>
+                    )}
                 </View>
 
                 {/* 이미지 리스트 */}
@@ -225,8 +256,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-evenly',
         paddingBottom: 10,
-        borderWidth: 1,
-        borderBottomColor: '#949494',
     },
     notificationItem: {
         width: '50%',
@@ -241,19 +270,23 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'flex-start',
+        marginBottom: 10,
     },
     battleSortButton: {
-        margin: 10,
-        borderRadius: 10,
-        width: 80,
-        height: 32,
+        marginTop: 15,
+        marginBottom: 5,
+        marginHorizontal: 5,
+        borderRadius: 22,
+        borderColor: 'white',
+        width: 70,
+        height: 37,
+        display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
     },
     battleSortButtonText: {
-        fontSize: 20,
-        color: 'black',
-        fontWeight: 'bold',
+        fontSize: 16,
+        color: 'white',
     },
 });
 

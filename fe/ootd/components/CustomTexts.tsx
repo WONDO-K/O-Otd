@@ -41,6 +41,32 @@ const FooterText: React.FC<FooterTextProps> = ({ children, style, ...props }) =>
   );
 };
 
+// ContentText 컴포넌트
+interface ContentTextProps extends TextProps {
+  children: React.ReactNode;
+}
+
+const ContentText: React.FC<ContentTextProps> = ({ children, style, ...props }) => {
+  return (
+    <Text style={[styles.content, style]} {...props}>
+      {children}
+    </Text>
+  );
+};
+
+// ContentBoldText 컴포넌트
+interface ContentBoldTextProps extends TextProps {
+  children: React.ReactNode;
+}
+
+const ContentBoldText: React.FC<ContentBoldTextProps> = ({ children, style, ...props }) => {
+  return (
+    <Text style={[styles.contentBold, style]} {...props}>
+      {children}
+    </Text>
+  );
+};
+
 // 스타일 정의
 const styles = StyleSheet.create({
   title: {
@@ -52,7 +78,13 @@ const styles = StyleSheet.create({
   footer: {
     fontFamily: 'NanumGothicExtraBold',
   },
+  content: {
+    fontFamily: 'Pretendard-Regular',
+  },
+  contentBold: {
+    fontFamily: 'Pretendard-Bold',
+  },
 });
 
 // 컴포넌트 내보내기
-export { TitleText, TitleBoldText, FooterText };
+export { TitleText, TitleBoldText, FooterText, ContentText, ContentBoldText };

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Image, View, Text, StyleSheet, Touchable, TouchableOpacity, ImageBackground } from 'react-native';
+import { ContentBoldText } from '../components/CustomTexts';
 
 function BattleDetail({ navigation, route }): React.JSX.Element {
     
@@ -41,7 +42,7 @@ function BattleDetail({ navigation, route }): React.JSX.Element {
                         style={styles.leftSide}
                         onPress={()=>{voteItem(item.leftName)}}
                     >
-                        <Text style={styles.userNameText}>{battleItem.leftName}</Text>
+                        <ContentBoldText style={styles.userNameText}>{battleItem.leftName}</ContentBoldText>
                         <Image
                             style={styles.image}
                             source={{ uri: item.leftImage }}
@@ -51,7 +52,7 @@ function BattleDetail({ navigation, route }): React.JSX.Element {
                         style={styles.rightSide}
                         onPress={()=>{voteItem(item.rightName)}}
                     >
-                        <Text style={styles.userNameText}>{battleItem.rightName}</Text>
+                        <ContentBoldText style={styles.userNameText}>{battleItem.rightName}</ContentBoldText>
                         <Image
                             style={styles.image}
                             source={{ uri: item.rightImage }}
@@ -92,7 +93,6 @@ const styles = StyleSheet.create({
     userNameText: {
         color: 'white',
         fontSize: 20,
-        fontWeight: 'bold',
         marginBottom: 20,
     },
     image: {

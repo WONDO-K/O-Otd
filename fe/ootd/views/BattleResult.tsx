@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Image, View, Text, StyleSheet, Touchable, TouchableOpacity, ImageBackground } from 'react-native';
 import Svg, { Defs, LinearGradient, Stop, Circle } from 'react-native-svg';
+import { ContentText, ContentBoldText } from '../components/CustomTexts';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 function BattleResult({ navigation, route }): React.JSX.Element {
     
@@ -20,7 +22,6 @@ function BattleResult({ navigation, route }): React.JSX.Element {
         rightName: '',
         leftVote: 0,
         rightVote: 0,
-        winner: '',
     });
 
     useEffect(() => {
@@ -48,30 +49,57 @@ function BattleResult({ navigation, route }): React.JSX.Element {
                 <View style={styles.battleItem}>
                     <View style={styles.leftSide}>
                         <Image style={styles.image} source={{ uri: item.leftImage }} />
-                        <Text style={styles.userNameText}>{item.leftName}</Text>
+                        <View style={{flexDirection:'row', alignItems: 'center'}}>
+                            <View style={styles.leftColor}></View>
+                            <ContentBoldText style={styles.userNameText}>{item.leftName}</ContentBoldText>
+                        </View>
                     </View>
                     <View style={styles.rightSide}>
                         <Image style={styles.image} source={{ uri: item.rightImage }} />
-                        <Text style={styles.userNameText}>{item.rightName}</Text>
+                        <View style={{flexDirection:'row'}}>
+                            <View style={styles.rightColor}></View>
+                            <ContentBoldText style={styles.userNameText}>{item.rightName}</ContentBoldText>
+                        </View>
                     </View>
                 </View>
 
                 <View style={styles.battleResult}>
                     <View style={styles.resultGraph}>
+                        <AnimatedCircularProgress
+                            size={size}
+                            width={strokeWidth}
+                            fill={rightPercentage} // 전체 배경을 채움
+                            tintColor="#98CEFF" // 오른쪽 진행률의 색상
+                            backgroundColor="transparent" // 투명 배경
+                            rotation={0} // 기준점(12시 방향)에서 시작
+                            duration={1000}
+                        />
+                        <AnimatedCircularProgress
+                            size={size}
+                            width={strokeWidth}
+                            fill={leftPercentage} // 왼쪽 진행률의 값
+                            tintColor="#ffa6a6" // 왼쪽 진행률의 색상
+                            backgroundColor="transparent" // 투명 배경
+                            rotation={0}
+                            duration={1000}
+                            style={{
+                                position: 'absolute', // 같은 위치에 겹쳐 그리기
+                                transform: [{ scaleX: -1 }],
+                            }}
+                        />
+                    </View>
+                    {/* <View style={styles.resultGraph}>
                         <Svg width={size} height={size}>
                             <Defs>
-                                {/* 왼쪽 배경 색상 */}
                                 <LinearGradient id="gradLeft" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <Stop offset="0%" stopColor="#FF05FF" />
-                                    <Stop offset="100%" stopColor="#FF7A00" />
+                                    <Stop offset="0%" stopColor="#ffa6a6" />
+                                    <Stop offset="100%" stopColor="#ff8080" />
                                 </LinearGradient>
-                                {/* 오른쪽 배경 색상 */}
                                 <LinearGradient id="gradRight" x1="0%" y1="0%" x2="100%" y2="0%">
-                                    <Stop offset="0%" stopColor="#680E7F" />
-                                    <Stop offset="100%" stopColor="#1950E5" />
+                                    <Stop offset="0%" stopColor="#98CEFF" />
+                                    <Stop offset="100%" stopColor="#c1e2ff" />
                                 </LinearGradient>
                             </Defs>
-                            {/* 왼쪽 사용자 투표 결과 */}
                             <Circle
                                 stroke="url(#gradLeft)"
                                 cx={size / 2}
@@ -85,7 +113,6 @@ function BattleResult({ navigation, route }): React.JSX.Element {
                                 originY={size / 2}
                                 fill="transparent"
                             />
-                            {/* 오른쪽 사용자 투표 결과 */}
                             <Circle
                                 stroke="url(#gradRight)"
                                 cx={size / 2}
@@ -100,19 +127,19 @@ function BattleResult({ navigation, route }): React.JSX.Element {
                                 fill="transparent"
                             />
                         </Svg>
-                    </View>
+                    </View> */}
                     <View style={styles.resultLog}>
-                        <Text style={styles.allVoteCount}>총 투표 수 : {item.leftVote + item.rightVote}</Text>
+                        <ContentText style={styles.allVoteCount}>총 투표 수 : {item.leftVote + item.rightVote}</ContentText>
                         <View style={styles.resultLegend}>
-                            <View style={styles.leftColor}></View>
-                            <Text style={styles.resultText}>{item.leftName}</Text>
+                            <View style={{flexDirection:'row'}}>
+                                <View style={styles.leftColor}></View>
+                                <ContentText style={styles.voteCount}>{Math.round(leftPercentage)}%</ContentText>
+                            </View>
+                            <View style={{flexDirection:'row'}}>
+                                <View style={styles.rightColor}></View>
+                                <ContentText style={styles.voteCount}>{Math.round(rightPercentage)}%</ContentText>
+                            </View>
                         </View>
-                        <Text style={styles.voteCount}>{item.leftVote}({Math.round(leftPercentage)}%)</Text>
-                        <View style={styles.resultLegend}>
-                            <View style={styles.rightColor}></View>
-                            <Text style={styles.resultText}>{item.rightName}</Text>
-                        </View>
-                        <Text style={styles.voteCount}>{item.rightVote}({Math.round(rightPercentage)}%)</Text>
                     </View>
                 </View>
             </View>
@@ -148,9 +175,8 @@ const styles = StyleSheet.create({
     },
     userNameText: {
         color: 'white',
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginBottom: 20,
+        fontSize: 16,
+        marginVertical: 15,
     },
     image: {
         width: '100%',
@@ -165,6 +191,7 @@ const styles = StyleSheet.create({
         elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
         shadowColor: 'black', // 그림자 색상
         width: '96%',
+        height: '30%',
         justifyContent: 'space-around',
         borderRadius: 20,
     },
@@ -172,45 +199,51 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        width: 200,
-        height: 200,
+        width: '50%',  // 화면 크기에 맞게 비율로 설정
     },
     resultLog: {
-        width: 150,
-        height: 200,
+        width: '40%',  // 화면 크기에 맞게 비율로 설정
+        height: 'auto',  // 높이를 자동으로 설정하여 내부 요소에 맞게 조정
         justifyContent: 'center',
     },
     resultLegend: {
         display: 'flex',
         flexDirection: 'row',
+        justifyContent: 'space-around',
         alignItems: 'center',
+        marginVertical: 5,  // 요소 간의 수직 여백 추가
     },
     leftColor: {
         width: 10,
         height: 10,
-        backgroundColor: '#FF05FF',
+        backgroundColor: 'rgb(255, 128, 128)',
         borderRadius: 7.5,
         marginRight: 5,
+        alignSelf: 'center',
     },
     rightColor: {
         width: 10,
         height: 10,
-        backgroundColor: '#1950E5',
+        backgroundColor: 'rgb(152, 206, 255)',
         borderRadius: 7.5,
         marginRight: 5,
+        alignSelf: 'center',
     },
     resultText: {
         color: 'white',
+        fontSize: 16,  // 텍스트 크기를 조정하여 기기별 호환성 유지
+        flexShrink: 1,  // 텍스트가 화면 밖으로 나가지 않도록 줄어들게 설정
     },
     allVoteCount: {
         color: 'white',
         alignSelf: 'center',
         marginBottom: 20,
+        fontSize: 18,  // 투표 수의 텍스트 크기 조정
     },
     voteCount:{
         color: 'white',
-        fontSize: 30,
-        alignSelf: 'flex-end',
+        fontSize: 27,
+        alignSelf: 'center',
     }
 });
 

@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Text, View, StyleSheet, TouchableOpacity, Image, FlatList, ImageBackground } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { Animated, Text, View, StyleSheet, TouchableOpacity, Image, FlatList, ImageBackground } from 'react-native';
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
-import { useFocusEffect } from '@react-navigation/native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { TitleText, TitleBoldText } from '../components/CustomTexts';
+import { TitleText, TitleBoldText, ContentText, ContentBoldText } from '../components/CustomTexts';
 
 function StyleView({ navigation, route }): React.JSX.Element {
     // Main 이미지와 Sub 이미지 상태 관리
@@ -11,8 +10,26 @@ function StyleView({ navigation, route }): React.JSX.Element {
     const [subImage, setSubImage] = useState<string | null>(null);
     const [recommendedImages, setRecommendedImages] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [loadingText, setLoadingText] = useState('Loading');
+
+    const scrollViewRef = useRef<ScrollView>(null);
+    const scrollY = new Animated.Value(0);
+
+    useEffect(() => {
+        const textList = ['Loading', 'Loading.', 'Loading..', 'Loading...'];
+        let index = 0;
+
+        const interval = setInterval(() => {
+            setLoadingText(textList[index % 4]);
+            index += 1;
+        }, 300);
+
+        // 컴포넌트가 언마운트되면 interval을 정리
+        return () => clearInterval(interval);
+    }, []);
 
     const fetchRecommendedImages = async (mainImage: string, subImage: string) => {
+        setRecommendedImages([])
         setLoading(true);
     
         // 실제 API 요청을 위한 로직 작성 (여기서는 임시로 데이터를 사용)
@@ -26,6 +43,27 @@ function StyleView({ navigation, route }): React.JSX.Element {
         setTimeout(() => {
             setLoading(false);
             setRecommendedImages(data);
+
+            // if (scrollViewRef.current) {
+            //     scrollViewRef.current.scrollTo({
+            //         y: 660,
+            //         animated: true,
+            //     });
+            // }
+            if (scrollViewRef.current) {
+                Animated.timing(scrollY, {
+                    toValue: 660,
+                    duration: 750, // 애니메이션 지속 시간 (밀리초 단위)
+                    useNativeDriver: false,
+                }).start();
+    
+                scrollY.addListener(({ value }) => {
+                    scrollViewRef.current.scrollTo({
+                        y: value,
+                        animated: false,
+                    });
+                });
+            }
         }, 1500); // 임시 딜레이
     };
 
@@ -36,7 +74,7 @@ function StyleView({ navigation, route }): React.JSX.Element {
             source={require('../assets/Images/bg_img.jpg')}  // 배경 이미지 경로 설정
             style={styles.background}  // 스타일 설정
         >
-        <ScrollView style={styles.container}>
+        <ScrollView  ref={scrollViewRef} style={styles.container}>
             <View style={styles.recommend}>
                 <TitleText style={styles.title}><TitleBoldText>AI</TitleBoldText> Style Maker</TitleText>
                 <View style={styles.imageContainer}>
@@ -55,7 +93,10 @@ function StyleView({ navigation, route }): React.JSX.Element {
                     {/* Sub 이미지 */}
                     <TouchableOpacity
                         style={styles.subImage}
-                        onPress={() => navigation.navigate('StyleSelect', { setFor: 'sub', setSubImage })}
+                        onPress={() => {
+                            setRecommendedImages([])
+                            navigation.navigate('StyleSelect', { setFor: 'sub', setSubImage })
+                        }}
                     >
                         {subImage ? (
                             <Image source={{ uri: subImage }} style={styles.image} />
@@ -64,6 +105,11 @@ function StyleView({ navigation, route }): React.JSX.Element {
                         )}
                     </TouchableOpacity>
                 </View>
+
+                {/* <ContentText style={styles.textContents}>
+                    AI가 두 패션의 색깔을 더해,{"\n"}
+                    유사한 감각의 스타일을 제공합니다.{"\n"}
+                </ContentText> */}
 
                 {/* 추천 받기 버튼 */}
                 <TouchableOpacity
@@ -75,14 +121,14 @@ function StyleView({ navigation, route }): React.JSX.Element {
                         }
                     }}
                 >
-                    <Text style={isButtonDisabled ? styles.disabledButtonText : styles.enabledButtonText}>
-                        {loading ? '추천 중...' : '추천 받기'}
-                    </Text>
+                    <ContentBoldText style={isButtonDisabled ? styles.disabledButtonText : styles.enabledButtonText}>
+                        {loading ? loadingText : 'Try !'}
+                    </ContentBoldText>
                 </TouchableOpacity>
             </View>
             {recommendedImages.length > 0 && (
                 <View style={styles.recommendationList}>
-                    <Text style={styles.listTitle}>추천된 이미지</Text>
+                    <TitleText style={styles.listTitle}><TitleBoldText>AI</TitleBoldText> Picks</TitleText>
                     <FlatList
                         data={recommendedImages}
                         keyExtractor={(item) => item.id}
@@ -118,13 +164,12 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 40,
         color: 'white',
-        marginBottom: 50,
     },
     imageContainer: {
-        width: 200,
-        height: 300,
+        width: 225,
+        height: 330,
         position: 'relative',
-        marginBottom: 50,
+        margin: 60,
     },
     mainImage: {
         width: '100%',
@@ -136,16 +181,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
         overflow: 'hidden',
-        left: -20,
+        left: -45,
         transform: [
-            { rotateY: '10deg' }
+            { rotateY: '15deg' },
         ],
         zIndex: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.3)',
     },
     subImage: {
-        width: 150,
-        height: 200,
+        width: 170,
+        height: 230,
         // backgroundColor: '#121212',
         backgroundColor: 'rgba(88, 88, 88, 0.7)',
         borderColor: 'white',
@@ -155,8 +200,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
         top: 120,
-        left: 120,
-        transform: [{ rotateY: '-30deg' }],
+        left: 110,
+        transform: [
+            { rotateY: '-30deg' },
+        ],
         zIndex: 2,
         overflow: 'hidden',
     },
@@ -165,35 +212,34 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     recommendButton: {
+        borderColor: '#ffffff',
+        borderWidth: 2,
         width: 150,
         height: 50,
+        borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 10,
-        borderRadius: 10,
         marginTop: 20,
     },
     enabledButton: {
-        backgroundColor: 'white',
-        borderColor: 'black',
-        borderWidth: 2,
+        backgroundColor: 'rgba(255, 255, 255, 0.3)'
     },
     disabledButton: {
-        backgroundColor: 'gray',
-        borderColor: 'gray',
-        borderWidth: 2,
+         backgroundColor: 'rgba(128, 128, 128, 0.7)'
     },
     enabledButtonText: {
-        color: 'black',
+        color: 'white',
+        fontSize: 24,
     },
     disabledButtonText: {
-        color: 'darkgray',
+        color: '#949494',
+        fontSize: 24,
     },
     recommendationList: {
-        marginTop: 20,
+        marginTop: 50,
     },
     listTitle: {
-        fontSize: 24,
+        fontSize: 30,
         color: 'white',
         marginBottom: 20,
         textAlign: 'center',
@@ -205,7 +251,17 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 350,
     },
-    
+    textContents: {
+        width: '80%',
+        borderRadius: 10,
+        fontSize: 20,
+        color: '#ffffff',
+        textAlign: 'center',
+        paddingTop: 20,
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
+        shadowColor: 'black', // 그림자 색상
+    },
 });
 
 export default StyleView;

@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import useAIStore from '../stores/AIStore'; // Zustand 스토어 가져오기
-import { TitleText, TitleBoldText, FooterText } from '../components/CustomTexts';
+import { TitleText, TitleBoldText, ContentText, ContentBoldText } from '../components/CustomTexts';
 
 import WishFullIcon from '../assets/Icons/WishFull_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
@@ -92,20 +92,20 @@ function AIReport(): React.JSX.Element {
             style={styles.photo}
           />
         ) : (
-          <Text style={styles.noPhotoText}>저장된 이미지가 없습니다.</Text> // 이미지가 없을 때 표시
+          <ContentText style={styles.noPhotoText}>저장된 이미지가 없습니다.</ContentText> // 이미지가 없을 때 표시
         )}
           <View style={styles.reportContents}>
-            <Text style={styles.reportName}>
+            <ContentText style={styles.reportName}>
               시티보이 룩
-            </Text>
-            <Text style={styles.reportText}>
+            </ContentText>
+            <ContentText style={styles.reportText}>
               시티보이룩은 시티보이 룩입니다.
               그것이 시티보이 룩이니까.
-            </Text>
+            </ContentText>
           </View>
         </View>
         
-        <Text style={styles.title}>유사한 스타일</Text>
+        <TitleText style={styles.title}>Similar Styles</TitleText>
         <FlatList
           style={{marginTop: 20}}
           data={myFashion}
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     padding: 5,
     alignItems: 'center',
     marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 40,
     borderRadius: 10,
 
     backgroundColor: 'rgba(255, 255, 255, 0.3)',

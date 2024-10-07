@@ -9,12 +9,13 @@ import {
   TextInput,
   FlatList,
   ScrollView,
+  Modal,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Carousel from '../components/Carousel';
 import WishFullIcon from '../assets/Icons/WishFull_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
-import styled from 'styled-components/native';
+import { TouchableWithoutFeedback } from 'react-native';
 
 // 메인페이지
 function MainView(): React.JSX.Element {
@@ -23,6 +24,8 @@ function MainView(): React.JSX.Element {
   const [searchType, setSearchType] = useState('');
   const [myFashion, setMyFashion] = useState([]);
   const [bookmarked, setBookmarked] = useState({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const getMyFashion = async () => {
     // 실제 API 호출 부분
@@ -70,6 +73,16 @@ function MainView(): React.JSX.Element {
     }));
   };
 
+  const openModal = (item) => {
+    setSelectedImage(item); // 선택된 이미지 설정
+    setIsModalVisible(true); // 모달 열기
+  };
+
+  const closeModal = () => {
+    setIsModalVisible(false); // 모달 닫기
+    setSelectedImage(null); // 이미지 초기화
+  };
+
   useEffect(() => {
     getMyFashion(); // 컴포넌트가 마운트될 때 데이터 가져오기
   }, []);
@@ -80,9 +93,7 @@ function MainView(): React.JSX.Element {
       style={styles.background} // 배경 스타일 설정
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('LoginView')}>
-        </TouchableOpacity>
-        <Carousel />
+        <Carousel openModal={openModal} />
         <View style={styles.searchBar}>
           <Image source={require('../assets/Images/searchIcon.png')} style={styles.searchIcon} />
           <TextInput
@@ -102,7 +113,7 @@ function MainView(): React.JSX.Element {
           data={myFashion}
           keyExtractor={(item, index) => index.toString()}
           renderItem={({ item }) => (
-            <View style={styles.notificationItem}>
+            <TouchableOpacity onPress={() => openModal(item)} style={styles.notificationItem}>
               <ImageBackground source={item.src} style={styles.notificationImage} resizeMode="cover">
                 <TouchableOpacity style={styles.bookmarkIcon} onPress={() => toggleBookmark(item.id)}>
                   {bookmarked[item.id] ? (
@@ -112,10 +123,39 @@ function MainView(): React.JSX.Element {
                   )}
                 </TouchableOpacity>
               </ImageBackground>
-            </View>
+            </TouchableOpacity>
           )}
           numColumns={2}
         />
+
+        {/* 이미지 모달 */}
+        <Modal
+          visible={isModalVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={closeModal}
+        >
+          <TouchableWithoutFeedback onPress={closeModal}>
+            <View style={styles.modalContainer}>
+              {selectedImage && (
+                <View style={styles.fixedModalContent}>
+                  <Image
+                    source={selectedImage.src}
+                    style={styles.fixedModalImage}
+                    resizeMode="contain"
+                  />
+                  <TouchableOpacity style={styles.modalBookmarkIcon} onPress={() => toggleBookmark(selectedImage.id)}>
+                    {bookmarked[selectedImage?.id] ? (
+                      <WishFullIcon width={30} height={40} />
+                    ) : (
+                      <WishIcon width={30} height={40} fill="white" />
+                    )}
+                  </TouchableOpacity>
+                </View>
+              )}
+            </View>
+          </TouchableWithoutFeedback>
+        </Modal>
       </ScrollView>
     </ImageBackground>
   );
@@ -153,6 +193,7 @@ const styles = StyleSheet.create({
     height: 60,
     color: 'white',
     fontSize: 20,
+    fontFamily: 'SUIT-Regular',
   },
   notificationItem: {
     width: '50%',
@@ -167,6 +208,29 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
     bottom: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', // 모달 배경 어둡게
+  },
+  fixedModalContent: {
+    width: '80%',
+    height: '70%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative', // 아이콘을 절대 위치로 배치할 수 있도록 함
+    overflow: 'hidden',
+  },
+  fixedModalImage: {
+    flex: 1,
+    aspectRatio: 1,
+  },
+  modalBookmarkIcon: {
+    position: 'absolute',
+    right: 10, // 우측에서 10px 떨어짐
+    bottom: 10, // 하단에서 10px 떨어짐
   },
 });
 
