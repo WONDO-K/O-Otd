@@ -15,6 +15,7 @@ import {
 import axios from 'axios';
 import { WebView } from 'react-native-webview';
 import { useNavigation } from '@react-navigation/native';
+import { useLoginStore } from '../stores/LoginStore';
 
 function LoginView(): React.JSX.Element {
   const [modalVisible, setModalVisible] = useState(false);
@@ -27,28 +28,35 @@ function LoginView(): React.JSX.Element {
   const [webViewVisible, setWebViewVisible] = useState(false);
   const navigation = useNavigation();
 
+  // LoginStore에서 setAccessToken, setRefreshToken을 가져옴
+  const { accessToken, refreshToken, setAccessToken, setRefreshToken, loadTokens, clearTokens } = useLoginStore();
+
   // Kakao OAuth URL
-  const KAKAO_AUTH_URL = 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=fb7d24f77e374b62fe33b066aac83003&redirect_uri=http://j11e104a.p.ssafy.io:8088/login/oauth2/code/kakao';
+  const KAKAO_AUTH_URL = 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=fb7d24f77e374b62fe33b066aac83003&redirect_uri=https://j11e104.p.ssafy.io/login/oauth2/code/kakao';
+
+  // API 주소
+  const API_URL = 'https://j11e104.p.ssafy.io';
 
   // Kakao 로그인 처리 함수
   const handleKakaoLogin = async (code: string) => {
     try {
-      const response = await axios.get('API_요청_주소', {
-        params: {
-          code: code,
-        },
-      });
+      const response = await axios.get(`${API_URL}/user/auth/kakao-login?code=${code}`);
 
-      if (response.data.exists) {
-        // 이미 회원인 경우
-        // 예: setTokens(response.data.tokens);
+      if (response.data.existed) {
+        // 토큰 저장
+        setAccessToken(response.data.accessToken);  // accessToken 설정
+        setRefreshToken(response.data.refreshToken);  // refreshToken 설정
+
+        // 메인 뷰로 이동
         navigateToMainView();
       } else {
         // 신규 회원인 경우 닉네임 입력 모달 표시
         setModalVisible(true);
+        setAccessToken(response.data.accessToken);  // accessToken 설정
+        setRefreshToken(response.data.refreshToken);  // refreshToken 설정
       }
     } catch (error) {
-      console.error('Kakao 로그인 중 오류 발생:', error);
+      console.error('!!!!!!!!!!!!!!!Kakao 로그인 중 오류 발생:', error);
       setServiceMessage('로그인 중 오류가 발생했습니다.');
       setModalVisible(true);
     }
@@ -59,34 +67,32 @@ function LoginView(): React.JSX.Element {
     navigation.navigate('MainView');
   };
 
-  // 닉네임 제출 핸들러
+  // 닉네임 초기설정 핸들러
+  const handleNicknameSetting = async (text: string) => {
+    const check = await axios.post(`${API_URL}/user/setmyinfo`, {
+      nickname: text
+    });
+  };
+
+  // 닉네임 중복확인 핸들러
   const handleNicknameSubmit = async () => {
     try {
-      const response = await axios.post('API_요청_주소', {
-        nickname: nickname.trim(),
-        // code: kakaoCode,
-      });
+      const response = await axios.get(`${API_URL}/user/check/nickname/${nickname.trim()}`);
 
-      if (response.data.exists) {
+      if (response.data.isExist) {
         setErrorMessage('* 이미 존재하는 닉네임입니다.');
         triggerShake();
       } else {
         setIsSuccess(true);
         setErrorMessage('');
-        // 필요 시 추가 작업 (예: 토큰 저장, MainView로 이동 등)
+        handleNicknameSetting(nickname);
+
       }
     } catch (error) {
       console.error('닉네임 확인 중 오류 발생:', error);
       setErrorMessage('* 서버와의 통신에 문제가 있습니다.');
       triggerShake();
     }
-  };
-
-  // 서비스 준비 중 모달 트리거
-  const handleServiceNotAvailable = () => {
-    setServiceMessage('서비스 준비중입니다.');
-    setModalVisible(true);
-    triggerShake();
   };
 
   // 쉐이크 애니메이션 트리거
@@ -141,18 +147,6 @@ function LoginView(): React.JSX.Element {
           <Image source={require('../assets/Images/kakao.png')} style={styles.btnLogo} />
           <Text style={styles.kakaoButtonText}>카카오로 로그인</Text>
         </TouchableOpacity>
-
-        {/* Google 로그인 버튼 */}
-        <TouchableOpacity style={styles.googleButton} onPress={handleServiceNotAvailable}>
-          <Image source={require('../assets/Images/google.png')} style={styles.btnLogo} />
-          <Text style={styles.googleButtonText}>Google로 로그인</Text>
-        </TouchableOpacity>
-
-        {/* Naver 로그인 버튼 */}
-        <TouchableOpacity style={styles.naverButton} onPress={handleServiceNotAvailable}>
-          <Image source={require('../assets/Images/naver.png')} style={styles.btnLogo} />
-          <Text style={styles.naverButtonText}>Naver로 로그인</Text>
-        </TouchableOpacity>
       </View>
 
       {/* WebView 모달 */}
@@ -165,7 +159,7 @@ function LoginView(): React.JSX.Element {
           source={{ uri: KAKAO_AUTH_URL }}
           onNavigationStateChange={(navState) => {
             const { url } = navState;
-            if (url.startsWith('http://localhost:8080/login/oauth2/code/kakao')) {
+            if (url.startsWith('https://j11e104.p.ssafy.io/login/oauth2/code/kakao')) {
               const codeMatch = url.match(/code=([^&]+)/);
               if (codeMatch && codeMatch[1]) {
                 const code = codeMatch[1];
@@ -206,7 +200,7 @@ function LoginView(): React.JSX.Element {
                       style={styles.textInput}
                       placeholder="닉네임을 입력하세요"
                       value={nickname}
-                      onChangeText={(text) => {
+                      onChangeText={(text : String) => {
                         setNickname(text);
                         if (errorMessage) setErrorMessage('');
                       }}
@@ -236,11 +230,6 @@ function LoginView(): React.JSX.Element {
           </View>
         </TouchableWithoutFeedback>
       </Modal>
-
-      {/* [메인으로] 버튼 추가 */}
-      <TouchableOpacity style={styles.mainButton} onPress={navigateToMainView}>
-        <Text style={styles.mainButtonText}>메인으로</Text>
-      </TouchableOpacity>
     </SafeAreaView>
   );
 }
@@ -276,42 +265,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 20,
   },
-  googleButton: {
-    backgroundColor: 'white',
-    width: 250,
-    height: 50,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#4285F4',
-  },
-  naverButton: {
-    backgroundColor: '#03C75A',
-    width: 250,
-    height: 50,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-    marginBottom: 20,
-  },
   kakaoButtonText: {
     color: '#3C1E1E',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 10,
-  },
-  googleButtonText: {
-    color: '#4285F4',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginLeft: 10,
-  },
-  naverButtonText: {
-    color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: 10,
@@ -404,23 +359,6 @@ const styles = StyleSheet.create({
     color: 'red',
     textAlign: 'center',
     marginBottom: 20,
-  },
-  // [메인으로] 버튼 스타일
-  mainButton: {
-    position: 'absolute',
-    bottom: 30,
-    right: 30,
-    backgroundColor: 'rgba(255, 255, 255, 0.65)',
-    elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
-    shadowColor: 'black', // 그림자 색상
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 15,
-  },
-  mainButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 });
 

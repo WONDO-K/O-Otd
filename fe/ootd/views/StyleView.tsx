@@ -142,16 +142,12 @@ const styles = StyleSheet.create({
         ],
         zIndex: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.3)',
-        elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
-        shadowColor: 'black', // 그림자 색상
     },
     subImage: {
         width: 150,
         height: 200,
         // backgroundColor: '#121212',
         backgroundColor: 'rgba(88, 88, 88, 0.7)',
-        elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
-        shadowColor: 'black', // 그림자 색상
         borderColor: 'white',
         borderWidth: 5,
         borderRadius: 10,

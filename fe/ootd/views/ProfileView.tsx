@@ -10,7 +10,9 @@ import {
   ScrollView,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import useAIStore from '../stores/AIStore'; // Zustand 스토어 가져오기
+import useAIStore from '../stores/AIStore';
+import { useLoginStore } from '../stores/LoginStore';
+import axios from 'axios';
 
 import WishFullIcon from '../assets/Icons/WishFull_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
@@ -23,19 +25,37 @@ function ProfileView(): React.JSX.Element {
   const navigation = useNavigation();
   const route = useRoute();
 
+  const { accessToken } = useLoginStore();
+
   const [myFashion, setMyFashion] = useState([]);
   const [bookmarked, setBookmarked] = useState({});
   const [selectedCategory, setSelectedCategory] = useState('마이 패션');
   const [selectedSort, setSelectedSort] = useState('최신순');
   const [pictureList, setPictureList] = useState([]);
+  const [nickname, setNickname] = useState(null);
 
   const selectCategory = (category: string) => {
     setSelectedCategory(category);
     setSelectedSort('최신순');
-};
-const selectSort = (sort: string) => {
-    setSelectedSort(sort);
-};
+  };
+  const selectSort = (sort: string) => {
+      setSelectedSort(sort);
+  };
+
+  // API에서 nickname 가져오는 로직
+  const getNickname = async () => {
+    try {
+      const response = await axios.get('https://j11e104.p.ssafy.io/user/myInfo');
+
+      setNickname(response.data.nickname);  // nickname만 상태에 저장
+    } catch (error) {
+      console.error('Error nickname:', error);
+    }
+  };
+
+  useEffect(() => {
+    getNickname();  // 컴포넌트가 마운트될 때 nickname 가져오기
+  }, []);
 
 const getPictureList = (category: string, sort: string) => {
   if (category === '마이 패션') {
@@ -133,7 +153,7 @@ const getPictureList = (category: string, sort: string) => {
       <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
         <TouchableOpacity style={styles.nicknameBox}>
-          <Text style={styles.nickname}>신주쿠헌옷수거함지배자</Text>
+          <Text style={styles.nickname}>{nickname || 'Loading...'}</Text>
           <PencilIcon width={30} height={30} style={styles.pencil} />
         </TouchableOpacity>
 
