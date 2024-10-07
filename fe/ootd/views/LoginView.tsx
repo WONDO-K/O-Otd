@@ -28,35 +28,52 @@ function LoginView(): React.JSX.Element {
   const [webViewVisible, setWebViewVisible] = useState(false);
   const navigation = useNavigation();
 
-  // LoginStore에서 setAccessToken, setRefreshToken을 가져옴
-  const { accessToken, refreshToken, setAccessToken, setRefreshToken, loadTokens, clearTokens } = useLoginStore();
+  let user = '';
+
+  // LoginStore에서 상태와 함수를 가져옴
+  const {
+    accessToken,
+    setAccessToken,
+    setRefreshToken,
+    userId,
+    setUserId,
+  } = useLoginStore();
 
   // Kakao OAuth URL
-  const KAKAO_AUTH_URL = 'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=fb7d24f77e374b62fe33b066aac83003&redirect_uri=https://j11e104.p.ssafy.io/login/oauth2/code/kakao';
+  const KAKAO_AUTH_URL =
+    'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=fb7d24f77e374b62fe33b066aac83003&redirect_uri=https://j11e104.p.ssafy.io/login/oauth2/code/kakao';
 
   // API 주소
   const API_URL = 'https://j11e104.p.ssafy.io';
+
+
 
   // Kakao 로그인 처리 함수
   const handleKakaoLogin = async (code: string) => {
     try {
       const response = await axios.get(`${API_URL}/user/auth/kakao-login?code=${code}`);
 
-      if (response.data.existed) {
-        // 토큰 저장
-        setAccessToken(response.data.accessToken);  // accessToken 설정
-        setRefreshToken(response.data.refreshToken);  // refreshToken 설정
+      if (response.data.existed === true) {
 
-        // 메인 뷰로 이동
+        // 토큰 저장
+        await setAccessToken(response.data.accessToken); // accessToken 설정
+        await setRefreshToken(response.data.refreshToken); // refreshToken 설정
+
+        // 헤더에서 userId 추출하여 저장
+        user = response.headers['x-user-id'];
+
         navigateToMainView();
       } else {
         // 신규 회원인 경우 닉네임 입력 모달 표시
+        await setAccessToken(response.data.accessToken); // accessToken 설정
+        await setRefreshToken(response.data.refreshToken); // refreshToken 설정
+        // 헤더에서 userId 추출하여 저장
+        setUserId(response.headers['x-user-id']);
+
         setModalVisible(true);
-        setAccessToken(response.data.accessToken);  // accessToken 설정
-        setRefreshToken(response.data.refreshToken);  // refreshToken 설정
       }
     } catch (error) {
-      console.error('!!!!!!!!!!!!!!!Kakao 로그인 중 오류 발생:', error);
+      console.error('!!!!!!!!!!!!!!! Kakao 로그인 중 오류 발생:', error);
       setServiceMessage('로그인 중 오류가 발생했습니다.');
       setModalVisible(true);
     }
@@ -77,13 +94,13 @@ function LoginView(): React.JSX.Element {
         },
         {
           headers: {
-            accessToken: accessToken,
-            userId: userId,
+            "Authorization": accessToken,
+            "Content-Type": "application/json",
+            "X-User-ID" : userId,
           },
         }
       );
       setIsSuccess(true);
-      navigateToMainView(); // 닉네임 설정 후 메인 뷰로 이동
     } catch (error) {
       console.error('닉네임 설정 중 오류 발생:', error);
       setErrorMessage('* 닉네임 설정에 실패했습니다.');
@@ -93,17 +110,35 @@ function LoginView(): React.JSX.Element {
 
   // 닉네임 중복확인 핸들러
   const handleNicknameSubmit = async () => {
+    if (!nickname.trim()) {
+      setErrorMessage('* 닉네임을 입력해주세요.');
+      triggerShake();
+      return;
+    }
+
     try {
-      const response = await axios.get(`${API_URL}/user/check/nickname/${nickname.trim()}`);
+      const response = await axios.get(
+        `${API_URL}/user/check/nickname`,  // URL에서 nickname 부분을 제거
+        {
+          params: {
+            nickname: nickname.trim(),  // nickname을 params로 전송
+          },
+          headers: {
+            "Authorization": accessToken,
+            "Content-Type": "application/json",
+            "X-User-ID": userId,
+          },
+        }
+      );
 
       if (response.data.isExist) {
         setErrorMessage('* 이미 존재하는 닉네임입니다.');
         triggerShake();
       } else {
-        setIsSuccess(true);
         setErrorMessage('');
-        handleNicknameSetting(nickname);
+        await handleNicknameSetting(nickname);
 
+        navigateToMainView();
       }
     } catch (error) {
       console.error('닉네임 확인 중 오류 발생:', error);
@@ -217,7 +252,7 @@ function LoginView(): React.JSX.Element {
                       style={styles.textInput}
                       placeholder="닉네임을 입력하세요"
                       value={nickname}
-                      onChangeText={(text : String) => {
+                      onChangeText={(text: string) => {
                         setNickname(text);
                         if (errorMessage) setErrorMessage('');
                       }}
