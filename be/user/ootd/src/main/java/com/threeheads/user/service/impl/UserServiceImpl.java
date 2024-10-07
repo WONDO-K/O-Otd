@@ -55,34 +55,22 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(setUser);
 
-        log.info("닉네임 수정 완료");
+        log.info("닉네임 초기 설정 완료");
         return setUser;
     }
 
     @Override
-    public void updateUserInfo(String username, UserUpdateRequestDto request) {
-
-            User user = userRepository.findByUsername(username)
-                    .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
-
-            user.changePhone(request.getPhone());
-            user.changeNickname(request.getNickName());
-
-            userRepository.save(user);
-
-            log.info("전화번호, 닉네임 수정 완료");
-    }
-
-    @Override
-    public void updateNickname(String userEmail, String newNickname) {
+    public void updateNickname(Long userId, String newNickname) {
 
         // 사용자 조회
-        User user = userRepository.findByEmail(userEmail)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
         // 닉네임 변경
         user.setNickname(newNickname);
         userRepository.save(user);
+        log.info("닉네임 수정 완료");
+
     }
 
     @Override

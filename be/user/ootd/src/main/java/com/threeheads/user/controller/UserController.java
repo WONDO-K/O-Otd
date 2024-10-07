@@ -6,6 +6,7 @@ import com.threeheads.user.common.jwt.GeneratedToken;
 import com.threeheads.user.dto.kakao.KakaoUserInfoDto;
 import com.threeheads.user.dto.login.reqeust.SignupRequestDto;
 import com.threeheads.user.dto.login.response.TokenResponseStatus;
+import com.threeheads.user.dto.users.reqeust.UpdateNicknameRequestDto;
 import com.threeheads.user.dto.users.reqeust.UserListResponseDto;
 import com.threeheads.user.dto.users.reqeust.UserUpdateRequestDto;
 import com.threeheads.user.dto.users.response.UserResponseDto;
@@ -130,15 +131,12 @@ public class UserController {
         User updatedUser = userService.setMyInfo(currentUser, signupRequestDto);
         return ResponseEntity.ok(updatedUser);
     }
-
-    @PutMapping("/update/userinfo")
-    @Operation(summary = "회원 정보 수정", description = "회원 정보 수정")
-    public ResponseEntity<?> updateUserInfo(@RequestBody UserUpdateRequestDto request,
-                                            @AuthenticationPrincipal UserDetails userDetails) {
-
-        userService.updateUserInfo(userDetails.getUsername(), request);
-
-        return ResponseEntity.ok().body("update successful");
+    
+    @PostMapping("/update/nickname/{userId}")
+    @Operation(summary = "닉네임 수정", description = "닉네임을 수정합니다.")
+    public ResponseEntity<?> updateNickname(@PathVariable Long userId, @RequestBody UpdateNicknameRequestDto dto) {
+        userService.updateNickname(userId,dto.getNewNickname());
+        return ResponseEntity.ok().body("닉네임 변경을 완료했습니다." + dto.getNewNickname());
     }
 
     // 인증이 필요 없는 경로 (카카오 로그인)
