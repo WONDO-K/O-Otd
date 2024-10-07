@@ -25,7 +25,7 @@ function ProfileView(): React.JSX.Element {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { accessToken } = useLoginStore();
+  const { accessToken, userId } = useLoginStore();
 
   const [myFashion, setMyFashion] = useState([]);
   const [bookmarked, setBookmarked] = useState({});
@@ -34,20 +34,31 @@ function ProfileView(): React.JSX.Element {
   const [pictureList, setPictureList] = useState([]);
   const [nickname, setNickname] = useState(null);
 
+  // API 주소
+  const API_URL = 'https://j11e104.p.ssafy.io';
+
   const selectCategory = (category: string) => {
     setSelectedCategory(category);
     setSelectedSort('최신순');
   };
   const selectSort = (sort: string) => {
-      setSelectedSort(sort);
+    setSelectedSort(sort);
   };
 
   // API에서 nickname 가져오는 로직
   const getNickname = async () => {
+    console.log('!!!!!!!!!!!!!!!!!!!!닉네임 가져오기 함수');
     try {
-      const response = await axios.get('https://j11e104.p.ssafy.io/user/myInfo');
+      const response = await axios.get(`${API_URL}/user/myInfo`, {
+        headers: {
+          "Authorization": accessToken,
+          "Content-Type": "application/json",
+          "X-User-ID": userId,
+        },
+      });
 
       setNickname(response.data.nickname);  // nickname만 상태에 저장
+      console.log('!!!!!!!!!!!!!!!!!!!!닉네임',response.data.nickname);
     } catch (error) {
       console.error('Error nickname:', error);
     }
@@ -57,77 +68,77 @@ function ProfileView(): React.JSX.Element {
     getNickname();  // 컴포넌트가 마운트될 때 nickname 가져오기
   }, []);
 
-const getPictureList = (category: string, sort: string) => {
-  if (category === '마이 패션') {
+  const getPictureList = (category: string, sort: string) => {
+    if (category === '마이 패션') {
       const data = {
-          "myFashionList": [
-              {
-                "wardrobeId": 1,
-                "createdAt": "2024-09-25T00:00:00",
-                "ImageUrl": "https://placekitten.com/200/300",
-                "wardrobeBattle": 3,
-                "wardrobeWin": 2,
-              },
-              {
-                "wardrobeId": 2,
-                "createdAt": "2024-09-20T00:00:00",
-                "imageUrl": "https://picsum.photos/400/400",
-                "wardrobeBattle": 2,
-                "wardrobeWin": 1,
-              }
-          ],
+        "myFashionList": [
+          {
+            "wardrobeId": 1,
+            "createdAt": "2024-09-25T00:00:00",
+            "ImageUrl": "https://placekitten.com/200/300",
+            "wardrobeBattle": 3,
+            "wardrobeWin": 2,
+          },
+          {
+            "wardrobeId": 2,
+            "createdAt": "2024-09-20T00:00:00",
+            "imageUrl": "https://picsum.photos/400/400",
+            "wardrobeBattle": 2,
+            "wardrobeWin": 1,
+          }
+        ],
       }
 
       setPictureList(data.myFashionList);
-  } else if (category === '마이 갤러리') {
+    } else if (category === '마이 갤러리') {
       const data = {
-          "myGalleryList": [
-              {
-                "clotheId": 2,
-                "likeAt": "2024-09-22T00:00:00",
-                "imageUrl": "https://picsum.photos/200/300",
-                "totalPick": 43,
-                "monthlyPick": 15,
-                "weeklyPick": 3,
-              },
-              {
-                "clotheId": 2,
-                "likeAt": "2024-09-24T00:00:00",
-                "imageUrl": "https://placedog.net/500",
-                "totalPick": 46,
-                "monthlyPick": 14,
-                "weeklyPick": 13,
-              }
-          ]
+        "myGalleryList": [
+          {
+            "clotheId": 2,
+            "likeAt": "2024-09-22T00:00:00",
+            "imageUrl": "https://picsum.photos/200/300",
+            "totalPick": 43,
+            "monthlyPick": 15,
+            "weeklyPick": 3,
+          },
+          {
+            "clotheId": 2,
+            "likeAt": "2024-09-24T00:00:00",
+            "imageUrl": "https://placedog.net/500",
+            "totalPick": 46,
+            "monthlyPick": 14,
+            "weeklyPick": 13,
+          }
+        ]
       }
       setPictureList(data.myGalleryList)
     } else if(category === '마이 문철') {
       const data = {
         "myBattleList": [
-            {
-                "battleId": 1,
-                "title": "Summer Fashion Battle",
-                "participantCount": 2,
-                "status": "IN_PROGRESS",
-                "startedAt": "2024-09-25T01:00:00",
-                "leftImage": "https://placekitten.com/200/300",
-                "rightImage": "https://placedog.net/500",
-                "myPick": null,
-                "leftName": "악질유저기무동현",
-                "rightName": "분탕장인손우혁"
-            },
-            {
-                "battleId": 3,
-                "title": "Autumn Collection Showdown",
-                "participantCount": 2,
-                "status": "IN_PROGRESS",
-                "startedAt": "2024-09-25T00:00:00",
-                "leftImage": "https://picsum.photos/400/400",
-                "rightImage": "https://picsum.photos/200/300",
-                "myPick": "left",
-                "leftName": "유저네임3",
-                "rightName": "유저네임4"
-            }
+          {
+            "battleId": 1,
+            "title": "Summer Fashion Battle",
+            "participantCount": 2,
+            "status": "IN_PROGRESS",
+            "startedAt": "2024-09-25T01:00:00",
+            "leftImage": "https://placekitten.com/200/300",
+            "rightImage": "https://placedog.net/500",
+            "myPick": null,
+            "leftName": "악질유저기무동현",
+            "rightName": "분탕장인손우혁"
+          },
+          {
+            "battleId": 3,
+            "title": "Autumn Collection Showdown",
+            "participantCount": 2,
+            "status": "IN_PROGRESS",
+            "startedAt": "2024-09-25T00:00:00",
+            "leftImage": "https://picsum.photos/400/400",
+            "rightImage": "https://picsum.photos/200/300",
+            "myPick": "left",
+            "leftName": "유저네임3",
+            "rightName": "유저네임4"
+          }
         ],
       }
       setPictureList(data.myBattleList);
@@ -141,140 +152,138 @@ const getPictureList = (category: string, sort: string) => {
     }));
   };
 
-  // useEffect(() => {
-  //   getMyFashion();  // 컴포넌트가 마운트될 때 데이터 가져오기
-  // }, []);
-
   return (
     <ImageBackground
       source={require('../assets/Images/bg_img.jpg')} // 배경 이미지 경로
       style={styles.background} // 배경 스타일 설정
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.container}>
-        <TouchableOpacity style={styles.nicknameBox}>
-          <Text style={styles.nickname}>{nickname || 'Loading...'}</Text>
-          <PencilIcon width={30} height={30} style={styles.pencil} />
-        </TouchableOpacity>
+        <View style={styles.container}>
+          <TouchableOpacity style={styles.nicknameBox}>
+            <Text style={styles.nickname}>{nickname}</Text>
+            <PencilIcon width={30} height={30} style={styles.pencil} />
+          </TouchableOpacity>
 
-        <View style={styles.profileCategory}>
-          <View style={styles.iconContainer}>
-            <TouchableOpacity
-              style={styles.profileCategoryButton}
-              onPress={() => selectCategory('마이 패션')}
-            >
-              <View
-                style={[
-                  styles.iconWrapper,
-                  {
-                    borderBottomWidth: selectedCategory === '마이 패션' ? 3 : 0,
-                    borderColor: selectedCategory === '마이 패션' ? 'white' : 'transparent',
-                  },
-                ]}
+          <View style={styles.profileCategory}>
+            <View style={styles.iconContainer}>
+              <TouchableOpacity
+                style={styles.profileCategoryButton}
+                onPress={() => selectCategory('마이 패션')}
               >
-                <MyFashionIcon
-                  fill={selectedCategory === '마이 패션' ? 'white' : '#949494'}
-                  width={30}
-                  height={30}
-                />
-              </View>
-            </TouchableOpacity>
+                <View
+                  style={[
+                    styles.iconWrapper,
+                    {
+                      borderBottomWidth: selectedCategory === '마이 패션' ? 3 : 0,
+                      borderColor: selectedCategory === '마이 패션' ? 'white' : 'transparent',
+                    },
+                  ]}
+                >
+                  <MyFashionIcon
+                    fill={selectedCategory === '마이 패션' ? 'white' : '#949494'}
+                    width={30}
+                    height={30}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.iconContainer}>
+              <TouchableOpacity
+                style={styles.profileCategoryButton}
+                onPress={() => selectCategory('마이 갤러리')}
+              >
+                <View
+                  style={[
+                    styles.iconWrapper,
+                    {
+                      borderBottomWidth: selectedCategory === '마이 갤러리' ? 3 : 0,
+                      borderColor: selectedCategory === '마이 갤러리' ? 'white' : 'transparent',
+                    },
+                  ]}
+                >
+                  <WishIcon
+                    fill={selectedCategory === '마이 갤러리' ? 'white' : '#949494'}
+                    width={30}
+                    height={30}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.iconContainer}>
+              <TouchableOpacity
+                style={styles.profileCategoryButton}
+                onPress={() => selectCategory('마이 문철')}
+              >
+                <View
+                  style={[
+                    styles.iconWrapper,
+                    {
+                      borderBottomWidth: selectedCategory === '마이 문철' ? 3 : 0,
+                      borderColor: selectedCategory === '마이 문철' ? 'white' : 'transparent',
+                    },
+                  ]}
+                >
+                  <BattleIcon
+                    fill={selectedCategory === '마이 문철' ? 'white' : '#949494'}
+                    width={30}
+                    height={30}
+                  />
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
+          <View style={styles.profileSort}>
+            {selectedCategory === '마이 패션' &&
+              ['최신순', '출전 수', '승리 수'].map((sort) => (
+                <TouchableOpacity
+                  key={sort}
+                  style={[
+                    styles.profileSortButton,
+                    {
+                      backgroundColor: selectedSort === sort ? 'white' : 'gray',
+                    },
+                  ]}
+                  onPress={() => selectSort(sort)}
+                >
+                  <Text style={styles.profileSortButtonText}>{sort}</Text>
+                </TouchableOpacity>
+              ))}
 
-          <View style={styles.iconContainer}>
-            <TouchableOpacity
-              style={styles.profileCategoryButton}
-              onPress={() => selectCategory('마이 갤러리')}
-            >
-              <View
-                style={[
-                  styles.iconWrapper,
-                  {
-                    borderBottomWidth: selectedCategory === '마이 갤러리' ? 3 : 0,
-                    borderColor: selectedCategory === '마이 갤러리' ? 'white' : 'transparent',
-                  },
-                ]}
-              >
-                <WishIcon
-                  fill={selectedCategory === '마이 갤러리' ? 'white' : '#949494'}
-                  width={30}
-                  height={30}
-                />
-              </View>
-            </TouchableOpacity>
-          </View>
+            {selectedCategory === '마이 갤러리' &&
+              ['최신순', '인기순'].map((sort) => (
+                <TouchableOpacity
+                  key={sort}
+                  style={[
+                    styles.profileSortButton,
+                    {
+                      backgroundColor: selectedSort === sort ? 'white' : 'gray',
+                    },
+                  ]}
+                  onPress={() => selectSort(sort)}
+                >
+                  <Text style={styles.profileSortButtonText}>{sort}</Text>
+                </TouchableOpacity>
+              ))}
 
-          <View style={styles.iconContainer}>
-            <TouchableOpacity
-              style={styles.profileCategoryButton}
-              onPress={() => selectCategory('마이 문철')}
-            >
-              <View
-                style={[
-                  styles.iconWrapper,
-                  {
-                    borderBottomWidth: selectedCategory === '마이 문철' ? 3 : 0,
-                    borderColor: selectedCategory === '마이 문철' ? 'white' : 'transparent',
-                  },
-                ]}
-              >
-                <BattleIcon
-                  fill={selectedCategory === '마이 문철' ? 'white' : '#949494'}
-                  width={30}
-                  height={30}
-                />
-              </View>
-            </TouchableOpacity>
+            {selectedCategory === '마이 문철' &&
+              ['최신순', '투표 수'].map((sort) => (
+                <TouchableOpacity
+                  key={sort}
+                  style={[
+                    styles.profileSortButton,
+                    {
+                      backgroundColor: selectedSort === sort ? 'white' : 'gray',
+                    },
+                  ]}
+                  onPress={() => selectSort(sort)}
+                >
+                  <Text style={styles.profileSortButtonText}>{sort}</Text>
+                </TouchableOpacity>
+              ))}
           </View>
         </View>
-      <View style={styles.profileSort}>
-      {selectedCategory === '마이 패션' && ['최신순', '출전 수', '승리 수'].map((sort) => (
-        <TouchableOpacity
-          key={sort}
-          style={[
-            styles.profileSortButton,
-            {
-              backgroundColor: selectedSort === sort ? 'white' : 'gray',
-            },
-          ]}
-          onPress={() => selectSort(sort)}
-        >
-          <Text style={styles.profileSortButtonText}>{sort}</Text>
-        </TouchableOpacity>
-      ))}
-
-      {selectedCategory === '마이 갤러리' && ['최신순', '인기순'].map((sort) => (
-        <TouchableOpacity
-          key={sort}
-          style={[
-            styles.profileSortButton,
-            {
-              backgroundColor: selectedSort === sort ? 'white' : 'gray',
-            },
-          ]}
-          onPress={() => selectSort(sort)}
-        >
-          <Text style={styles.profileSortButtonText}>{sort}</Text>
-        </TouchableOpacity>
-      ))}
-
-      {selectedCategory === '마이 문철' && ['최신순', '투표 수'].map((sort) => (
-        <TouchableOpacity
-          key={sort}
-          style={[
-            styles.profileSortButton,
-            {
-              backgroundColor: selectedSort === sort ? 'white' : 'gray',
-            },
-          ]}
-          onPress={() => selectSort(sort)}
-        >
-          <Text style={styles.profileSortButtonText}>{sort}</Text>
-        </TouchableOpacity>
-        ))}
-      </View>
-    </View>
-
       </ScrollView>
     </ImageBackground>
   );
@@ -293,7 +302,7 @@ const styles = StyleSheet.create({
     resizeMode: 'cover', // 배경 이미지를 뷰에 맞게 조정
   },
   scrollContainer: {
-    flexGrow: 1,  // ScrollView의 내용이 화면을 넘어가도 스크롤 가능하도록 설정
+    flexGrow: 1, // ScrollView의 내용이 화면을 넘어가도 스크롤 가능하도록 설정
     justifyContent: 'flex-start',
   },
   nicknameBox: {
@@ -345,43 +354,43 @@ const styles = StyleSheet.create({
     width: '100%', // 선의 길이를 부모의 너비로 설정
     marginTop: 10,
   },
-  profileCategoryButton:{
-      width: "90%",
-      height: 40,
-      justifyContent: 'center',
-      alignItems: 'center',
+  profileCategoryButton: {
+    width: '90%',
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  profileCategoryButtonText:{
-      color: 'black',
-      fontSize: 20,
-      fontWeight: 'bold',
-      textAlign: 'center',
+  profileCategoryButtonText: {
+    color: 'black',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   profileSort: {
-    width: "100%",
+    width: '100%',
     display: 'flex',
     flexDirection: 'row',
-    justifyContent : 'flex-start',
+    justifyContent: 'flex-start',
     paddingLeft: 5,
   },
   profileSortButton: {
-      margin: 10,
-      borderRadius: 10,
-      width: 80,
-      height: 32,
-      display: 'flex',
-      justifyContent: 'center',
-      alignItems: 'center',
+    margin: 10,
+    borderRadius: 10,
+    width: 80,
+    height: 32,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   profileSortButtonText: {
-      fontSize: 20,
-      color: 'black',
-      fontWeight: 'bold',
-      textAlign: 'center',
-      marginBottom: 2,
+    fontSize: 20,
+    color: 'black',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 2,
   },
   switchText: {
-      color: 'white',
+    color: 'white',
   },
   profileCategory: {
     display: 'flex',
@@ -396,7 +405,7 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
   },
   iconContainer: {
-    flex: 1,  // 아이콘을 3등분하기 위한 설정
+    flex: 1, // 아이콘을 3등분하기 위한 설정
     alignItems: 'center',
   },
   iconWrapper: {
