@@ -25,5 +25,5 @@ public class BattleDto {
     private LocalDateTime expiresAt;  // 배틀 만료 시간 (24시간 후 자동 만료)
     private int requesterVotes;  // 신청자에게 투표한 수
     private int responderVotes;  // 수락자에게 투표한 수
-    private Long winnerId;  // 배틀의 승리자 ID (배틀 종료 후)
+    private Long myPickUserId;  // 내가 투표한 사람 (requester 또는 responder)
 }
