@@ -64,13 +64,10 @@ public class JwtAuthFilter implements WebFilter {
             log.info("JWT 토큰과 사용자 정보를 헤더에 추가합니다.");
 
             var requestMutator = exchange.getRequest().mutate()
-                    .header("Authorization", "Bearer " + accessToken); // JWT 토큰 그대로 전달
+                    .header("Authorization",  accessToken); // JWT 토큰 그대로 전달
 
             if (userId != null) {
                 requestMutator.header("X-User-ID", userId); // 사용자 ID 추가
-            }
-            if (role != null) {
-                requestMutator.header("X-User-Role", role); // 사용자 역할 추가
             }
             if (refreshToken != null) {
                 requestMutator.header("refreshToken", refreshToken); // 리프레시 토큰 추가
