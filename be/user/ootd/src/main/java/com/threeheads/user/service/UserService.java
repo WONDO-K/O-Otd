@@ -15,9 +15,7 @@ public interface UserService {
 
     User  setMyInfo(User user, SignupRequestDto signupRequestDto);
 
-    void updateUserInfo(String username, UserUpdateRequestDto request);
-
-    void updateNickname(String userEmail, String newNickname);
+    void updateNickname(Long userId, String newNickname);
 
     boolean existsByNickname(String nickname);
 
