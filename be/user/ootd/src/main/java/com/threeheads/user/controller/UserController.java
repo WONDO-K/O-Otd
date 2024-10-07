@@ -126,6 +126,7 @@ public class UserController {
     public ResponseEntity<User> setMyInfo(@RequestBody SignupRequestDto signupRequestDto) {
         // 로그인된 사용자를 가져옴
         User currentUser = userService.getMyInfo().toEntity();
+        log.info("내 정보 초기 설정 호출 : " + currentUser);
         User updatedUser = userService.setMyInfo(currentUser, signupRequestDto);
         return ResponseEntity.ok(updatedUser);
     }
