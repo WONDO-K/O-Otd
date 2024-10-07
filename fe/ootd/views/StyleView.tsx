@@ -181,9 +181,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
         overflow: 'hidden',
-        left: -50,
+        left: -45,
         transform: [
-            { rotateY: '15deg' }
+            { rotateY: '15deg' },
         ],
         zIndex: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.3)',
@@ -202,8 +202,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
         top: 120,
-        left: 105,
-        transform: [{ rotateY: '-30deg' }],
+        left: 110,
+        transform: [
+            { rotateY: '-30deg' },
+        ],
         zIndex: 2,
         overflow: 'hidden',
     },
