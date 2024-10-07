@@ -116,14 +116,14 @@ public class BattleServiceImpl implements BattleService {
     /**
      * 배틀 응답 처리 메서드 (수락 또는 거절)
      * @param responseDto BattleResponseRequestDto
-     * @param userId 사용자 ID
+     * @param battleId 배틀 ID
      * @return BattleResponseDto
      */
     @Override
-    public BattleResponseDto handleBattleResponse(BattleResponseRequestDto responseDto, Long userId) {
+    public BattleResponseDto handleBattleResponse(BattleResponseRequestDto responseDto, Long battleId) {
         // 배틀을 찾아서 상태 처리
-        Battle battle = battleRepository.findById(responseDto.getBattleId())
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 배틀 ID입니다: " + responseDto.getBattleId()));
+        Battle battle = battleRepository.findById(battleId)
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 배틀 ID입니다: " + battleId));
 
         // 배틀 상태가 PENDING인지 확인
         if (battle.getStatus() != BattleStatus.PENDING) {
@@ -131,7 +131,7 @@ public class BattleServiceImpl implements BattleService {
         }
 
         // 수신자만 응답할 수 있도록 검증
-        if (!battle.getResponderId().equals(userId)) {
+        if (!battle.getResponderId().equals(responseDto.getUserId())) {
             throw new SecurityException("해당 배틀에 응답할 권한이 없습니다.");
         }
 
