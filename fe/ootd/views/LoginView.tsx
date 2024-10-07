@@ -28,8 +28,6 @@ function LoginView(): React.JSX.Element {
   const [webViewVisible, setWebViewVisible] = useState(false);
   const navigation = useNavigation();
 
-  let user = '';
-
   // LoginStore에서 상태와 함수를 가져옴
   const {
     accessToken,
@@ -53,14 +51,16 @@ function LoginView(): React.JSX.Element {
     try {
       const response = await axios.get(`${API_URL}/user/auth/kakao-login?code=${code}`);
 
-      if (response.data.existed === true) {
+      console.log('!!!!!!!!!!!!!!!!!!!데이타',response.data);
+
+      if (response.data.existed) {
 
         // 토큰 저장
         await setAccessToken(response.data.accessToken); // accessToken 설정
         await setRefreshToken(response.data.refreshToken); // refreshToken 설정
 
         // 헤더에서 userId 추출하여 저장
-        user = response.headers['x-user-id'];
+        setUserId(response.headers['x-user-id']);
 
         navigateToMainView();
       } else {
@@ -131,7 +131,7 @@ function LoginView(): React.JSX.Element {
         }
       );
 
-      if (response.data.isExist) {
+      if (response.data) {
         setErrorMessage('* 이미 존재하는 닉네임입니다.');
         triggerShake();
       } else {
