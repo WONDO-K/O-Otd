@@ -57,7 +57,6 @@ public class JwtAuthFilter implements WebFilter {
 
         // 헤더에서 사용자 정보 추출
         String userId = exchange.getRequest().getHeaders().getFirst("X-User-ID");
-        String role = exchange.getRequest().getHeaders().getFirst("X-User-Role");
 
         // 사용자 정보와 토큰이 포함된 요청으로 변경
         if (accessToken != null) {
