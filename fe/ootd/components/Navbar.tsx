@@ -86,6 +86,13 @@ function Navbar({ currentRoute }: { currentRoute: string }): React.JSX.Element {
                     유사한 스타일을 추천합니다.{"\n"}
                 </ContentText>
             );
+        } else if (isActive(['Battle'])) {
+            return (
+                <ContentText style={styles.modalText}>
+                    설명 들어갈 공간{"\n"}
+                    배틀 설명을 적어주세요.{"\n"}
+                </ContentText>
+            );
         }
         return null;
     };
@@ -104,7 +111,7 @@ function Navbar({ currentRoute }: { currentRoute: string }): React.JSX.Element {
                 <LogoIcon width={120} height={60} />
             </TouchableOpacity>
             <View style={styles.buttonContainer}>
-                {isActive(['StyleView', 'AIView']) && (
+                {isActive(['StyleView', 'AIView', 'Battle']) && (
                     <TouchableOpacity onPress={handleHowIconPress}>
                         <HowIcon />
                     </TouchableOpacity>

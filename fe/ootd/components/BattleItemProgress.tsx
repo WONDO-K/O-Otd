@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
-import { ContentText } from './CustomTexts';
+import { ContentText, ContentBoldText } from './CustomTexts';
 
 type BattleItemProgressProps = {
   item: any;
@@ -16,9 +16,9 @@ const BattleItemProgress: React.FC<BattleItemProgressProps> = ({ item, onPress, 
             onPress={onPress}
         >
             <View style={styles.battleTitle}>
-                <ContentText style={styles.battleNameText}>{nameSlice(item.leftName)}</ContentText>
+                <ContentBoldText style={styles.battleNameText}>{nameSlice(item.leftName)}</ContentBoldText>
                 <ContentText style={styles.battleTimeText}>{calculateRemainingTime(item.startedAt)}</ContentText>
-                <ContentText style={styles.battleNameText}>{nameSlice(item.rightName)}</ContentText>
+                <ContentBoldText style={styles.battleNameText}>{nameSlice(item.rightName)}</ContentBoldText>
             </View>
             <View style={styles.battleContent}>
                 <Image 

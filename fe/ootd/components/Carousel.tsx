@@ -1,4 +1,4 @@
-import React, { useMemo, useRef, useEffect } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 import {
   View,
   StyleSheet,
@@ -6,8 +6,6 @@ import {
   Animated,
   TouchableOpacity,
   ImageBackground,
-  FlatList,
-  Text,
 } from 'react-native';
 import { TitleText, TitleBoldText } from '../components/CustomTexts';
 
@@ -23,6 +21,8 @@ interface CarouselProps {
 export default function Carousel({ openModal }: CarouselProps) {
   const scrollX = useRef(new Animated.Value(0)).current; // 스크롤 애니메이션 값
   const flatListRef = useRef(null);
+  const intervalRef = useRef<number>(0);
+  const [currentIndex, setCurrentIndex] = useState(1);
 
   const data = useMemo(
     () => [
@@ -60,25 +60,96 @@ export default function Carousel({ openModal }: CarouselProps) {
     return Array.from({ length: infiniteData.length }).map((_, index) => index * offset);
   }, [infiniteData]);
 
+  // const handleScrollEnd = (e) => {
+  //   const contentOffsetX = e.nativeEvent.contentOffset.x;
+  //   const currentIndex = Math.round(contentOffsetX / offset);
+
+  //   if (!flatListRef.current) return; // 방어 코드
+
+  //   if (currentIndex === 0) {
+  //     flatListRef.current.scrollToOffset({
+  //       offset: (infiniteData.length - 2) * offset,
+  //       animated: false,
+  //     });
+  //   } else if (currentIndex === infiniteData.length - 1) {
+  //     flatListRef.current.scrollToOffset({
+  //       offset: offset,
+  //       animated: false,
+  //     });
+  //   }
+  // };
+
   const handleScrollEnd = (e) => {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
-    const currentIndex = Math.round(contentOffsetX / offset);
-
+    const newIndex = Math.round(contentOffsetX / offset);
+  
     if (!flatListRef.current) return; // 방어 코드
-
-    if (currentIndex === 0) {
+  
+    setCurrentIndex(newIndex); // 스크롤이 멈출 때 현재 인덱스 업데이트
+  
+    if (newIndex === 0) {
       flatListRef.current.scrollToOffset({
         offset: (infiniteData.length - 2) * offset,
         animated: false,
       });
-    } else if (currentIndex === infiniteData.length - 1) {
+      setCurrentIndex(infiniteData.length - 2);
+    } else if (newIndex === infiniteData.length - 1) {
       flatListRef.current.scrollToOffset({
         offset: offset,
         animated: false,
       });
+      setCurrentIndex(1);
     }
   };
 
+  const startAutoScroll = () => {
+    intervalRef.current = setInterval(() => {
+      setCurrentIndex((prevIndex) => {
+        let nextIndex = prevIndex + 1;
+
+        if (nextIndex === infiniteData.length - 1) {
+          // 마지막 인덱스에서 첫 번째로 이동할 때 애니메이션 적용
+          flatListRef.current?.scrollToOffset({
+            offset: nextIndex * offset,
+            animated: true, // 오른쪽으로 부드럽게 이동
+          });
+
+          // 다음 애니메이션을 위한 짧은 지연 후 첫 번째 인덱스로 이동
+          flatListRef.current?.scrollToOffset({
+            offset: offset,
+            animated: false, // 애니메이션 없이 첫 번째로 이동
+          });
+          setCurrentIndex(1);
+
+          nextIndex = 1;
+        } else {
+          // 일반적인 자동 스크롤 애니메이션
+          flatListRef.current?.scrollToOffset({
+            offset: nextIndex * offset,
+            animated: true, // 애니메이션 적용
+          });
+        }
+
+        return nextIndex;
+      });
+    }, 5000); // 3초 간격으로 스크롤
+  };
+
+  const stopAutoScroll = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+    }
+  };
+
+  useEffect(() => {
+    startAutoScroll();
+
+    // 컴포넌트 언마운트 시 타이머 정리
+    return () => {
+      stopAutoScroll();
+    };
+  }, [infiniteData, offset]);
+  
   return (
     <View style={styles.container}>
       <TitleText style={styles.title}><TitleBoldText>Weekly</TitleBoldText> Styles</TitleText>
@@ -128,6 +199,8 @@ export default function Carousel({ openModal }: CarouselProps) {
         })}
 
         onMomentumScrollEnd={handleScrollEnd}
+        onScrollBeginDrag={stopAutoScroll} // 사용자가 스크롤 시작 시 자동 스크롤 중지
+        onScrollEndDrag={startAutoScroll} // 사용자가 스크롤을 끝내면 자동 스크롤 재개
         scrollEventThrottle={16}
         initialScrollIndex={1}
       />

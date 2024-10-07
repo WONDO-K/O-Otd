@@ -43,7 +43,7 @@ function Battle({ navigation }): React.JSX.Element {
         const remainingTime = oneDayInMilliseconds - elapsedTime;
     
         if (remainingTime < 0) {
-            return '투표 종료'; // 만약 하루가 지났다면 '시간 초과'를 반환
+            return '종료'; // 만약 하루가 지났다면 '시간 초과'를 반환
         }
     
         // 남은 시간을 시(hour)와 분(minute) 단위로 변환
@@ -120,8 +120,8 @@ function Battle({ navigation }): React.JSX.Element {
                         "myPick": "right",
                         "leftName": "악질유저기무동현사마",
                         "rightName": "쌀선대원군",
-                        "leftVote": 50,
-                        "rightVote": 50,
+                        "leftVote": 159,
+                        "rightVote": 345,
                     },
                     {
                         "battleId": 4,

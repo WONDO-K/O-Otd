@@ -105,7 +105,7 @@ function AIReport(): React.JSX.Element {
           </View>
         </View>
         
-        <ContentText style={styles.title}>유사한 스타일</ContentText>
+        <TitleText style={styles.title}>Similar Styles</TitleText>
         <FlatList
           style={{marginTop: 20}}
           data={myFashion}
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     padding: 5,
     alignItems: 'center',
     marginTop: 20,
-    marginBottom: 20,
+    marginBottom: 40,
     borderRadius: 10,
 
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
