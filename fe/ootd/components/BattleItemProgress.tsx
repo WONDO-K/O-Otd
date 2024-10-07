@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
+import { ContentText } from './CustomTexts';
 
 type BattleItemProgressProps = {
   item: any;
@@ -15,9 +16,9 @@ const BattleItemProgress: React.FC<BattleItemProgressProps> = ({ item, onPress, 
             onPress={onPress}
         >
             <View style={styles.battleTitle}>
-                <Text style={styles.battleNameText}>{nameSlice(item.leftName)}</Text>
-                <Text style={styles.battleTimeText}>{calculateRemainingTime(item.startedAt)}</Text>
-                <Text style={styles.battleNameText}>{nameSlice(item.rightName)}</Text>
+                <ContentText style={styles.battleNameText}>{nameSlice(item.leftName)}</ContentText>
+                <ContentText style={styles.battleTimeText}>{calculateRemainingTime(item.startedAt)}</ContentText>
+                <ContentText style={styles.battleNameText}>{nameSlice(item.rightName)}</ContentText>
             </View>
             <View style={styles.battleContent}>
                 <Image 
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
         height: 300,
     },
     pickedImage: {
-        borderColor: '#ABDEE6',
+        borderColor: 'rgba(255,209,102,0.8)',
         borderWidth: 3,
     },
     unPickedImage: {

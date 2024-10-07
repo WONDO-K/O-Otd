@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TouchableOpacity, Text, Image, StyleSheet } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
+import { ContentText } from './CustomTexts';
 
 type BattleItemProgressProps = {
   item: any;
@@ -16,15 +17,15 @@ const BattleItemProgress: React.FC<BattleItemProgressProps> = ({ item, onPress, 
             onPress={onPress}
         >
             <View style={styles.battleTitle}>
-                <Text style={styles.battleNameText}>{nameSlice(item.leftName)}</Text>
-                <Text style={styles.battleTimeText}>{calculateRemainingTime(item.startedAt)}</Text>
-                <Text style={styles.battleNameText}>{nameSlice(item.rightName)}</Text>
+                <ContentText style={styles.battleNameText}>{nameSlice(item.leftName)}</ContentText>
+                <ContentText style={styles.battleTimeText}>{calculateRemainingTime(item.startedAt)}</ContentText>
+                <ContentText style={styles.battleNameText}>{nameSlice(item.rightName)}</ContentText>
             </View>
             <View style={styles.progressBarContainer}>
                 {/* 왼쪽 그라데이션 진행 바 */}
-                {item.winner === 'left' ? (
+                {item.leftVote >= item.rightVote ? (
                     <LinearGradient
-                        colors={['#FF05FF', '#FF7A00']} // 승리한 쪽 색상
+                        colors={['#ffa6a6', '#FF6B6B']} // 승리한 쪽 색상
                         start={{ x: 0, y: 0 }} 
                         end={{ x: 1, y: 0 }} 
                         style={[
@@ -42,9 +43,9 @@ const BattleItemProgress: React.FC<BattleItemProgressProps> = ({ item, onPress, 
                 )}
 
                 {/* 오른쪽 그라데이션 진행 바 */}
-                {item.winner === 'right' ? (
+                {item.leftVote <= item.rightVote ? (
                 <LinearGradient
-                    colors={['#1950E5', '#680E7F']} // 승리한 쪽 색상
+                    colors={['#6FBAFF', '#c1e2ff']} // 승리한 쪽 색상
                     start={{ x: 0, y: 0 }} 
                     end={{ x: 1, y: 0 }} 
                     style={[
@@ -64,20 +65,20 @@ const BattleItemProgress: React.FC<BattleItemProgressProps> = ({ item, onPress, 
         
             <View style={styles.battleContent}>
                 <Image 
-                style={[
-                    styles.battleImage,
-                    item.myPick === 'left' && styles.pickedImage,
-                    item.myPick === 'right' && styles.unPickedImage
-                ]} 
-                source={{ uri: item.leftImage }} 
+                    style={[
+                        styles.battleImage,
+                        item.myPick === 'left' && styles.pickedImage,
+                        item.myPick === 'right' && styles.unPickedImage
+                    ]} 
+                    source={{ uri: item.leftImage }} 
                 />
                 <Image 
-                style={[
-                    styles.battleImage,
-                    item.myPick === 'left' && styles.unPickedImage,
-                    item.myPick === 'right' && styles.pickedImage
-                ]} 
-                source={{ uri: item.rightImage }} 
+                    style={[
+                        styles.battleImage,
+                        item.myPick === 'left' && styles.unPickedImage,
+                        item.myPick === 'right' && styles.pickedImage
+                    ]} 
+                    source={{ uri: item.rightImage }} 
                 />
             </View>
         </TouchableOpacity>
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
         height: 300,
     },
     pickedImage: {
-        borderColor: '#ABDEE6',
+        borderColor: 'rgba(255,209,102,0.8)',
         borderWidth: 3,
     },
     unPickedImage: {

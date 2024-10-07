@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Switch, StyleSheet, ScrollView, ImageBackground } from 'react-native'; 
 import { FlatList } from 'react-native-gesture-handler';
-import BattleIcon from '../assets/Icons/Battle_Icon.svg';
-import { TitleText } from '../components/CustomTexts';
+import SendIcon from '../assets/Icons/Send_Icon'
+
+import { TitleBoldText, ContentBoldText } from '../components/CustomTexts';
 import axios from 'axios';
 
 import BattleItemProgress from '../components/BattleItemProgress';
 import BattleItemComplete from '../components/BattleItemComplete';
+import LinearGradient from 'react-native-linear-gradient';
 
 type Battle = {
     battleId: number;
@@ -57,11 +59,11 @@ function Battle({ navigation }): React.JSX.Element {
   
     const selectCategory = (category: string) => {
         setSelectedCategory(category);
+        setSelectedSort('최신순');
     };
     const selectSort = (sort: string) => {
         setSelectedSort(sort);
     };
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
     const nameSlice = (name: string) => {
         if (name.length > 6) {
@@ -81,8 +83,8 @@ function Battle({ navigation }): React.JSX.Element {
                         "participantCount": 2,
                         "status": "IN_PROGRESS",
                         "startedAt": "2024-09-25T01:00:00",
-                        "leftImage": "https://placekitten.com/200/300",
-                        "rightImage": "https://placedog.net/500",
+                        "leftImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_1/img_1.png",
+                        "rightImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_1/img_10.png",
                         "myPick": null,
                         "leftName": "악질유저기무동현",
                         "rightName": "분탕장인손우혁"
@@ -116,11 +118,10 @@ function Battle({ navigation }): React.JSX.Element {
                         "leftImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_9/img_184930.png",
                         "rightImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_9/img_18493.png",
                         "myPick": "right",
-                        "leftName": "유저네임5",
-                        "rightName": "유저네임6",
-                        "leftVote": 49,
-                        "rightVote": 78,
-                        "winner": "right",
+                        "leftName": "악질유저기무동현사마",
+                        "rightName": "쌀선대원군",
+                        "leftVote": 50,
+                        "rightVote": 50,
                     },
                     {
                         "battleId": 4,
@@ -136,7 +137,6 @@ function Battle({ navigation }): React.JSX.Element {
                         "rightName": "유저네임8",
                         "leftVote": 35,
                         "rightVote": 15,
-                        "winner": "left",
                     }
                 ]
             }
@@ -168,12 +168,16 @@ function Battle({ navigation }): React.JSX.Element {
             <ScrollView style={styles.container}>
                 {/* 배틀 헤더 */}
                 <View style={styles.battleHeader}>
-                    <TitleText style={styles.battleHeaderText}>
+                    <TitleBoldText style={styles.battleHeaderText}>
                         Beyond U
-                    </TitleText>
+                    </TitleBoldText>
                 </View>
                 <TouchableOpacity style={styles.battleHeaderButton} onPress={() => navigation.navigate('Challenge')}>
-                    <BattleIcon/>
+                    {/* <BattleIcon/> */}
+                    <ContentBoldText
+                        style={styles.battleHeaderButtonText}
+                    >Challenge </ContentBoldText>
+                    <SendIcon width={20} height={20} />
                 </TouchableOpacity>
                 {/* 배틀 카테고리 */}
                 <View style={styles.battleTab}>
@@ -182,43 +186,60 @@ function Battle({ navigation }): React.JSX.Element {
                             style={styles.battleCategoryButton}
                             onPress={() => selectCategory('진행 중')}
                         >
-                            <Text
+                            <ContentBoldText
                                 style={[
                                     styles.battleCategoryButtonText,
                                     {
                                         color: selectedCategory === '진행 중' ? 'white' : 'gray',
                                         padding: selectedCategory === '진행 중' ? 5 : 0,
-                                        borderBottomWidth: selectedCategory === '진행 중' ? 3 : 0,
-                                        borderColor: selectedCategory === '진행 중' ? 'white' : 'transparent',
                                     },
                                 ]}
-                            >진행 중</Text>
+                            >
+                                진행 중
+                            </ContentBoldText>
+                            {selectedCategory === '진행 중' &&
+                                <LinearGradient
+                                    style={{
+                                        width: '63%',
+                                        alignSelf : 'center',
+                                        height: 3 
+                                    }}
+                                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                />
+                            }
                         </TouchableOpacity>
                         <TouchableOpacity 
                             style={styles.battleCategoryButton}
                             onPress={() => selectCategory('결과')}
                         >
-                            <Text
+                            <ContentBoldText
                                 style={[
                                     styles.battleCategoryButtonText,
                                     {
                                         color: selectedCategory === '결과' ? 'white' : 'gray',
                                         padding: selectedCategory === '결과' ? 5 : 0,
-                                        borderBottomWidth: selectedCategory === '결과' ? 3 : 0,
-                                        borderColor: selectedCategory === '결과' ? 'white' : 'transparent',
                                     },
                                 ]}
-                            >결과</Text>
+                            >
+                                결과
+                            </ContentBoldText>
+                            {selectedCategory === '결과' &&
+                                <LinearGradient
+                                    style={{
+                                        width: '40%',
+                                        alignSelf : 'center',
+                                        height: 3 
+                                    }}
+                                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
+                                    start={{ x: 0, y: 0 }}
+                                    end={{ x: 1, y: 0 }}
+                                />
+                            }
                         </TouchableOpacity>
                     </View>
                     <View style={styles.myBattle}>
-                        <Text style={styles.switchText}>My    </Text>
-                        <Switch
-                            trackColor={{ false: "#767577", true: "#81b0ff" }} // 트랙 색상 설정
-                            thumbColor={isEnabled ? "#ffffff" : "#ffffff"} // 스위치 원 색상 설정
-                            onValueChange={toggleSwitch} // 스위치가 변경될 때 호출되는 함수
-                            value={isEnabled} // 현재 스위치 상태
-                        />
                     </View>
                 </View>
                 {/* 배틀 정렬 */}
@@ -226,20 +247,33 @@ function Battle({ navigation }): React.JSX.Element {
                     <TouchableOpacity style={[
                                 styles.battleSortButton,
                                 {
-                                    backgroundColor: selectedSort === '최신순' ? 'white' : 'gray',
+                                    // backgroundColor: selectedSort === '최신순' ? '#5b5b5b' : '#6f6f6f',
+                                    
+                                    borderWidth: selectedSort === '최신순' ? 2 : 0,
                                 },
                             ]}
                             onPress={() => selectSort('최신순')}>
-                        <Text style={styles.battleSortButtonText}>최신순</Text>
+                            <ContentBoldText style={[
+                                styles.battleSortButtonText,
+                                {
+                                    color: selectedSort === '최신순' ? 'white' : 'gray'
+                                }
+                            ]}>최신순</ContentBoldText>
                     </TouchableOpacity>
                     <TouchableOpacity style={[
                                 styles.battleSortButton,
                                 {
-                                    backgroundColor: selectedSort === '인기순' ? 'white' : 'gray',
+                                    // backgroundColor: selectedSort === '인기순' ? '#5b5b5b' : '#6f6f6f',
+                                    borderWidth: selectedSort === '인기순' ? 2 : 0,
                                 },
                             ]}
                             onPress={() => selectSort('인기순')}>
-                        <Text style={styles.battleSortButtonText}>인기순</Text>
+                        <ContentBoldText style={[
+                            styles.battleSortButtonText,
+                            {
+                                color: selectedSort === '인기순' ? 'white' : 'gray'
+                            }
+                        ]}>인기순</ContentBoldText>
                     </TouchableOpacity>
                 </View>
                 {/* 배틀 목록 */}
@@ -284,33 +318,35 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 30,
+        marginTop: 40,
+        marginBottom: 30,
     },
     battleHeaderText: {
         color: 'white',
         fontSize: 40,
     },
     battleHeaderButton: {
-        backgroundColor: 'white',
+        backgroundColor: 'rgba(255, 255, 255, 0.45)',
+        width: 120,
+        height: 40,
         borderRadius: 10,
-        width: 80,
-        height: 50,
+        borderColor: 'white',
+        borderWidth: 2,
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'flex-end',
         marginRight: 20,
+        marginBottom: 10,
     },
     battleHeaderButtonText:{
-        fontSize: 20,
-        color: 'black',
-        fontWeight: 'bold',
+        fontSize: 16,
+        color: 'white',
     },
     battleTab:{
-        // backgroundColor: '#121212',
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginTop: 30,
+        marginTop: 10,
         borderBottomWidth: 1,
         borderColor: 'gray',
     },
@@ -319,15 +355,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     battleCategoryButton:{ 
-        width: 100,
-        height: 40,
+        width: '50%',
+        height: 45,
         justifyContent: 'center',
-        alignItems: 'center',
     },
     battleCategoryButtonText:{
         color: 'black',
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 25,
         textAlign: 'center',
     },
     battleSort: {
@@ -335,18 +369,20 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     battleSortButton: {
-        margin: 10,
-        borderRadius: 10,
-        width: 80,
-        height: 32,
+        marginTop: 15,
+        marginBottom: 5,
+        marginHorizontal: 5,
+        borderRadius: 22,
+        borderColor: 'white',
+        width: 70,
+        height: 37,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
     },
     battleSortButtonText: {
-        fontSize: 20,
-        color: 'black',
-        fontWeight: 'bold',
+        fontSize: 16,
+        color: 'white',
         textAlign: 'center',
         marginBottom: 2,
     },

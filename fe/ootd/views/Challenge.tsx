@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView, FlatList, ImageBackground } from 'react-native';
 import axios from 'axios';
-import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
-import GalleryButton from '../components/GalleryButton';
 import MyFashionButton from '../components/MyFashionButton';
+import { ContentText, ContentBoldText } from '../components/CustomTexts';
 
 function Challenge({ navigation, route }): React.JSX.Element {
     const selectedSrc = route.params?.selectedImage;
@@ -72,7 +71,7 @@ function Challenge({ navigation, route }): React.JSX.Element {
                     {selectedUser ? (
                         <View style={styles.selectedSection}>
                             <TouchableOpacity style={styles.selectedBar} onPress={() => setSelectedUser('')}>
-                                <Text style={styles.selectedText}>{selectedUser}</Text>
+                                <ContentBoldText style={styles.selectedText}>{selectedUser}</ContentBoldText>
                             </TouchableOpacity>
                         </View>
                     ) : (
@@ -111,7 +110,7 @@ function Challenge({ navigation, route }): React.JSX.Element {
                                             ]}
                                             onPress={() => setSelectedUser(item)}
                                         >
-                                            <Text style={styles.resultText}>{item}</Text>
+                                            <ContentText style={styles.resultText}>{item}</ContentText>
                                         </TouchableOpacity>
                                     ))}
                                 </View>
@@ -122,14 +121,14 @@ function Challenge({ navigation, route }): React.JSX.Element {
                 </ScrollView>
                 <View style={styles.buttonSection}>
                     <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
-                        <Text style={styles.buttonText}>Decline</Text>
+                        <ContentText style={styles.buttonText}>Cancle</ContentText>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={(selectedUser && selectedImage) ? styles.activeButton : styles.deactiveButton}
                         disabled={!(selectedUser && selectedImage)}
                         onPress={() => battleRequest(selectedUser, selectedImage)}           
                     >
-                        <Text style={(selectedUser && selectedImage) ? styles.buttonText : styles.deactiveButtonText}>Accept</Text>
+                        <ContentText style={(selectedUser && selectedImage) ? styles.buttonText : styles.deactiveButtonText}>Accept</ContentText>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -146,6 +145,7 @@ const styles = StyleSheet.create({
         flex: 1,
         // backgroundColor: '#121212',
         position: 'relative',
+
     },
     scrollContainer: {
         paddingBottom: 100, // 버튼 섹션 높이만큼 여백 추가
@@ -156,19 +156,21 @@ const styles = StyleSheet.create({
         marginVertical: 40,
     },
     selectedBar: {
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        width: 350,
+        width: 250,
         height: 60,
         borderRadius: 20,
         padding: 10,
+        backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        // borderColor: '#ffffff',
+        // borderWidth: 5,
     },
     selectedText: {
-        color: 'black',
+        color: 'white',
         fontSize: 20,
-        fontWeight: 'bold',
     },
     searchSection: {
         justifyContent: 'center',
@@ -194,10 +196,11 @@ const styles = StyleSheet.create({
         height: 60,
         color: 'white',
         fontSize: 20,
+        fontFamily: 'SUIT-Regular',
     },
     resultList: {
         width: 350,
-        // backgroundColor: '#262626',
+        backgroundColor: '#262626',
         marginTop: 10,
         position: 'absolute',
         zIndex: 1,
@@ -237,13 +240,13 @@ const styles = StyleSheet.create({
     buttonSection: {
         position: 'absolute',
         bottom: 0,
-        width: '100%',
+        width: '80%',
         height: 100,
-        // backgroundColor: '#121212',
         opacity: 0.8,
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
+        alignSelf: 'center',
         paddingVertical: 20,
     },
     button: {
@@ -251,7 +254,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 10,
-        borderWidth: 3,
+        borderWidth: 2,
         borderColor: 'white',
     },
     activeButton: {
@@ -259,14 +262,14 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 10,
-        borderWidth: 3,
+        borderWidth: 2,
         borderColor: 'white',
     },
     deactiveButton: {
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 10,
-        borderWidth: 3,
+        borderWidth: 2,
         borderColor: 'gray',
     },
     buttonText: {

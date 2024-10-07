@@ -19,6 +19,8 @@ import WishIcon from '../assets/Icons/Wish_Icon.svg';
 import PencilIcon from '../assets/Icons/Pencil_Icon.svg';
 import MyFashionIcon from '../assets/Icons/MyFashion_Icon.svg';
 import BattleIcon from '../assets/Icons/Battle_Icon.svg';
+import LinearGradient from 'react-native-linear-gradient';
+import { ContentBoldText } from '../components/CustomTexts';
 
 // 메인 페이지
 function ProfileView(): React.JSX.Element {
@@ -164,75 +166,36 @@ function ProfileView(): React.JSX.Element {
             <PencilIcon width={30} height={30} style={styles.pencil} />
           </TouchableOpacity>
 
-          <View style={styles.profileCategory}>
-            <View style={styles.iconContainer}>
-              <TouchableOpacity
-                style={styles.profileCategoryButton}
-                onPress={() => selectCategory('마이 패션')}
+        <View style={styles.profileCategory}>
+          <View style={styles.iconContainer}>
+            <TouchableOpacity
+              style={styles.profileCategoryButton}
+              onPress={() => selectCategory('마이 패션')}
+            >
+              <View
+                style={[
+                  styles.iconWrapper,
+                ]}
               >
-                <View
-                  style={[
-                    styles.iconWrapper,
-                    {
-                      borderBottomWidth: selectedCategory === '마이 패션' ? 3 : 0,
-                      borderColor: selectedCategory === '마이 패션' ? 'white' : 'transparent',
-                    },
-                  ]}
-                >
-                  <MyFashionIcon
-                    fill={selectedCategory === '마이 패션' ? 'white' : '#949494'}
-                    width={30}
-                    height={30}
+                <MyFashionIcon
+                  fill={selectedCategory === '마이 패션' ? 'white' : '#949494'}
+                  width={30}
+                  height={30}
+                />
+                {selectedCategory === '마이 패션' &&
+                  <LinearGradient
+                    style={{
+                      width: '63%',
+                      alignSelf : 'center',
+                      height: 3,
+                    }}
+                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
                   />
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.iconContainer}>
-              <TouchableOpacity
-                style={styles.profileCategoryButton}
-                onPress={() => selectCategory('마이 갤러리')}
-              >
-                <View
-                  style={[
-                    styles.iconWrapper,
-                    {
-                      borderBottomWidth: selectedCategory === '마이 갤러리' ? 3 : 0,
-                      borderColor: selectedCategory === '마이 갤러리' ? 'white' : 'transparent',
-                    },
-                  ]}
-                >
-                  <WishIcon
-                    fill={selectedCategory === '마이 갤러리' ? 'white' : '#949494'}
-                    width={30}
-                    height={30}
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.iconContainer}>
-              <TouchableOpacity
-                style={styles.profileCategoryButton}
-                onPress={() => selectCategory('마이 문철')}
-              >
-                <View
-                  style={[
-                    styles.iconWrapper,
-                    {
-                      borderBottomWidth: selectedCategory === '마이 문철' ? 3 : 0,
-                      borderColor: selectedCategory === '마이 문철' ? 'white' : 'transparent',
-                    },
-                  ]}
-                >
-                  <BattleIcon
-                    fill={selectedCategory === '마이 문철' ? 'white' : '#949494'}
-                    width={30}
-                    height={30}
-                  />
-                </View>
-              </TouchableOpacity>
-            </View>
+                }
+              </View>
+            </TouchableOpacity>
           </View>
           <View style={styles.profileSort}>
             {selectedCategory === '마이 패션' &&
@@ -251,39 +214,116 @@ function ProfileView(): React.JSX.Element {
                 </TouchableOpacity>
               ))}
 
-            {selectedCategory === '마이 갤러리' &&
-              ['최신순', '인기순'].map((sort) => (
-                <TouchableOpacity
-                  key={sort}
-                  style={[
-                    styles.profileSortButton,
-                    {
-                      backgroundColor: selectedSort === sort ? 'white' : 'gray',
-                    },
-                  ]}
-                  onPress={() => selectSort(sort)}
-                >
-                  <Text style={styles.profileSortButtonText}>{sort}</Text>
-                </TouchableOpacity>
-              ))}
+          <View style={styles.iconContainer}>
+            <TouchableOpacity
+              style={styles.profileCategoryButton}
+              onPress={() => selectCategory('마이 갤러리')}
+            >
+              <View
+                style={[
+                  styles.iconWrapper,
+                ]}
+              >
+                <WishIcon
+                  fill={selectedCategory === '마이 갤러리' ? 'white' : '#949494'}
+                  width={30}
+                  height={30}
+                />
+                {selectedCategory === '마이 갤러리' &&
+                  <LinearGradient
+                    style={{
+                      width: '63%',
+                      alignSelf : 'center',
+                      height: 3,
+                    }}
+                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                  />
+                }
+              </View>
+            </TouchableOpacity>
+          </View>
 
-            {selectedCategory === '마이 문철' &&
-              ['최신순', '투표 수'].map((sort) => (
-                <TouchableOpacity
-                  key={sort}
-                  style={[
-                    styles.profileSortButton,
-                    {
-                      backgroundColor: selectedSort === sort ? 'white' : 'gray',
-                    },
-                  ]}
-                  onPress={() => selectSort(sort)}
-                >
-                  <Text style={styles.profileSortButtonText}>{sort}</Text>
-                </TouchableOpacity>
-              ))}
+          <View style={styles.iconContainer}>
+            <TouchableOpacity
+              style={styles.profileCategoryButton}
+              onPress={() => selectCategory('마이 문철')}
+            >
+              <View
+                style={[
+                  styles.iconWrapper,
+                ]}
+              >
+                <BattleIcon
+                  fill={selectedCategory === '마이 문철' ? 'white' : '#949494'}
+                  width={30}
+                  height={30}
+                />
+                {selectedCategory === '마이 문철' &&
+                  <LinearGradient
+                    style={{
+                      width: '63%',
+                      alignSelf : 'center',
+                      height: 3,
+                    }}
+                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                  />
+                }
+              </View>
+            </TouchableOpacity>
           </View>
         </View>
+      <View style={styles.profileSort}>
+      {selectedCategory === '마이 패션' && ['최신순', '출전 수', '승리 수'].map((sort) => (
+        <TouchableOpacity
+          key={sort}
+          style={[
+            styles.profileSortButton,
+            {
+              borderWidth: selectedSort === sort ? 2 : 0,
+            },
+          ]}
+          onPress={() => selectSort(sort)}
+        >
+          <ContentBoldText style={styles.profileSortButtonText}>{sort}</ContentBoldText>
+        </TouchableOpacity>
+      ))}
+
+      {selectedCategory === '마이 갤러리' && ['최신순', '인기순'].map((sort) => (
+        <TouchableOpacity
+          key={sort}
+          style={[
+            styles.profileSortButton,
+            {
+              borderWidth: selectedSort === sort ? 2 : 0,
+            },
+          ]}
+          onPress={() => selectSort(sort)}
+        >
+          <ContentBoldText style={styles.profileSortButtonText}>{sort}</ContentBoldText>
+        </TouchableOpacity>
+      ))}
+
+      {selectedCategory === '마이 문철' && ['최신순', '투표 수'].map((sort) => (
+        <TouchableOpacity
+          key={sort}
+          style={[
+            styles.profileSortButton,
+            {
+              borderWidth: selectedSort === sort ? 2 : 0,
+            },
+          ]}
+          onPress={() => selectSort(sort)}
+        >
+          <ContentBoldText style={styles.profileSortButtonText}>{sort}</ContentBoldText>
+        </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+
       </ScrollView>
     </ImageBackground>
   );
@@ -374,20 +414,22 @@ const styles = StyleSheet.create({
     paddingLeft: 5,
   },
   profileSortButton: {
-    margin: 10,
-    borderRadius: 10,
-    width: 80,
-    height: 32,
+    marginTop: 15,
+    marginBottom: 5,
+    marginHorizontal: 5,
+    borderRadius: 22,
+    borderColor: 'white',
+    width: 70,
+    height: 37,
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
   },
   profileSortButtonText: {
-    fontSize: 20,
-    color: 'black',
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 2,
+      fontSize: 16,
+      color: 'white',
+      textAlign: 'center',
+      marginBottom: 2,
   },
   switchText: {
     color: 'white',
@@ -413,8 +455,8 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 60,
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
+    justifyContent: 'space-between',
+    marginBottom: 3,
   },
 });
 
