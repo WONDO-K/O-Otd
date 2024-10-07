@@ -37,10 +37,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         // 헤더에서 사용자 정보를 가져옴 (게이트웨이에서 전달됨)
         String userId = request.getHeader("X-User-ID");
-        String role = request.getHeader("X-User-Role");
-        log.info("사용자 정보: ID={}, Role={}", userId, role);
 
-        if (!StringUtils.hasText(userId) || !StringUtils.hasText(role)) {
+        log.info("사용자 정보: ID={}", userId);
+
+        if (!StringUtils.hasText(userId)) {
             log.info("유저 정보가 없습니다. 필터를 통과합니다.");
             filterChain.doFilter(request, response);
             return;

@@ -291,7 +291,6 @@ public Map<String, Object> kakaoRegisterOrLoginUser(String userEmail) {
 //        SecurityContextHolder.getContext().setAuthentication(authentication);
 
         response.setHeader("X-User-ID", String.valueOf(user.getId()));
-        response.setHeader("X-User-Role", String.valueOf(user.getRole()));
         // 액세스 토큰을 헤더에 추가
         response.setHeader("accessToken", token.getAccessToken());
 
@@ -302,11 +301,10 @@ public Map<String, Object> kakaoRegisterOrLoginUser(String userEmail) {
 
         // 로깅 추가: 헤더에 토큰 및 사용자 정보가 잘 담겼는지 확인
         log.info("응답 헤더에 설정된 X-User-ID: {}", response.getHeader("X-User-ID"));
-        log.info("응답 헤더에 설정된 X-User-Role: {}", response.getHeader("X-User-Role"));
         log.info("응답 헤더에 설정된 Access Token: {}", response.getHeader("accessToken"));
         log.info("응답 헤더에 설정된 Refresh Token: {}", response.getHeader("refreshToken"));
 
-        log.info("사용자 정보 추가: ID={}, Role={}", user.getId(), user.getRole());
+        log.info("사용자 정보 추가: ID={}", user.getId());
 
 
         return token;
