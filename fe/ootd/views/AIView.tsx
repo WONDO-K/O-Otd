@@ -150,23 +150,22 @@ function AIView(): React.JSX.Element {
             </View>
           </View>
         </Modal>
-
         <TouchableOpacity style={styles.uploadBox} onPress={toggleModal}>
           {photo && photo.assets ? (
             <Image 
               source={{ uri: photo.assets[0].uri }} 
               style={styles.uploadedImage} 
-              resizeMode="contain" // 이미지를 비율에 맞게 조정합니다.
+              resizeMode="cover"
             />
           ) : (
             <UploadIcon width={60} height={60} />
           )}
         </TouchableOpacity>
 
-        <ContentText style={styles.textContents}>
+        {/* <ContentText style={styles.textContents}>
           AI가 당신의 패션을 분석하고,{"\n"}
           유사한 스타일을 추천합니다.{"\n"}
-        </ContentText>
+        </ContentText> */}
 
         <View style={styles.btnContainer}>
           <TouchableOpacity
@@ -202,16 +201,15 @@ const styles = StyleSheet.create({
     fontSize: 40,
     textAlign: 'center',
     color: '#ffffff',
-    marginTop: 20,
+    marginTop: 40,
   },
   uploadBox: {
     width: "60%",
     height: "45%",
-    borderRadius: 10,
+    borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20,
-    marginBottom: 20,
+    marginVertical: 62,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
     borderColor: '#ffffff',
     borderWidth: 5,
@@ -242,7 +240,7 @@ const styles = StyleSheet.create({
   },
   btn: {
     borderColor: '#ffffff',
-    borderWidth: 1,
+    borderWidth: 2,
     padding: 10,
     width: 150,
     height: 50,

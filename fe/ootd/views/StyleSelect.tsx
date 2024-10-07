@@ -149,8 +149,7 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
                 {/* 카테고리 선택 버튼 */}
                 <View style={styles.categoryContainer}>
                     <TouchableOpacity onPress={() => {
-                        setSelectedCategory('myFashion')
-                        setSelectedSort('최신순')
+                        updateCategory('myFashion')
                     }}>
                         <MyFashionIcon 
                             width={30} 
@@ -159,8 +158,7 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
                         />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => {
-                        setSelectedCategory('myCollection')
-                        setSelectedSort('최신순')
+                        updateCategory('myCollection')
                     }}>
                         <WishIcon 
                             width={30} 
@@ -277,17 +275,17 @@ const styles = StyleSheet.create({
     battleSortButton: {
         marginTop: 15,
         marginBottom: 5,
-        marginHorizontal: 7,
+        marginHorizontal: 5,
         borderRadius: 22,
         borderColor: 'white',
-        width: 90,
-        height: 43,
+        width: 70,
+        height: 37,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
     },
     battleSortButtonText: {
-        fontSize: 20,
+        fontSize: 16,
         color: 'white',
     },
 });

@@ -21,7 +21,6 @@ function BattleResult({ navigation, route }): React.JSX.Element {
         rightName: '',
         leftVote: 0,
         rightVote: 0,
-        winner: '',
     });
 
     useEffect(() => {

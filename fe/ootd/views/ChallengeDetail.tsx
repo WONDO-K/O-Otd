@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 10,
-        borderWidth: 3,
+        borderWidth: 2,
         borderColor: 'white',
     },
     activeButton: {
@@ -212,14 +212,14 @@ const styles = StyleSheet.create({
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 10,
-        borderWidth: 3,
+        borderWidth: 2,
         borderColor: 'white',
     },
     deactiveButton: {
         paddingVertical: 10,
         paddingHorizontal: 20,
         borderRadius: 10,
-        borderWidth: 3,
+        borderWidth: 2,
         borderColor: 'gray',
     },
     buttonText: {

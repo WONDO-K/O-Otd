@@ -93,8 +93,6 @@ function MainView(): React.JSX.Element {
       style={styles.background} // 배경 스타일 설정
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('LoginView')}>
-        </TouchableOpacity>
         <Carousel openModal={openModal} />
         <View style={styles.searchBar}>
           <Image source={require('../assets/Images/searchIcon.png')} style={styles.searchIcon} />

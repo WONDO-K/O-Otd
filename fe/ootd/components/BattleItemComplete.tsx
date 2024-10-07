@@ -23,7 +23,7 @@ const BattleItemProgress: React.FC<BattleItemProgressProps> = ({ item, onPress, 
             </View>
             <View style={styles.progressBarContainer}>
                 {/* 왼쪽 그라데이션 진행 바 */}
-                {item.winner === 'left' ? (
+                {item.leftVote >= item.rightVote ? (
                     <LinearGradient
                         colors={['#ffa6a6', '#FF6B6B']} // 승리한 쪽 색상
                         start={{ x: 0, y: 0 }} 
@@ -43,7 +43,7 @@ const BattleItemProgress: React.FC<BattleItemProgressProps> = ({ item, onPress, 
                 )}
 
                 {/* 오른쪽 그라데이션 진행 바 */}
-                {item.winner === 'right' ? (
+                {item.leftVote <= item.rightVote ? (
                 <LinearGradient
                     colors={['#6FBAFF', '#c1e2ff']} // 승리한 쪽 색상
                     start={{ x: 0, y: 0 }} 

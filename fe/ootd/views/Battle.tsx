@@ -1,11 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Switch, StyleSheet, ScrollView, ImageBackground } from 'react-native'; 
 import { FlatList } from 'react-native-gesture-handler';
-// import BattleIcon from '../assets/Icons/Battle_Icon.svg';
-import BattleIcon from '../assets/Icons/Battle_Icon1.svg';
-// import BattleIcon from '../assets/Icons/Battle_Icon2.svg';
-// import BattleIcon from '../assets/Icons/Battle_Icon3.svg';
-// import BattleIcon from '../assets/Icons/Battle_Icon4.svg';
+import SendIcon from '../assets/Icons/Send_Icon'
+
 import { TitleBoldText, ContentBoldText } from '../components/CustomTexts';
 import axios from 'axios';
 
@@ -123,9 +120,8 @@ function Battle({ navigation }): React.JSX.Element {
                         "myPick": "right",
                         "leftName": "악질유저기무동현사마",
                         "rightName": "쌀선대원군",
-                        "leftVote": 49,
-                        "rightVote": 78,
-                        "winner": "right",
+                        "leftVote": 50,
+                        "rightVote": 50,
                     },
                     {
                         "battleId": 4,
@@ -141,7 +137,6 @@ function Battle({ navigation }): React.JSX.Element {
                         "rightName": "유저네임8",
                         "leftVote": 35,
                         "rightVote": 15,
-                        "winner": "left",
                     }
                 ]
             }
@@ -180,11 +175,9 @@ function Battle({ navigation }): React.JSX.Element {
                 <TouchableOpacity style={styles.battleHeaderButton} onPress={() => navigation.navigate('Challenge')}>
                     {/* <BattleIcon/> */}
                     <ContentBoldText
-                        style={{
-                            fontSize: 16,
-                            color: 'blcak',
-                        }}
-                    >대전 신청</ContentBoldText>
+                        style={styles.battleHeaderButtonText}
+                    >Challenge </ContentBoldText>
+                    <SendIcon width={20} height={20} />
                 </TouchableOpacity>
                 {/* 배틀 카테고리 */}
                 <View style={styles.battleTab}>
@@ -325,27 +318,30 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 30,
+        marginTop: 40,
+        marginBottom: 30,
     },
     battleHeaderText: {
         color: 'white',
         fontSize: 40,
     },
     battleHeaderButton: {
-        backgroundColor: 'white',
-        // backgroundColor: '#FFFFFF',
+        backgroundColor: 'rgba(255, 255, 255, 0.45)',
+        width: 120,
+        height: 40,
         borderRadius: 10,
-        width: 80,
-        height: 50,
+        borderColor: 'white',
+        borderWidth: 2,
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'flex-end',
         marginRight: 20,
+        marginBottom: 10,
     },
     battleHeaderButtonText:{
-        fontSize: 20,
-        color: 'black',
-        fontWeight: 'bold',
+        fontSize: 16,
+        color: 'white',
     },
     battleTab:{
         display: 'flex',
@@ -375,17 +371,17 @@ const styles = StyleSheet.create({
     battleSortButton: {
         marginTop: 15,
         marginBottom: 5,
-        marginHorizontal: 7,
+        marginHorizontal: 5,
         borderRadius: 22,
         borderColor: 'white',
-        width: 90,
-        height: 43,
+        width: 70,
+        height: 37,
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
     },
     battleSortButtonText: {
-        fontSize: 20,
+        fontSize: 16,
         color: 'white',
         textAlign: 'center',
         marginBottom: 2,
