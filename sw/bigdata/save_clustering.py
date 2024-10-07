@@ -1,5 +1,4 @@
 import numpy as np
-import umap
 import joblib
 import pandas as pd
 import os
@@ -10,12 +9,11 @@ from pyspark.ml.clustering import KMeans as SparkKMeans
 from pyspark.ml.linalg import Vectors
 from sklearn.cluster import SpectralClustering
 from sklearn.metrics import silhouette_score
-from settings import DATA_FILE, CLUSTER_CENTERS_FILE, CLUSTER_DATA_DIR, UMAP_MODEL_FILE, n_clusters
+from settings import DATA_FILE, CLUSTER_CENTERS_FILE, CLUSTER_DATA_DIR, n_clusters
 
 # Saving all data in the cluster_data directory, including original data vectors
 data_file_path = os.path.join(CLUSTER_DATA_DIR, DATA_FILE)
 cluster_centers_file_path = os.path.join(CLUSTER_DATA_DIR, CLUSTER_CENTERS_FILE)
-umap_model_file_path = os.path.join(CLUSTER_DATA_DIR, UMAP_MODEL_FILE)
 
 # Initialize Spark session
 spark = SparkSession.builder.appName("ClusteringApp").getOrCreate()
@@ -31,25 +29,17 @@ def compute_cluster_centers(embeddings, labels, n_clusters):
             cluster_centers[i] = cluster_data.mean(axis=0)
     return cluster_centers
 
-def save_cluster_data_with_indices(embeddings, labels, data_vectors, n_clusters, directory):
+def save_cluster_data_with_indices(labels, data_vectors, n_clusters, directory):
     """
     Save the cluster data along with their indices in separate files for each cluster.
     """
     if not os.path.exists(directory):
         os.makedirs(directory)
     for i in range(n_clusters):
-        cluster_data = embeddings[np.array(labels) == i]
         cluster_indices = np.where(np.array(labels) == i)[0]  # Original indices of points in each cluster
         cluster_points = data_vectors[labels == i]  # Original data points of each cluster
-
-        np.savez(os.path.join(directory, f'cluster_{i}_data_with_indices.npz'),
-                 cluster_data=cluster_data, cluster_indices=cluster_indices, original_data=cluster_points)
-
-def save_umap_model(umap_model, filename):
-    """
-    Save the UMAP model using joblib.
-    """
-    joblib.dump(umap_model, filename, compress=3)
+        np.savez(os.path.join(directory, f'cluster_{i}_data_with_points.npz'),
+                cluster_indices=cluster_indices, original_data=cluster_points)
 
 def format_time(seconds):
     """
@@ -74,10 +64,13 @@ def run_kmeans(features, n_clusters, spark):
     """
     Run KMeans clustering and return silhouette score.
     """
+    # Ensure features are in the correct format
     features_df = spark.createDataFrame([(Vectors.dense(features[i]),) for i in range(len(features))], ["features"])
     kmeans = SparkKMeans(k=n_clusters, seed=42)
     kmeans_model = kmeans.fit(features_df)
     kmeans_labels = kmeans_model.transform(features_df).select("prediction").rdd.flatMap(lambda x: x).collect()
+    
+    # Calculate silhouette score for KMeans
     silhouette_avg = silhouette_score(features, kmeans_labels)
     return kmeans_model, kmeans_labels, silhouette_avg
 
@@ -124,6 +117,10 @@ def find_best_clustering(features, n_clusters, spark, f):
     
     return best_method
 
+# 'cluster_data' 디렉토리가 존재하는지 확인
+if not os.path.exists(CLUSTER_DATA_DIR):
+    os.makedirs(CLUSTER_DATA_DIR)
+
 # Main execution
 if __name__ == "__main__":
     # Start overall time measurement
@@ -166,30 +163,19 @@ if __name__ == "__main__":
         else:
             spectral_labels, _ = run_spectral_clustering(features, n_clusters)
             labels = spectral_labels
-
+        
         # Step 4: Compute cluster centers
         f.write('Computing cluster centers...\n')
         print('Computing cluster centers...')
         cluster_centers = compute_cluster_centers(features, labels, n_clusters)
 
-        # Step 5: Perform UMAP dimensionality reduction on the entire dataset
-        f.write('Performing UMAP dimensionality reduction on the entire dataset...\n')
-        print('Performing UMAP dimensionality reduction on the entire dataset...')
-        umap_reducer = umap.UMAP(n_neighbors=15, min_dist=0.1, n_components=3, random_state=42)
-        umap_embeddings = umap_reducer.fit_transform(features)
-
-        # Save the UMAP model
-        save_umap_model(umap_reducer, umap_model_file_path)
-        f.write(f'UMAP model saved in: {umap_model_file_path}\n')
-        print(f'UMAP model saved in: {umap_model_file_path}')
-
-        # Step 6: Save the cluster data and centers
+        # Step 5: Save the cluster data and centers
         f.write('Saving cluster data and centers...\n')
         print('Saving cluster data and centers...')
 
-        np.savez(data_file_path, umap_embeddings=umap_embeddings, cluster_labels=labels, original_data=features)
+        np.savez(data_file_path, cluster_labels=labels, original_data=features)
         np.save(cluster_centers_file_path, cluster_centers)
-        save_cluster_data_with_indices(umap_embeddings, labels, features, n_clusters, CLUSTER_DATA_DIR)
+        save_cluster_data_with_indices(labels, features, n_clusters, CLUSTER_DATA_DIR)
 
         f.write('Data saved.\n')
         print('Data saved.')
