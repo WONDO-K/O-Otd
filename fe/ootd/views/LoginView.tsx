@@ -59,7 +59,31 @@ function LoginView(): React.JSX.Element {
     navigation.navigate('MainView');
   };
 
-  // 닉네임 제출 핸들러
+  // 닉네임 초기설정 핸들러
+  const handleNicknameSetting = async (text: string) => {
+    try {
+      await axios.post(
+        `${API_URL}/user/setmyinfo`,
+        {
+          nickname: text,
+        },
+        {
+          headers: {
+            accessToken: accessToken,
+            userId: userId,
+          },
+        }
+      );
+      setIsSuccess(true);
+      navigateToMainView(); // 닉네임 설정 후 메인 뷰로 이동
+    } catch (error) {
+      console.error('닉네임 설정 중 오류 발생:', error);
+      setErrorMessage('* 닉네임 설정에 실패했습니다.');
+      triggerShake();
+    }
+  };
+
+  // 닉네임 중복확인 핸들러
   const handleNicknameSubmit = async () => {
     try {
       const response = await axios.post('API_요청_주소', {

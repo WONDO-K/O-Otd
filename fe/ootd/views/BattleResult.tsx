@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Image, View, Text, StyleSheet, Touchable, TouchableOpacity, ImageBackground } from 'react-native';
 import Svg, { Defs, LinearGradient, Stop, Circle } from 'react-native-svg';
 import { ContentText, ContentBoldText } from '../components/CustomTexts';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 function BattleResult({ navigation, route }): React.JSX.Element {
     
@@ -64,20 +65,41 @@ function BattleResult({ navigation, route }): React.JSX.Element {
 
                 <View style={styles.battleResult}>
                     <View style={styles.resultGraph}>
+                        <AnimatedCircularProgress
+                            size={size}
+                            width={strokeWidth}
+                            fill={rightPercentage} // 전체 배경을 채움
+                            tintColor="#98CEFF" // 오른쪽 진행률의 색상
+                            backgroundColor="transparent" // 투명 배경
+                            rotation={0} // 기준점(12시 방향)에서 시작
+                            duration={1000}
+                        />
+                        <AnimatedCircularProgress
+                            size={size}
+                            width={strokeWidth}
+                            fill={leftPercentage} // 왼쪽 진행률의 값
+                            tintColor="#ffa6a6" // 왼쪽 진행률의 색상
+                            backgroundColor="transparent" // 투명 배경
+                            rotation={0}
+                            duration={1000}
+                            style={{
+                                position: 'absolute', // 같은 위치에 겹쳐 그리기
+                                transform: [{ scaleX: -1 }],
+                            }}
+                        />
+                    </View>
+                    {/* <View style={styles.resultGraph}>
                         <Svg width={size} height={size}>
                             <Defs>
-                                {/* 왼쪽 배경 색상 */}
                                 <LinearGradient id="gradLeft" x1="0%" y1="0%" x2="100%" y2="0%">
                                     <Stop offset="0%" stopColor="#ffa6a6" />
                                     <Stop offset="100%" stopColor="#ff8080" />
                                 </LinearGradient>
-                                {/* 오른쪽 배경 색상 */}
                                 <LinearGradient id="gradRight" x1="0%" y1="0%" x2="100%" y2="0%">
                                     <Stop offset="0%" stopColor="#98CEFF" />
                                     <Stop offset="100%" stopColor="#c1e2ff" />
                                 </LinearGradient>
                             </Defs>
-                            {/* 왼쪽 사용자 투표 결과 */}
                             <Circle
                                 stroke="url(#gradLeft)"
                                 cx={size / 2}
@@ -91,7 +113,6 @@ function BattleResult({ navigation, route }): React.JSX.Element {
                                 originY={size / 2}
                                 fill="transparent"
                             />
-                            {/* 오른쪽 사용자 투표 결과 */}
                             <Circle
                                 stroke="url(#gradRight)"
                                 cx={size / 2}
@@ -106,7 +127,7 @@ function BattleResult({ navigation, route }): React.JSX.Element {
                                 fill="transparent"
                             />
                         </Svg>
-                    </View>
+                    </View> */}
                     <View style={styles.resultLog}>
                         <ContentText style={styles.allVoteCount}>총 투표 수 : {item.leftVote + item.rightVote}</ContentText>
                         <View style={styles.resultLegend}>
