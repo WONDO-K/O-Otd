@@ -324,33 +324,55 @@ public class BattleServiceImpl implements BattleService {
     }
 
     @Override
-    public List<BattleDto> getActiveBattlesByRecent() {
+    public List<BattleDto> getActiveBattlesByRecent(Long userId) {
         List<Battle> battles = battleRepository.findByStatusOrderByCreatedAtDesc(BattleStatus.ACTIVE);
         List<BattleDto> battleDtos = battles.stream()
-                .map(battleMapper::toDto)
+                .map(battle -> toDtoWithUserVote(battle, userId))
                 .collect(Collectors.toList());
-        log.info("ACTIVE 상태의 최신 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
+
+        log.info("사용자 ID {}의 ACTIVE 상태의 최신 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", userId, battleDtos.size());
         return battleDtos;
     }
 
     @Override
-    public List<BattleDto> getActiveBattlesByVote() {
+    public List<BattleDto> getActiveBattlesByVote(Long userId) {
         List<Battle> battles = battleRepository.findByStatusOrderByTotalVotesDesc(BattleStatus.ACTIVE);
         List<BattleDto> battleDtos = battles.stream()
-                .map(battleMapper::toDto)
+                .map(battle -> toDtoWithUserVote(battle, userId))
                 .collect(Collectors.toList());
-        log.info("ACTIVE 상태의 총 투표수가 많은 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
+
+        log.info("사용자 ID {}의 ACTIVE 상태의 총 투표수가 많은 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", userId, battleDtos.size());
         return battleDtos;
     }
 
     @Override
-    public List<BattleDto> getCompletedBattlesByCompletionTime() {
+    public List<BattleDto> getCompletedBattlesByCompletionTime(Long userId) {
         List<Battle> battles = battleRepository.findByStatusOrderByExpiresAtDesc(BattleStatus.COMPLETED);
         List<BattleDto> battleDtos = battles.stream()
-                .map(battleMapper::toDto)
+                .map(battle -> toDtoWithUserVote(battle, userId))
                 .collect(Collectors.toList());
-        log.info("COMPLETE 상태의 완료순 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
+
+        log.info("사용자 ID {}의 COMPLETE 상태의 완료순 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", userId, battleDtos.size());
         return battleDtos;
+    }
+
+    @Override
+    public List<BattleDto> getCompletedBattlesByVote(Long userId) {
+        List<Battle> battles = battleRepository.findByStatusOrderByTotalVotesDesc(BattleStatus.COMPLETED);
+        List<BattleDto> battleDtos = battles.stream()
+                .map(battle -> toDtoWithUserVote(battle, userId))
+                .collect(Collectors.toList());
+
+        log.info("사용자 ID {}의 COMPLETE 상태의 총 투표수가 많은 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", userId, battleDtos.size());
+        return battleDtos;
+    }
+    private BattleDto toDtoWithUserVote(Battle battle, Long userId) {
+        BattleDto dto = battleMapper.toDto(battle);
+        Vote vote = voteRepository.findByBattleIdAndUserId(battle.getId(), userId);
+        if (vote != null) {
+            dto.setMyPickUserId(vote.getVotedFor());
+        }
+        return dto;
     }
 
     /**
@@ -362,18 +384,20 @@ public class BattleServiceImpl implements BattleService {
     public List<BattleDto> getUserBattles(Long userId) {
         // 하나의 userId로 신청자 또는 수신자로 검색
         List<Battle> battles = battleRepository.findByRequesterIdOrResponderId(userId);
-        List<BattleDto> battleDtos = battles.stream().map(battleMapper::toDto).collect(Collectors.toList());
+
+        // 각 배틀마다 사용자가 투표한 내역 조회 및 설정
+        List<BattleDto> battleDtos = battles.stream().map(battle -> {
+            BattleDto dto = battleMapper.toDto(battle);
+            Vote vote = voteRepository.findByBattleIdAndUserId(battle.getId(), userId);
+            if (vote != null) {
+                dto.setMyPickUserId(vote.getVotedFor());
+            }
+            return dto;
+        }).collect(Collectors.toList());
+
         log.info("사용자 ID {}의 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", userId, battleDtos.size());
         return battleDtos;
     }
 
-    @Override
-    public List<BattleDto> getCompletedBattlesByVote() {
-        List<Battle> battles = battleRepository.findByStatusOrderByTotalVotesDesc(BattleStatus.COMPLETED);
-        List<BattleDto> battleDtos = battles.stream()
-                .map(battleMapper::toDto)
-                .collect(Collectors.toList());
-        log.info("COMPLETE 상태의 총 투표수가 많은 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
-        return battleDtos;
-    }
+
 }

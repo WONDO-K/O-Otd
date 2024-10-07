@@ -23,16 +23,19 @@ public interface BattleService {
     BattleResponseDto handleBattleResponse(BattleResponseRequestDto responseDto, Long battleId);
 
     // 1. ACTIVE 상태인 배틀 리스트 최신순 조회
-    List<BattleDto> getActiveBattlesByRecent();
+    List<BattleDto> getActiveBattlesByRecent(Long userId);
 
     // 2. ACTIVE 상태인 배틀 리스트 투표순 조회
-    List<BattleDto> getActiveBattlesByVote();
+    List<BattleDto> getActiveBattlesByVote(Long userId);
 
     // 3. COMPLETE 상태인 배틀 리스트 완료순 조회
-    List<BattleDto> getCompletedBattlesByCompletionTime();
+    List<BattleDto> getCompletedBattlesByCompletionTime(Long userId);
+
+    // 4. COMPLETE 상태인 배틀 리스트 투표순 조회
+    List<BattleDto> getCompletedBattlesByVote(Long userId);
 
     // 특정 사용자의 배틀 리스트 조회 (신청자 또는 수신자)
     List<BattleDto> getUserBattles(Long userId);
 
-    List<BattleDto> getCompletedBattlesByVote();
+
 }

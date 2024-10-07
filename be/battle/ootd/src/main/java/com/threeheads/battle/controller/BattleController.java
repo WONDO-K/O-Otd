@@ -78,37 +78,37 @@ public class BattleController {
     /**
      * 1. ACTIVE 상태인 배틀 리스트 최신순 조회
      */
-    @GetMapping("/list/active/recent")
+    @GetMapping("/list/active/recent/{userId}")
     @Operation(summary = "ACTIVE 배틀 리스트 최신순 조회", description = "ACTIVE 상태인 배틀을 생성 시간 기준 최신순으로 조회합니다.")
-    public ResponseEntity<List<BattleDto>> getActiveBattlesByRecent() {
-        List<BattleDto> battles = battleService.getActiveBattlesByRecent();
+    public ResponseEntity<List<BattleDto>> getActiveBattlesByRecent(@PathVariable Long userId) {
+        List<BattleDto> battles = battleService.getActiveBattlesByRecent(userId);
         return ResponseEntity.ok(battles);
     }
 
     /**
      * 2. ACTIVE 상태인 배틀 리스트 투표순 조회
      */
-    @GetMapping("/list/active/popular")
+    @GetMapping("/list/active/popular/{userId}")
     @Operation(summary = "ACTIVE 배틀 리스트 투표순 조회", description = "ACTIVE 상태인 배틀을 투표 수 기준 내림차순으로 조회합니다.")
-    public ResponseEntity<List<BattleDto>> getActiveBattlesByVote() {
-        List<BattleDto> battles = battleService.getActiveBattlesByVote();
+    public ResponseEntity<List<BattleDto>> getActiveBattlesByVote(@PathVariable Long userId) {
+        List<BattleDto> battles = battleService.getActiveBattlesByVote(userId);
         return ResponseEntity.ok(battles);
     }
 
     /**
      * 3. COMPLETE 상태인 배틀 리스트 완료순 조회
      */
-    @GetMapping("/list/completed/recent")
+    @GetMapping("/list/completed/recent/{userId}")
     @Operation(summary = "COMPLETE 배틀 리스트 완료순 조회", description = "COMPLETE 상태인 배틀을 완료 시간 기준 내림차순으로 조회합니다.")
-    public ResponseEntity<List<BattleDto>> getCompletedBattlesByCompletionTime() {
-        List<BattleDto> battles = battleService.getCompletedBattlesByCompletionTime();
+    public ResponseEntity<List<BattleDto>> getCompletedBattlesByCompletionTime(@PathVariable Long userId) {
+        List<BattleDto> battles = battleService.getCompletedBattlesByCompletionTime(userId);
         return ResponseEntity.ok(battles);
     }
 
-    @GetMapping("/list/completed/popular")
+    @GetMapping("/list/completed/popular/{userId}")
     @Operation(summary = "COMPLETE 배틀 리스트 투표순 조회", description = "COMPLETE 상태인 배틀을 투표 수 기준 내림차순으로 조회합니다.")
-    public ResponseEntity<List<BattleDto>> getCompletedBattlesByVote() {
-        List<BattleDto> battles = battleService.getCompletedBattlesByVote();
+    public ResponseEntity<List<BattleDto>> getCompletedBattlesByVote(@PathVariable Long userId) {
+        List<BattleDto> battles = battleService.getCompletedBattlesByVote(userId);
         return ResponseEntity.ok(battles);
     }
 
