@@ -18,8 +18,9 @@ public interface BattleRepository extends JpaRepository<Battle, Long> {
     // ACTIVE 상태인 배틀 목록을 생성 시간 기준 내림차순으로 조회
     List<Battle> findByStatusOrderByCreatedAtDesc(BattleStatus status);
 
-    // ACTIVE 상태인 배틀 목록을 투표 수 기준 내림차순으로 조회
-    List<Battle> findByStatusOrderByRequesterVotesDescResponderVotesDesc(BattleStatus status);
+    // 투표수 합계를 기준으로 내림차순 정렬
+    @Query("SELECT b FROM Battle b WHERE b.status = :status ORDER BY (b.requesterVotes + b.responderVotes) DESC")
+    List<Battle> findByStatusOrderByTotalVotesDesc(@Param("status") BattleStatus status);
 
     // COMPLETE 상태인 배틀 목록을 완료 시간 기준 내림차순으로 조회
     List<Battle> findByStatusOrderByExpiresAtDesc(BattleStatus status);

@@ -16,10 +16,12 @@ import com.threeheads.battle.repository.BattleRepository;
 import com.threeheads.battle.repository.VoteRepository;
 import com.threeheads.battle.service.BattleService;
 import com.threeheads.battle.service.NotificationService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -33,7 +35,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class BattleServiceImpl implements BattleService {
 
-    private static final Logger logger = LoggerFactory.getLogger(BattleServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(BattleServiceImpl.class);
 
     private final BattleRepository battleRepository;
     private final VoteRepository voteRepository;
@@ -70,7 +72,7 @@ public class BattleServiceImpl implements BattleService {
                 .senderNickname(battle.getRequesterName()) // 보낸 사람 닉네임 반환
                 .battleId(battle.getId())
                 .title("새로운 배틀 요청")
-                .message("님이 새로운 배틀을 신청했습니다.")
+                .message(battle.getRequesterName() + " 님이 배틀을 요청했습니다.")
                 .timestamp(LocalDateTime.now())
                 .build();
         notificationService.sendNotification(battle.getResponderId(), notification);
@@ -79,7 +81,7 @@ public class BattleServiceImpl implements BattleService {
         scheduleBattleCompletion(battle);
 
         // 저장된 배틀 정보를 기반으로 BattleDto 생성 및 반환
-        logger.info("배틀 ID {}가 생성되었습니다.", battle.getId());
+        log.info("배틀 ID {}가 생성되었습니다.", battle.getId());
         return battleMapper.toDto(battle);
     }
 
@@ -106,10 +108,10 @@ public class BattleServiceImpl implements BattleService {
             scheduler.scheduleJob(jobDetail, trigger);
 
             // 로그 출력
-            logger.info("배틀 ID {}에 대해 완료 작업이 스케줄링되었습니다. 만료 시간: {}", battle.getId(), battle.getExpiresAt());
+            log.info("배틀 ID {}에 대해 완료 작업이 스케줄링되었습니다. 만료 시간: {}", battle.getId(), battle.getExpiresAt());
 
         } catch (SchedulerException e) {
-            logger.error("배틀 ID {}의 완료 작업 스케줄링 중 오류 발생: {}", battle.getId(), e.getMessage(), e);
+            log.error("배틀 ID {}의 완료 작업 스케줄링 중 오류 발생: {}", battle.getId(), e.getMessage(), e);
         }
     }
 
@@ -126,84 +128,16 @@ public class BattleServiceImpl implements BattleService {
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 배틀 ID입니다: " + battleId));
 
         // 배틀 상태가 PENDING인지 확인
-        if (battle.getStatus() != BattleStatus.PENDING) {
-            throw new IllegalStateException("현재 상태에서는 배틀에 응답할 수 없습니다.");
-        }
+        validateBattleStatus(battle);
 
         // 수신자만 응답할 수 있도록 검증
-        if (!battle.getResponderId().equals(responseDto.getUserId())) {
-            throw new SecurityException("해당 배틀에 응답할 권한이 없습니다.");
-        }
+        validateResponder(battle, responseDto.getUserId());
 
         // 상태에 따른 처리
         if (responseDto.getStatus() == BattleStatus.ACTIVE) {
-            // 배틀 수락 처리
-            battle.setStatus(BattleStatus.ACTIVE); // ACTIVE 상태로 변경
-            battle.setResponderName(responseDto.getResponderName());  // 수신자 이름 설정
-            battle.setResponderImageUrl(responseDto.getResponderImage());   // 수신자 이미지 설정
-            battle.setActiveAt(LocalDateTime.now()); // ACTIVE 상태로 변경된 시간 설정
-            battle.setExpiresAt(LocalDateTime.now().plusDays(1)); // 하루의 유효기간 설정
-
-            // 배틀 수락 알림
-            NotificationDto acceptNotification = NotificationDto.builder()
-                    .battleId(battle.getId())
-                    .userId(battle.getRequesterId())
-                    .senderId(battle.getResponderId())
-                    .senderNickname(battle.getResponderName()) // 보낸 사람 닉네임 반환
-                    .title("배틀 수락")
-                    .message(battle.getResponderName() + " 님과의 배틀이 수락되었습니다.")
-                    .timestamp(LocalDateTime.now())
-                    .isRead(false)
-                    .build();
-            notificationService.sendNotification(battle.getRequesterId(), acceptNotification);
-
-            NotificationDto startNotification = NotificationDto.builder()
-                    .battleId(battle.getId())
-                    .userId(battle.getResponderId())
-                    .senderId(battle.getRequesterId())
-                    .senderNickname(battle.getRequesterName()) // 보낸 사람 닉네임 반환
-                    .title("배틀 시작")
-                    .message(battle.getRequesterName() + " 님과의 배틀이 시작되었습니다!")
-                    .timestamp(LocalDateTime.now())
-                    .isRead(false)
-                    .build();
-            notificationService.sendNotification(battle.getResponderId(), startNotification);
-
-            // Quartz Job 재스케줄링: 만료 시간을 1주일 후로 변경
-            rescheduleBattleCompletion(battle);
-
-            logger.info("배틀 ID {}가 ACTIVE 상태로 변경되었습니다. 만료 시간: {}", battle.getId(), battle.getExpiresAt());
-
+            handleActiveBattleResponse(battle, responseDto);
         } else if (responseDto.getStatus() == BattleStatus.CANCELED) {
-            // 배틀 거절 처리
-            battle.setStatus(BattleStatus.CANCELED);
-            battleRepository.save(battle);
-            // 배틀 거절 알림
-            NotificationDto cancelNotification = NotificationDto.builder()
-                    .userId(battle.getRequesterId())
-                    .senderId(battle.getResponderId())
-                    .senderNickname(battle.getResponderName()) // 보낸 사람 닉네임 반환
-                    .battleId(battle.getId())
-                    .title("배틀 거절")
-                    .message(battle.getResponderName() + " 님이 배틀을 거절했습니다.")
-                    .timestamp(LocalDateTime.now())
-                    .isRead(false)
-                    .build();
-            notificationService.sendNotification(battle.getRequesterId(), cancelNotification);
-
-            NotificationDto cancelResponderNotification = NotificationDto.builder()
-                    .userId(battle.getResponderId())
-                    .senderId(battle.getRequesterId())
-                    .senderNickname(battle.getRequesterName()) // 보낸 사람 닉네임 반환
-                    .battleId(battle.getId())
-                    .title("배틀 거절")
-                    .message(battle.getRequesterName() + " 님과의 배틀이 거절되었습니다.")
-                    .timestamp(LocalDateTime.now())
-                    .isRead(false)
-                    .build();
-            notificationService.sendNotification(battle.getResponderId(), cancelResponderNotification);
-
-            logger.info("배틀 ID {}가 CANCELED 상태로 변경되었습니다.", battle.getId());
+            handleCanceledBattleResponse(battle, responseDto);
         } else {
             throw new IllegalArgumentException("잘못된 배틀 상태입니다.");
         }
@@ -212,17 +146,78 @@ public class BattleServiceImpl implements BattleService {
         battleRepository.save(battle);
 
         // 배틀 응답 반환
+        return createBattleResponseDto(battle);
+    }
+
+    private void validateBattleStatus(Battle battle) {
+        if (battle.getStatus() != BattleStatus.PENDING) {
+            throw new IllegalStateException("현재 상태에서는 배틀에 응답할 수 없습니다.");
+        }
+    }
+
+    private void validateResponder(Battle battle, Long userId) {
+        if (!battle.getResponderId().equals(userId)) {
+            throw new SecurityException("해당 배틀에 응답할 권한이 없습니다.");
+        }
+    }
+
+    private void handleActiveBattleResponse(Battle battle, BattleResponseRequestDto responseDto) {
+        battle.setStatus(BattleStatus.ACTIVE);
+        battle.setResponderName(responseDto.getResponderName());
+        battle.setResponderImageUrl(responseDto.getResponderImage());
+        battle.setActiveAt(LocalDateTime.now());
+        battle.setExpiresAt(LocalDateTime.now().plusDays(1));
+
+        // 배틀 수락 알림 및 배틀 시작 알림
+        sendNotification(battle.getRequesterId(), battle.getResponderId(), battle.getResponderName(), "배틀 수락",
+                battle.getResponderName() + " 님과의 배틀이 수락되었습니다.", battle.getId());
+        sendNotification(battle.getResponderId(), battle.getRequesterId(), battle.getRequesterName(), "배틀 시작",
+                battle.getRequesterName() + " 님과의 배틀이 시작되었습니다!", battle.getId());
+
+        rescheduleBattleCompletion(battle);
+
+        log.info("배틀 ID {}가 ACTIVE 상태로 변경되었습니다. 만료 시간: {}", battle.getId(), battle.getExpiresAt());
+    }
+
+    private void handleCanceledBattleResponse(Battle battle, BattleResponseRequestDto responseDto) {
+        battle.setStatus(BattleStatus.CANCELED);
+
+        // 배틀 거절 알림
+        sendNotification(battle.getRequesterId(), battle.getResponderId(), battle.getResponderName(), "배틀 거절",
+                battle.getResponderName() + " 님이 배틀을 거절했습니다.", battle.getId());
+        sendNotification(battle.getResponderId(), battle.getRequesterId(), battle.getRequesterName(), "배틀 거절",
+                battle.getRequesterName() + " 님과의 배틀이 거절되었습니다.", battle.getId());
+
+        log.info("배틀 ID {}가 CANCELED 상태로 변경되었습니다.", battle.getId());
+    }
+
+    private void sendNotification(Long recipientId, Long senderId, String senderNickname, String title, String message, Long battleId) {
+        NotificationDto notification = NotificationDto.builder()
+                .userId(recipientId)
+                .senderId(senderId)
+                .senderNickname(senderNickname)
+                .title(title)
+                .message(message)
+                .timestamp(LocalDateTime.now())
+                .isRead(false)
+                .battleId(battleId)
+                .build();
+        notificationService.sendNotification(recipientId, notification);
+    }
+
+    private BattleResponseDto createBattleResponseDto(Battle battle) {
         return BattleResponseDto.builder()
                 .battleId(battle.getId())
                 .responderId(battle.getResponderId())
                 .responderImage(battle.getResponderImageUrl())
-                .responderName(battle.getResponderName())  // 보낸 사람 닉네임 반환
+                .responderName(battle.getResponderName())
                 .status(battle.getStatus())
                 .createdAt(battle.getCreatedAt())
                 .expiresAt(battle.getExpiresAt())
                 .activeAt(battle.getActiveAt())
                 .build();
     }
+
 
     /**
      * Quartz Scheduler를 이용하여 배틀 만료 작업을 재스케줄링
@@ -234,7 +229,7 @@ public class BattleServiceImpl implements BattleService {
             JobKey jobKey = JobKey.jobKey("battleCompletionJob-" + battle.getId(), "battleCompletionGroup");
             if (scheduler.checkExists(jobKey)) {
                 scheduler.deleteJob(jobKey);
-                logger.info("배틀 ID {}의 기존 완료 작업이 삭제되었습니다.", battle.getId());
+                log.info("배틀 ID {}의 기존 완료 작업이 삭제되었습니다.", battle.getId());
             }
 
             // 새로운 JobDetail 생성
@@ -254,10 +249,10 @@ public class BattleServiceImpl implements BattleService {
             scheduler.scheduleJob(jobDetail, trigger);
 
             // 로그 출력
-            logger.info("배틀 ID {}에 대해 완료 작업이 재스케줄링되었습니다. 새로운 만료 시간: {}", battle.getId(), battle.getExpiresAt());
+            log.info("배틀 ID {}에 대해 완료 작업이 재스케줄링되었습니다. 새로운 만료 시간: {}", battle.getId(), battle.getExpiresAt());
 
         } catch (SchedulerException e) {
-            logger.error("배틀 ID {}의 완료 작업 재스케줄링 중 오류 발생: {}", battle.getId(), e.getMessage(), e);
+            log.error("배틀 ID {}의 완료 작업 재스케줄링 중 오류 발생: {}", battle.getId(), e.getMessage(), e);
         }
     }
 
@@ -284,7 +279,7 @@ public class BattleServiceImpl implements BattleService {
                 .activeAt(battle.getActiveAt())
                 .build();
 
-        logger.info("배틀 ID {}의 상세 정보가 조회되었습니다.", battleId);
+        log.info("배틀 ID {}의 상세 정보가 조회되었습니다.", battleId);
         return responseDto;
     }
 
@@ -296,17 +291,17 @@ public class BattleServiceImpl implements BattleService {
     @Override
     public void voteBattle(Long battleId, VoteRequestDto voteRequestDto) {
         Battle battle = battleRepository.findById(battleId)
-                .orElseThrow(() -> new RuntimeException("배틀을 찾을 수 없습니다: " + battleId));
+                .orElseThrow(() -> new EntityNotFoundException("배틀을 찾을 수 없습니다: " + battleId));
 
         // 배틀 상태 및 기간 확인
         if (battle.getStatus() != BattleStatus.ACTIVE || battle.getExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new RuntimeException("배틀이 활성 상태가 아니거나 이미 종료되었습니다.");
+            throw new IllegalStateException("배틀이 활성 상태가 아니거나 이미 종료되었습니다.");
         }
 
         // 중복 투표 방지
         boolean hasVoted = voteRepository.existsByBattleIdAndUserId(battleId, voteRequestDto.getUserId());
         if (hasVoted) {
-            throw new RuntimeException("이미 투표하셨습니다.");
+            throw new DataIntegrityViolationException("이미 투표하셨습니다.");
         }
 
         // 투표 내역 저장
@@ -325,7 +320,7 @@ public class BattleServiceImpl implements BattleService {
         }
         battleRepository.save(battle);
 
-        logger.info("배틀 ID {}에 대한 사용자 ID {}의 투표가 저장되었습니다.", battleId, voteRequestDto.getUserId());
+        log.info("배틀 ID {}에 대한 사용자 ID {}의 투표가 저장되었습니다.", battleId, voteRequestDto.getUserId());
     }
 
     @Override
@@ -334,17 +329,17 @@ public class BattleServiceImpl implements BattleService {
         List<BattleDto> battleDtos = battles.stream()
                 .map(battleMapper::toDto)
                 .collect(Collectors.toList());
-        logger.info("ACTIVE 상태의 최신 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
+        log.info("ACTIVE 상태의 최신 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
         return battleDtos;
     }
 
     @Override
     public List<BattleDto> getActiveBattlesByVote() {
-        List<Battle> battles = battleRepository.findByStatusOrderByRequesterVotesDescResponderVotesDesc(BattleStatus.ACTIVE);
+        List<Battle> battles = battleRepository.findByStatusOrderByTotalVotesDesc(BattleStatus.ACTIVE);
         List<BattleDto> battleDtos = battles.stream()
                 .map(battleMapper::toDto)
                 .collect(Collectors.toList());
-        logger.info("ACTIVE 상태의 투표수가 많은 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
+        log.info("ACTIVE 상태의 총 투표수가 많은 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
         return battleDtos;
     }
 
@@ -354,7 +349,7 @@ public class BattleServiceImpl implements BattleService {
         List<BattleDto> battleDtos = battles.stream()
                 .map(battleMapper::toDto)
                 .collect(Collectors.toList());
-        logger.info("COMPLETE 상태의 완료순 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
+        log.info("COMPLETE 상태의 완료순 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
         return battleDtos;
     }
 
@@ -368,17 +363,17 @@ public class BattleServiceImpl implements BattleService {
         // 하나의 userId로 신청자 또는 수신자로 검색
         List<Battle> battles = battleRepository.findByRequesterIdOrResponderId(userId);
         List<BattleDto> battleDtos = battles.stream().map(battleMapper::toDto).collect(Collectors.toList());
-        logger.info("사용자 ID {}의 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", userId, battleDtos.size());
+        log.info("사용자 ID {}의 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", userId, battleDtos.size());
         return battleDtos;
     }
 
     @Override
     public List<BattleDto> getCompletedBattlesByVote() {
-        List<Battle> battles = battleRepository.findByStatusOrderByRequesterVotesDescResponderVotesDesc(BattleStatus.COMPLETED);
+        List<Battle> battles = battleRepository.findByStatusOrderByTotalVotesDesc(BattleStatus.COMPLETED);
         List<BattleDto> battleDtos = battles.stream()
                 .map(battleMapper::toDto)
                 .collect(Collectors.toList());
-        logger.info("COMPLETE 상태의 투표수가 많은 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
+        log.info("COMPLETE 상태의 총 투표수가 많은 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
         return battleDtos;
     }
 }
