@@ -87,6 +87,13 @@ public class BattleController {
         return ResponseEntity.ok(battles);
     }
 
+    @GetMapping("/list/completed/popular")
+    @Operation(summary = "COMPLETE 배틀 리스트 투표순 조회", description = "COMPLETE 상태인 배틀을 투표 수 기준 내림차순으로 조회합니다.")
+    public ResponseEntity<List<BattleDto>> getCompletedBattlesByVote() {
+        List<BattleDto> battles = battleService.getCompletedBattlesByVote();
+        return ResponseEntity.ok(battles);
+    }
+
     // 특정 사용자의 배틀 리스트 조회 API
     @GetMapping("/list/{userId}")
     @Operation(summary = "특정 사용자의 배틀 리스트 조회", description = "특정 사용자의 배틀 리스트를 조회합니다.")

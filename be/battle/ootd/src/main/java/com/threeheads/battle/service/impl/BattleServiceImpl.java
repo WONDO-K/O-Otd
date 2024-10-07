@@ -371,4 +371,14 @@ public class BattleServiceImpl implements BattleService {
         logger.info("사용자 ID {}의 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", userId, battleDtos.size());
         return battleDtos;
     }
+
+    @Override
+    public List<BattleDto> getCompletedBattlesByVote() {
+        List<Battle> battles = battleRepository.findByStatusOrderByRequesterVotesDescResponderVotesDesc(BattleStatus.COMPLETED);
+        List<BattleDto> battleDtos = battles.stream()
+                .map(battleMapper::toDto)
+                .collect(Collectors.toList());
+        logger.info("COMPLETE 상태의 투표수가 많은 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
+        return battleDtos;
+    }
 }
