@@ -187,8 +187,6 @@ const styles = StyleSheet.create({
         ],
         zIndex: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.3)',
-        elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
-        shadowColor: 'black', // 그림자 색상
     },
     subImage: {
         width: 170,
