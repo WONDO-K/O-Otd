@@ -98,7 +98,7 @@ public class BattleController {
     /**
      * 3. COMPLETE 상태인 배틀 리스트 완료순 조회
      */
-    @GetMapping("/list/completed")
+    @GetMapping("/list/completed/recent")
     @Operation(summary = "COMPLETE 배틀 리스트 완료순 조회", description = "COMPLETE 상태인 배틀을 완료 시간 기준 내림차순으로 조회합니다.")
     public ResponseEntity<List<BattleDto>> getCompletedBattlesByCompletionTime() {
         List<BattleDto> battles = battleService.getCompletedBattlesByCompletionTime();
