@@ -45,26 +45,36 @@ public class BattleCompletionJob implements Job {
             Battle battle = battleRepository.findById(battleId)
                     .orElseThrow(() -> new JobExecutionException("배틀을 찾을 수 없습니다: " + battleId));
 
+            // 현재 시간 가져오기
+            LocalDateTime now = LocalDateTime.now();
+
             // 배틀 상태에 따라 처리
             switch (battle.getStatus()) {
                 case PENDING:
                     // PENDING 상태가 만료된 경우 EXPIRED로 변경
-                    battle.setStatus(BattleStatus.EXPIRED);
-                    battleRepository.save(battle);
-                    // 알림 전송
-                    sendNotificationToUsers(battle.getRequesterId(), battle.getRequesterName(), battle.getResponderId(), battle.getResponderName(),
-                            "배틀 요청이 만료되었습니다.", "배틀 요청 만료");
-                    logger.info("배틀 ID {}의 상태가 EXPIRED로 변경되었습니다.", battleId);
+                    if (battle.getExpiresAt().isBefore(now)) {
+                        battle.setStatus(BattleStatus.EXPIRED);
+                        battleRepository.save(battle);
+                        // 알림 전송
+                        sendNotificationToUsers(battle.getRequesterId(), battle.getRequesterName(), battle.getResponderId(), battle.getResponderName(),
+                                "배틀 요청이 만료되었습니다.", "배틀 요청 만료");
+                        logger.info("배틀 ID {}의 상태가 EXPIRED로 변경되었습니다.", battleId);
+                    }
                     break;
+
                 case ACTIVE:
                     // ACTIVE 상태가 만료된 경우 COMPLETED로 변경
-                    battle.setStatus(BattleStatus.COMPLETED);
-                    battleRepository.save(battle);
-                    // 알림 전송
-                    sendNotificationToUsers(battle.getRequesterId(), battle.getRequesterName(), battle.getResponderId(), battle.getResponderName(),
-                            "배틀이 종료되었습니다.", "배틀 종료");
-                    logger.info("배틀 ID {}의 상태가 COMPLETED로 변경되었습니다.", battleId);
+                    if (battle.getExpiresAt().isBefore(now)) {
+                        battle.setStatus(BattleStatus.COMPLETED);
+                        // TODO: 배틀의 승자를 결정하고 유저 userBattle(배틀 횟수), userWin(승리 횟수) 업데이트 필요함 -> 유저 테이블 업데이트
+                        battleRepository.save(battle);
+                        // 알림 전송
+                        sendNotificationToUsers(battle.getRequesterId(), battle.getRequesterName(), battle.getResponderId(), battle.getResponderName(),
+                                "배틀이 종료되었습니다.", "배틀 종료");
+                        logger.info("배틀 ID {}의 상태가 COMPLETED로 변경되었습니다.", battleId);
+                    }
                     break;
+
                 default:
                     // 다른 상태에서는 아무 작업도 수행하지 않음
                     logger.info("배틀 ID {}는 상태가 PENDING이나 ACTIVE가 아닙니다. 현재 상태: {}", battleId, battle.getStatus());
@@ -76,6 +86,7 @@ public class BattleCompletionJob implements Job {
             throw new JobExecutionException(e);
         }
     }
+
 
     /**
      * 사용자들에게 알림을 전송하는 메서드

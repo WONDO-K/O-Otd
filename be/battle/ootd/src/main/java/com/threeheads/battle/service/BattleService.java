@@ -34,4 +34,5 @@ public interface BattleService {
     // 특정 사용자의 배틀 리스트 조회 (신청자 또는 수신자)
     List<BattleDto> getUserBattles(Long userId);
 
+    List<BattleDto> getCompletedBattlesByVote();
 }

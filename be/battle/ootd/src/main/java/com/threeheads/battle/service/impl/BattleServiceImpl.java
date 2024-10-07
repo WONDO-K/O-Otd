@@ -57,7 +57,7 @@ public class BattleServiceImpl implements BattleService {
                 .requesterImageUrl(dto.getRequesterImage())  // 요청자 이미지 URL
                 .status(BattleStatus.PENDING)  // 초기 상태는 PENDING
                 .createdAt(LocalDateTime.now())  // 현재 시간을 생성 시간으로 설정
-                .expiresAt(LocalDateTime.now().plusHours(24))  // 24시간 유효 기간 설정
+                .expiresAt(LocalDateTime.now().plusWeeks(1))  // 1주 유효 기간 설정
                 .build();
 
         // 배틀 정보 저장
@@ -70,7 +70,7 @@ public class BattleServiceImpl implements BattleService {
                 .senderNickname(battle.getRequesterName()) // 보낸 사람 닉네임 반환
                 .battleId(battle.getId())
                 .title("새로운 배틀 요청")
-                .message("새로운 배틀 요청이 도착했습니다.")
+                .message("님이 새로운 배틀을 신청했습니다.")
                 .timestamp(LocalDateTime.now())
                 .build();
         notificationService.sendNotification(battle.getResponderId(), notification);
@@ -142,7 +142,7 @@ public class BattleServiceImpl implements BattleService {
             battle.setResponderName(responseDto.getResponderName());  // 수신자 이름 설정
             battle.setResponderImageUrl(responseDto.getResponderImage());   // 수신자 이미지 설정
             battle.setActiveAt(LocalDateTime.now()); // ACTIVE 상태로 변경된 시간 설정
-            battle.setExpiresAt(LocalDateTime.now().plusWeeks(1)); // 1주일의 유효기간 설정
+            battle.setExpiresAt(LocalDateTime.now().plusDays(1)); // 하루의 유효기간 설정
 
             // 배틀 수락 알림
             NotificationDto acceptNotification = NotificationDto.builder()
@@ -151,7 +151,7 @@ public class BattleServiceImpl implements BattleService {
                     .senderId(battle.getResponderId())
                     .senderNickname(battle.getResponderName()) // 보낸 사람 닉네임 반환
                     .title("배틀 수락")
-                    .message("배틀이 수락되었습니다.")
+                    .message(battle.getResponderName() + " 님과의 배틀이 수락되었습니다.")
                     .timestamp(LocalDateTime.now())
                     .isRead(false)
                     .build();
@@ -163,7 +163,7 @@ public class BattleServiceImpl implements BattleService {
                     .senderId(battle.getRequesterId())
                     .senderNickname(battle.getRequesterName()) // 보낸 사람 닉네임 반환
                     .title("배틀 시작")
-                    .message("배틀이 시작되었습니다!")
+                    .message(battle.getRequesterName() + " 님과의 배틀이 시작되었습니다!")
                     .timestamp(LocalDateTime.now())
                     .isRead(false)
                     .build();
@@ -185,7 +185,7 @@ public class BattleServiceImpl implements BattleService {
                     .senderNickname(battle.getResponderName()) // 보낸 사람 닉네임 반환
                     .battleId(battle.getId())
                     .title("배틀 거절")
-                    .message("배틀이 거절되었습니다.")
+                    .message(battle.getResponderName() + " 님이 배틀을 거절했습니다.")
                     .timestamp(LocalDateTime.now())
                     .isRead(false)
                     .build();
@@ -197,7 +197,7 @@ public class BattleServiceImpl implements BattleService {
                     .senderNickname(battle.getRequesterName()) // 보낸 사람 닉네임 반환
                     .battleId(battle.getId())
                     .title("배틀 거절")
-                    .message("배틀이 거절되었습니다.")
+                    .message(battle.getRequesterName() + " 님과의 배틀이 거절되었습니다.")
                     .timestamp(LocalDateTime.now())
                     .isRead(false)
                     .build();
@@ -369,6 +369,16 @@ public class BattleServiceImpl implements BattleService {
         List<Battle> battles = battleRepository.findByRequesterIdOrResponderId(userId);
         List<BattleDto> battleDtos = battles.stream().map(battleMapper::toDto).collect(Collectors.toList());
         logger.info("사용자 ID {}의 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", userId, battleDtos.size());
+        return battleDtos;
+    }
+
+    @Override
+    public List<BattleDto> getCompletedBattlesByVote() {
+        List<Battle> battles = battleRepository.findByStatusOrderByRequesterVotesDescResponderVotesDesc(BattleStatus.COMPLETED);
+        List<BattleDto> battleDtos = battles.stream()
+                .map(battleMapper::toDto)
+                .collect(Collectors.toList());
+        logger.info("COMPLETE 상태의 투표수가 많은 배틀 리스트가 조회되었습니다. 총 {}개의 배틀.", battleDtos.size());
         return battleDtos;
     }
 }

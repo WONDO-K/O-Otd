@@ -51,23 +51,11 @@ public class UserServiceImpl implements UserService {
         User setUser = userRepository.findByUsername(user.getUsername())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        String phoneNumber = signupRequestDto.getPhone();
-
-        if (userRepository.findByPhone(phoneNumber).isPresent()) {
-
-            log.error("이미 존재하는 전화번호입니다.");
-
-            throw new CustomException(ErrorCode.PHONE_DUPLICATION);
-
-        }
-
-        setUser.changePhone(signupRequestDto.getPhone());
-
         setUser.changeNickname(signupRequestDto.getNickname());
 
         userRepository.save(setUser);
 
-        log.info("전화번호, 닉네임 수정 완료");
+        log.info("닉네임 수정 완료");
         return setUser;
     }
 
