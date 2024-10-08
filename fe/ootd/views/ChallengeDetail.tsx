@@ -4,26 +4,34 @@ import axios from 'axios';
 import { launchImageLibrary, ImageLibraryOptions } from 'react-native-image-picker';
 import { ContentText, ContentBoldText } from '../components/CustomTexts';
 import MyFashionButton from '../components/MyFashionButton';
+import { useLoginStore } from '../stores/LoginStore';
+import { useFocusEffect } from '@react-navigation/native';
 
 function ChallengeDetail({ navigation, route }): React.JSX.Element {
 
     const { item } = route.params;
     const selectedSrc = route.params?.selectedImage;
+    const { accessToken, userId } = useLoginStore();
 
     const [selectedUser, setSelectedUser] = useState('');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [battleId, setBattleId] = useState(0)
 
-    const nameSlice = (name: string) => {
-        if (name.length > 6) {
-            return name.slice(0, 6) + '...';
-        } else {
-            return name;
-        }
-    }
+    useEffect(() => {
+        setSelectedUser(item.senderNickname);
+    }, []);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            if (item && item.battleId) {
+                setBattleId(item.battleId);
+            }
+        }, [item])
+    );
 
     useEffect(() => {
         if (item && item.senderUserName) {
-            setSelectedUser(item.senderUserName);
+            setSelectedUser(item.senderNickname);
         }
     }, [item]);
 
@@ -33,16 +41,35 @@ function ChallengeDetail({ navigation, route }): React.JSX.Element {
         }
     }, [selectedSrc]);
 
-    const battleRequest = (selectedUser : string, selectedImage : string) => {
-        // axios.post('https://api.example.com/battle', {
-        //     userId: selectedUserId,
-        //     image: selectedImage
-        // }).then(response => {
-        //     console.log(response.data);
-        // }).catch(error => {
-        //     console.log(error);
-        // })
-        navigation.navigate('Battle');
+    const battleRequest = async(selectedImage : string ) => {
+        try {
+            if (!selectedImage) {
+                throw new Error('Selected image is not valid.');
+            }
+            console.log(`https://j11e104.p.ssafy.io/battle/response/${battleId}`);
+            console.log(battleId, selectedImage);
+            console.log({
+                "userId": userId,
+                "status": "ACTIVE",
+                "responderImage": selectedImage
+            });
+            await axios.post(`https://j11e104.p.ssafy.io/battle/response/${battleId}`,
+            {
+                "userId": userId,
+                "status": "ACTIVE",
+                "responderImage": selectedImage
+            },
+            {
+                headers: {
+                    "Authorization": accessToken,
+                    "Content-Type": "application/json",
+                    "X-User-ID": userId,
+                }
+            });
+            navigation.navigate('Battle');
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+        }
     };
 
     const selectImage = () => {
@@ -87,7 +114,11 @@ function ChallengeDetail({ navigation, route }): React.JSX.Element {
                     <TouchableOpacity
                         style={(selectedUser && selectedImage) ? styles.activeButton : styles.deactiveButton}
                         disabled={!(selectedUser && selectedImage)}
-                        onPress={() => battleRequest(selectedUser, selectedImage)}           
+                        onPress={() => {
+                            if (selectedImage) {
+                                battleRequest(selectedImage);
+                            }
+                        }}           
                     >
                         <ContentText style={(selectedUser && selectedImage) ? styles.buttonText : styles.deactiveButtonText}>Accept</ContentText>
                     </TouchableOpacity>

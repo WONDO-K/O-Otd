@@ -52,7 +52,7 @@ function StyleView({ navigation, route }): React.JSX.Element {
             // }
             if (scrollViewRef.current) {
                 Animated.timing(scrollY, {
-                    toValue: 660,
+                    toValue: 630,
                     duration: 750, // 애니메이션 지속 시간 (밀리초 단위)
                     useNativeDriver: false,
                 }).start();
@@ -106,10 +106,10 @@ function StyleView({ navigation, route }): React.JSX.Element {
                     </TouchableOpacity>
                 </View>
 
-                {/* <ContentText style={styles.textContents}>
+                <ContentText style={styles.textContents}>
                     AI가 두 패션의 색깔을 더해,{"\n"}
                     유사한 감각의 스타일을 제공합니다.{"\n"}
-                </ContentText> */}
+                </ContentText>
 
                 {/* 추천 받기 버튼 */}
                 <TouchableOpacity
@@ -164,12 +164,13 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 40,
         color: 'white',
+        marginBottom: 50,
     },
     imageContainer: {
-        width: 225,
-        height: 330,
+        width: 180,
+        height: 270,
         position: 'relative',
-        margin: 60,
+        marginBottom: 40,
     },
     mainImage: {
         width: '100%',
@@ -181,16 +182,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
         overflow: 'hidden',
-        left: -45,
+        left: -15,
         transform: [
-            { rotateY: '15deg' },
+            { rotateY: '10deg' }
         ],
         zIndex: 1,
         backgroundColor: 'rgba(255, 255, 255, 0.3)',
+        elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
+        shadowColor: 'black', // 그림자 색상
     },
     subImage: {
-        width: 170,
-        height: 230,
+        width: 120,
+        height: 160,
         // backgroundColor: '#121212',
         backgroundColor: 'rgba(88, 88, 88, 0.7)',
         borderColor: 'white',
@@ -200,10 +203,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         position: 'absolute',
         top: 120,
-        left: 110,
-        transform: [
-            { rotateY: '-30deg' },
-        ],
+        left: 115,
+        transform: [{ rotateY: '-30deg' }],
         zIndex: 2,
         overflow: 'hidden',
     },

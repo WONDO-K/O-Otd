@@ -5,7 +5,7 @@ import { ContentText, ContentBoldText } from './CustomTexts';
 type BattleItemProgressProps = {
   item: any;
   onPress: () => void;
-  calculateRemainingTime: (startedAt: string) => string;
+  calculateRemainingTime: (createdAt: string) => string;
   nameSlice: (name: string) => string;
 };
 
@@ -16,26 +16,26 @@ const BattleItemProgress: React.FC<BattleItemProgressProps> = ({ item, onPress, 
             onPress={onPress}
         >
             <View style={styles.battleTitle}>
-                <ContentBoldText style={styles.battleNameText}>{nameSlice(item.leftName)}</ContentBoldText>
-                <ContentText style={styles.battleTimeText}>{calculateRemainingTime(item.startedAt)}</ContentText>
-                <ContentBoldText style={styles.battleNameText}>{nameSlice(item.rightName)}</ContentBoldText>
+                <ContentBoldText style={styles.battleNameText}>{nameSlice(item.requesterName)}</ContentBoldText>
+                <ContentText style={styles.battleTimeText}>{calculateRemainingTime(item.createdAt)}</ContentText>
+                <ContentBoldText style={styles.battleNameText}>{nameSlice(item.responderName)}</ContentBoldText>
             </View>
             <View style={styles.battleContent}>
                 <Image 
                 style={[
                     styles.battleImage,
-                    item.myPick === 'left' && styles.pickedImage,
-                    item.myPick === 'right' && styles.unPickedImage
+                    item.myPickUserId === item.requesterId && styles.pickedImage,
+                    item.myPickUserId === item.responderId && styles.unPickedImage
                 ]} 
-                source={{ uri: item.leftImage }} 
+                source={{ uri: item.requesterImage }} 
                 />
                 <Image 
                 style={[
                     styles.battleImage,
-                    item.myPick === 'left' && styles.unPickedImage,
-                    item.myPick === 'right' && styles.pickedImage
+                    item.myPickUserId === item.requesterId && styles.unPickedImage,
+                    item.myPickUserId === item.responderId && styles.pickedImage
                 ]} 
-                source={{ uri: item.rightImage }} 
+                source={{ uri: item.responderImage }} 
                 />
             </View>
         </TouchableOpacity>

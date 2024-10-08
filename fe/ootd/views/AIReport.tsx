@@ -12,6 +12,7 @@ import {
 import { useNavigation, useRoute } from '@react-navigation/native';
 import useAIStore from '../stores/AIStore'; // Zustand 스토어 가져오기
 import { TitleText, TitleBoldText, ContentText, ContentBoldText } from '../components/CustomTexts';
+import BackIcon from '../assets/Icons/Back_Icon.svg';
 
 import WishFullIcon from '../assets/Icons/WishFull_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
@@ -82,57 +83,65 @@ function AIReport(): React.JSX.Element {
       style={styles.background} // 배경 스타일 설정
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.container}>
-        <TitleText style={styles.title}><TitleBoldText>AI</TitleBoldText> Lens</TitleText>
-
-        <View style={styles.reportBox}>
-        {image ? (
-          <Image
-            source={{ uri: `data:image/jpeg;base64,${image}` }} // base64로 이미지 표시
-            style={styles.photo}
+        <View style={styles.container}>
+          <BackIcon 
+            onPress={() => navigation.goBack()}
+            style={{
+              position: 'absolute',
+              top: 30, 
+              left: 20,
+            }}
           />
-        ) : (
-          <ContentText style={styles.noPhotoText}>저장된 이미지가 없습니다.</ContentText> // 이미지가 없을 때 표시
-        )}
-          <View style={styles.reportContents}>
-            <ContentText style={styles.reportName}>
-              시티보이 룩
-            </ContentText>
-            <ContentText style={styles.reportText}>
-              시티보이룩은 시티보이 룩입니다.
-              그것이 시티보이 룩이니까.
-            </ContentText>
-          </View>
-        </View>
-        
-        <TitleText style={styles.title}>Similar Styles</TitleText>
-        <FlatList
-          style={{marginTop: 20}}
-          data={myFashion}
-          keyExtractor={(item, index) => index.toString()}
-          renderItem={({ item }) => (
-            <View style={styles.notificationItem}>
-              <ImageBackground
-                source={item.src}
-                style={styles.notificationImage}
-                resizeMode="cover"
-              >
-                <TouchableOpacity
-                  style={styles.bookmarkIcon}
-                  onPress={() => toggleBookmark(item.id)}
-                >
-                {bookmarked[item.id] ? (
-                  <WishFullIcon width={30} height={40} fill={'white'} /> // 북마크가 활성화된 경우
-                ) : (
-                  <WishIcon width={30} height={40} fill={'white'} /> // 비활성화된 경우
-                )}
-                </TouchableOpacity>
-              </ImageBackground>
-            </View>
+          <TitleText style={styles.title}><TitleBoldText>AI</TitleBoldText> Lens</TitleText>
+
+          <View style={styles.reportBox}>
+          {image ? (
+            <Image
+              source={{ uri: `data:image/jpeg;base64,${image}` }} // base64로 이미지 표시
+              style={styles.photo}
+            />
+          ) : (
+            <ContentText style={styles.noPhotoText}>저장된 이미지가 없습니다.</ContentText> // 이미지가 없을 때 표시
           )}
-          numColumns={2}
-        />
-      </View>
+            <View style={styles.reportContents}>
+              <ContentText style={styles.reportName}>
+                시티보이 룩
+              </ContentText>
+              <ContentText style={styles.reportText}>
+                시티보이룩은 시티보이 룩입니다.
+                그것이 시티보이 룩이니까.
+              </ContentText>
+            </View>
+          </View>
+          
+          <TitleText style={styles.title}>Similar Styles</TitleText>
+          <FlatList
+            style={{marginTop: 20}}
+            data={myFashion}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.notificationItem}>
+                <ImageBackground
+                  source={item.src}
+                  style={styles.notificationImage}
+                  resizeMode="cover"
+                >
+                  <TouchableOpacity
+                    style={styles.bookmarkIcon}
+                    onPress={() => toggleBookmark(item.id)}
+                  >
+                  {bookmarked[item.id] ? (
+                    <WishFullIcon width={30} height={40} fill={'white'} /> // 북마크가 활성화된 경우
+                  ) : (
+                    <WishIcon width={30} height={40} fill={'white'} /> // 비활성화된 경우
+                  )}
+                  </TouchableOpacity>
+                </ImageBackground>
+              </View>
+            )}
+            numColumns={2}
+          />
+        </View>
       </ScrollView>
     </ImageBackground>
   );
