@@ -163,7 +163,6 @@ public class BattleServiceImpl implements BattleService {
 
     private void handleActiveBattleResponse(Battle battle, BattleResponseRequestDto responseDto) {
         battle.setStatus(BattleStatus.ACTIVE);
-        battle.setResponderName(responseDto.getResponderName());
         battle.setResponderImageUrl(responseDto.getResponderImage());
         battle.setActiveAt(LocalDateTime.now());
         battle.setExpiresAt(LocalDateTime.now().plusDays(1));
@@ -369,6 +368,7 @@ public class BattleServiceImpl implements BattleService {
     private BattleDto toDtoWithUserVote(Battle battle, Long userId) {
         BattleDto dto = battleMapper.toDto(battle);
         Vote vote = voteRepository.findByBattleIdAndUserId(battle.getId(), userId);
+        log.info("vote: {}", vote);
         if (vote != null) {
             dto.setMyPickUserId(vote.getVotedFor());
         }
