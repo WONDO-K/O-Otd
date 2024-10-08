@@ -177,8 +177,7 @@ pipeline {
                     for (service in changedServices) {
                         dir("be/${service}/ootd") {
                             echo "Deploy Docker Container: ${service}"
-                            // sh "docker-compose -f docker-compose-${service}.yml down"
-                            sh "docker rm -f ootd-be-${service}"
+                            sh "docker-compose -f docker-compose-${service}.yml down"
                             sh "docker-compose -f docker-compose-${service}.yml up --build -d"
                         }
                     }
@@ -223,7 +222,7 @@ def getChangedServices(services) {
     // changedServices.add("user")
     // changedServices.add("user")
     changedServices.add("battle")
-    changedServices.add("gallery")
+    //changedServices.add("gallery")
     for (service in services) {
         def changes = sh(script: "git diff --name-only HEAD~1 HEAD | grep 'be/${service}' || true", returnStdout: true).trim()
         
