@@ -7,10 +7,14 @@ import com.threeheads.battle.dto.response.BattleResponseDto;
 import com.threeheads.battle.dto.response.BattleResponseRequestDto;
 import com.threeheads.battle.dto.response.VoteRequestDto;
 import com.threeheads.battle.service.BattleService;
+import com.threeheads.library.exception.CustomException;
+import com.threeheads.library.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +29,7 @@ import java.util.List;
 public class BattleController {
 
     private final BattleService battleService;
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     @GetMapping("/{battleId}")
     @Operation(summary = "배틀 상세 조회", description = "배틀 상세 정보를 조회합니다.")
@@ -36,25 +41,18 @@ public class BattleController {
     @PostMapping("/vote/{battleId}")
     @Operation(summary = "배틀 투표", description = "배틀에 투표합니다.")
     public ResponseEntity<?> voteBattle(@PathVariable Long battleId, @RequestBody VoteRequestDto voteRequestDto) {
-        battleService.voteBattle(battleId, voteRequestDto);
-        return ResponseEntity.ok().body("투표가 완료되었습니다.");
-    }
+        log.info("투표 요청: battleId={}, voteRequestDto={}", battleId, voteRequestDto);
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<String> handleEntityNotFoundException(EntityNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
-    }
+        try {
+            battleService.voteBattle(battleId, voteRequestDto);
+            return ResponseEntity.ok().body("투표가 완료되었습니다.");
+        } catch (CustomException ex) {
+            // ErrorCode를 통해 상태 코드와 메시지를 가져옴
 
-    @ExceptionHandler(IllegalStateException.class)
-    public ResponseEntity<String> handleIllegalStateException(IllegalStateException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+            ErrorCode errorCode = ex.getErrorCode();
+            return ResponseEntity.status(errorCode.getStatus()).body(errorCode.getMessage());
+        }
     }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<String> handleDuplicateVoteException(DataIntegrityViolationException ex) {
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ex.getMessage());
-    }
-
 
     // 배틀 신청 API
     @PostMapping("/create")

@@ -3,27 +3,27 @@
   <groupId>com.threeheads</groupId>
   <artifactId>common-library</artifactId>
   <versioning>
-    <lastUpdated>20240926065208</lastUpdated>
+    <lastUpdated>20241008122827</lastUpdated>
     <snapshot>
-      <timestamp>20240926.065208</timestamp>
-      <buildNumber>16</buildNumber>
+      <timestamp>20241008.122827</timestamp>
+      <buildNumber>17</buildNumber>
     </snapshot>
     <snapshotVersions>
       <snapshotVersion>
-        <classifier>plain</classifier>
-        <extension>jar</extension>
-        <value>0.0.1-20240926.065208-16</value>
-        <updated>20240926065208</updated>
+        <extension>module</extension>
+        <value>0.0.1-20241008.122827-17</value>
+        <updated>20241008122827</updated>
       </snapshotVersion>
       <snapshotVersion>
-        <extension>module</extension>
-        <value>0.0.1-20240926.065208-16</value>
-        <updated>20240926065208</updated>
+        <classifier>plain</classifier>
+        <extension>jar</extension>
+        <value>0.0.1-20241008.122827-17</value>
+        <updated>20241008122827</updated>
       </snapshotVersion>
       <snapshotVersion>
         <extension>pom</extension>
-        <value>0.0.1-20240926.065208-16</value>
-        <updated>20240926065208</updated>
+        <value>0.0.1-20241008.122827-17</value>
+        <updated>20241008122827</updated>
       </snapshotVersion>
     </snapshotVersions>
   </versioning>
