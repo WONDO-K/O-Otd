@@ -178,7 +178,7 @@ pipeline {
                         dir("be/${service}/ootd") {
                             echo "Deploy Docker Container: ${service}"
                             // sh "docker-compose -f docker-compose-${service}.yml down"
-                            sh "docker rm -r ootd-be-${service}"
+                            sh "docker rm -f ootd-be-${service}"
                             sh "docker-compose -f docker-compose-${service}.yml up --build -d"
                         }
                     }
