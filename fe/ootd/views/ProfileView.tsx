@@ -31,7 +31,7 @@ function ProfileView(): React.JSX.Element {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { accessToken, userId } = useLoginStore();
+  const { accessToken, userId, API_URL } = useLoginStore();
 
   const [myFashion, setMyFashion] = useState([]);
   const [bookmarked, setBookmarked] = useState({});
@@ -46,8 +46,6 @@ function ProfileView(): React.JSX.Element {
   const [errorMessage, setErrorMessage] = useState('');
   const shakeAnimation = useRef(new Animated.Value(0)).current;
 
-  // API 주소
-  const API_URL = 'https://j11e104.p.ssafy.io';
 
   const selectCategory = (category: string) => {
     setSelectedCategory(category);
@@ -59,9 +57,6 @@ function ProfileView(): React.JSX.Element {
 
   // API에서 nickname 가져오는 로직
   const getNickname = async () => {
-    console.log('닉네임 가져오기 함수');
-    console.log('엑세스', accessToken);
-    console.log('userId', userId);
     try {
       const response = await axios.get(`${API_URL}/user/myinfo`, {
         headers: {
@@ -72,7 +67,7 @@ function ProfileView(): React.JSX.Element {
       });
       console.log(response.data);
 
-      setNickname(response.data.nickname);  // nickname만 상태에 저장
+      setNickname(response.data.nickname);  // nickname 저장
       console.log('닉네임', response.data.nickname);
     } catch (error) {
       console.error('Error nickname:', error);
