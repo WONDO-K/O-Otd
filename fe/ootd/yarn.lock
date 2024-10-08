@@ -5680,7 +5680,7 @@ react-native-webview@^13.12.2:
     escape-string-regexp "^4.0.0"
     invariant "2.2.4"
 
-react-native@*, "react-native@^0.0.0-0 || >=0.65 <1.0", react-native@>=0.57.0, react-native@>=0.59.0, react-native@>=0.65.0, react-native@0.75.2:
+react-native@*, "react-native@^0.0.0-0 || >=0.65 <1.0", react-native@>=0.50.0, react-native@>=0.57.0, react-native@>=0.59.0, react-native@>=0.65.0, react-native@0.75.2:
   version "0.75.2"
   dependencies:
     "@jest/create-cache-key-function" "^29.6.3"
