@@ -31,7 +31,7 @@ function ProfileView(): React.JSX.Element {
   const navigation = useNavigation();
   const route = useRoute();
 
-  const { accessToken, userId } = useLoginStore();
+  const { accessToken, userId, API_URL } = useLoginStore();
 
   const [myFashion, setMyFashion] = useState([]);
   const [bookmarked, setBookmarked] = useState({});
@@ -46,8 +46,6 @@ function ProfileView(): React.JSX.Element {
   const [errorMessage, setErrorMessage] = useState('');
   const shakeAnimation = useRef(new Animated.Value(0)).current;
 
-  // API 주소
-  const API_URL = 'https://j11e104.p.ssafy.io';
 
   const selectCategory = (category: string) => {
     setSelectedCategory(category);
