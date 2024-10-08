@@ -11,6 +11,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +27,7 @@ import java.util.List;
 public class BattleController {
 
     private final BattleService battleService;
+    private Logger log = LoggerFactory.getLogger(getClass());
 
     @GetMapping("/{battleId}")
     @Operation(summary = "배틀 상세 조회", description = "배틀 상세 정보를 조회합니다.")
@@ -36,7 +39,9 @@ public class BattleController {
     @PostMapping("/vote/{battleId}")
     @Operation(summary = "배틀 투표", description = "배틀에 투표합니다.")
     public ResponseEntity<?> voteBattle(@PathVariable Long battleId, @RequestBody VoteRequestDto voteRequestDto) {
+        log.info("투표 요청: battleId={}, voteRequestDto={}", battleId, voteRequestDto);
         battleService.voteBattle(battleId, voteRequestDto);
+
         return ResponseEntity.ok().body("투표가 완료되었습니다.");
     }
 
