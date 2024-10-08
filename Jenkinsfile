@@ -177,7 +177,8 @@ pipeline {
                     for (service in changedServices) {
                         dir("be/${service}/ootd") {
                             echo "Deploy Docker Container: ${service}"
-                            sh "docker-compose -f docker-compose-${service}.yml down"
+                            // sh "docker-compose -f docker-compose-${service}.yml down"
+                            sh "docker rm -rf ootd-be-${service}"
                             sh "docker-compose -f docker-compose-${service}.yml up --build -d"
                         }
                     }
