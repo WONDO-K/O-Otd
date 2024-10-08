@@ -50,6 +50,12 @@ public class BattleServiceImpl implements BattleService {
      */
     @Override
     public BattleDto createBattle(BattleRequestDto dto) {
+        // 요청자와 응답자가 동일한지 검증
+        log.info("요청자 ID: {}, 응답자 ID: {}", dto.getRequesterId(), dto.getResponderId());
+        if (dto.getRequesterId().equals(dto.getResponderId())) {
+            throw new IllegalArgumentException("요청자와 응답자가 같은 경우 배틀을 신청할 수 없습니다.");
+        }
+
         // 새로운 Battle 객체 생성
         Battle battle = Battle.builder()
                 .requesterId(dto.getRequesterId())  // 요청자 ID
