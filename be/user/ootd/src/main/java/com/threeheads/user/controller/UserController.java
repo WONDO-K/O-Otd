@@ -131,7 +131,7 @@ public class UserController {
         User updatedUser = userService.setMyInfo(currentUser, signupRequestDto);
         return ResponseEntity.ok(updatedUser);
     }
-    
+
     @PostMapping("/update/nickname/{userId}")
     @Operation(summary = "닉네임 수정", description = "닉네임을 수정합니다.")
     public ResponseEntity<?> updateNickname(@PathVariable Long userId, @RequestBody UpdateNicknameRequestDto dto) {

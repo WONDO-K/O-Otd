@@ -16,6 +16,8 @@ import com.threeheads.battle.repository.BattleRepository;
 import com.threeheads.battle.repository.VoteRepository;
 import com.threeheads.battle.service.BattleService;
 import com.threeheads.battle.service.NotificationService;
+import com.threeheads.library.exception.CustomException;
+import com.threeheads.library.exception.ErrorCode;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.quartz.*;
@@ -23,6 +25,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -128,16 +131,20 @@ public class BattleServiceImpl implements BattleService {
      * @return BattleResponseDto
      */
     @Override
+    @Transactional
     public BattleResponseDto handleBattleResponse(BattleResponseRequestDto responseDto, Long battleId) {
         // 배틀을 찾아서 상태 처리
         Battle battle = battleRepository.findById(battleId)
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 배틀 ID입니다: " + battleId));
+        log.info("배틀 상태 조회 완료: status={}", battle.getStatus());
 
         // 배틀 상태가 PENDING인지 확인
         validateBattleStatus(battle);
+        log.info("배틀 상태 유효성 통과: PENDING 상태");
 
         // 수신자만 응답할 수 있도록 검증
         validateResponder(battle, responseDto.getUserId());
+        log.info("수신자 유효성 통과: userId={}", responseDto.getUserId());
 
         // 상태에 따른 처리
         if (responseDto.getStatus() == BattleStatus.ACTIVE) {
@@ -150,6 +157,7 @@ public class BattleServiceImpl implements BattleService {
 
         // 배틀 정보 저장
         battleRepository.save(battle);
+        log.info("배틀 정보 저장 완료: battleId={}", battleId);
 
         // 배틀 응답 반환
         return createBattleResponseDto(battle);
@@ -294,19 +302,21 @@ public class BattleServiceImpl implements BattleService {
      * @param voteRequestDto VoteRequestDto
      */
     @Override
+    @Transactional
     public void voteBattle(Long battleId, VoteRequestDto voteRequestDto) {
+        // 배틀 찾기
         Battle battle = battleRepository.findById(battleId)
-                .orElseThrow(() -> new EntityNotFoundException("배틀을 찾을 수 없습니다: " + battleId));
+                .orElseThrow(() -> new CustomException(ErrorCode.BATTLE_NOT_FOUND));
 
         // 배틀 상태 및 기간 확인
         if (battle.getStatus() != BattleStatus.ACTIVE || battle.getExpiresAt().isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("배틀이 활성 상태가 아니거나 이미 종료되었습니다.");
+            throw new CustomException(ErrorCode.BATTLE_NOT_ACTIVE);
         }
 
         // 중복 투표 방지
         boolean hasVoted = voteRepository.existsByBattleIdAndUserId(battleId, voteRequestDto.getUserId());
         if (hasVoted) {
-            throw new DataIntegrityViolationException("이미 투표하셨습니다.");
+            throw new CustomException(ErrorCode.DUPLICATE_VOTE);
         }
 
         // 투표 내역 저장
