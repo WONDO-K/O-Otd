@@ -22,5 +22,5 @@ public class GalleryDetailDto {
 
         private LocalDateTime uploadedAt;
 
-        private String likesCount;
+        private int likesCount;
 }
