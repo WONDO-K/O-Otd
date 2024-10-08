@@ -147,6 +147,13 @@ function LoginView(): React.JSX.Element {
     }
   };
 
+  // 서비스 준비 중 모달 트리거
+  const handleServiceNotAvailable = () => {
+    setServiceMessage('서비스 준비중입니다.');
+    setModalVisible(true);
+    triggerShake();
+  };
+
   // 쉐이크 애니메이션 트리거
   const triggerShake = () => {
     shakeAnimation.setValue(0);
@@ -198,6 +205,18 @@ function LoginView(): React.JSX.Element {
         <TouchableOpacity style={styles.kakaoButton} onPress={() => setWebViewVisible(true)}>
           <Image source={require('../assets/Images/kakao.png')} style={styles.btnLogo} />
           <Text style={styles.kakaoButtonText}>카카오로 로그인</Text>
+        </TouchableOpacity>
+
+        {/* Google 로그인 버튼 */}
+        <TouchableOpacity style={styles.googleButton} onPress={handleServiceNotAvailable}>
+          <Image source={require('../assets/Images/google.png')} style={styles.btnLogo} />
+          <Text style={styles.googleButtonText}>Google로 로그인</Text>
+        </TouchableOpacity>
+
+        {/* Naver 로그인 버튼 */}
+        <TouchableOpacity style={styles.naverButton} onPress={handleServiceNotAvailable}>
+          <Image source={require('../assets/Images/naver.png')} style={styles.btnLogo} />
+          <Text style={styles.naverButtonText}>Naver로 로그인</Text>
         </TouchableOpacity>
       </View>
 
@@ -332,6 +351,40 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     resizeMode: 'contain',
+  },
+  googleButton: {
+    backgroundColor: 'white',
+    width: 250,
+    height: 50,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#4285F4',
+  },
+  naverButton: {
+    backgroundColor: '#03C75A',
+    width: 250,
+    height: 50,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  googleButtonText: {
+    color: '#4285F4',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 10,
+  },
+  naverButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 10,
   },
   // 모달 관련 스타일
   modalOverlay: {

@@ -1,5 +1,6 @@
+// App.tsx
 import React, { useEffect, useState } from 'react';
-import { Text, LogBox, SafeAreaView, StyleSheet } from 'react-native';
+import { Text, LogBox, SafeAreaView, StyleSheet, View, ActivityIndicator } from 'react-native';
 import Navbar from './components/Navbar';
 import Footerbar from './components/Footerbar';
 import MainView from './views/MainView';
@@ -7,12 +8,12 @@ import LoginView from './views/LoginView';
 import StyleView from './views/StyleView';
 import StyleSelect from './views/StyleSelect';
 import AIView from './views/AIView.tsx';
-import Battle from './views/Battle'
-import BattleDetail from './views/BattleDetail'
-import BattleResult from './views/BattleResult'
-import Notification from './views/Notification'
-import Challenge from './views/Challenge'
-import ChallengeDetail from './views/ChallengeDetail'
+import Battle from './views/Battle';
+import BattleDetail from './views/BattleDetail';
+import BattleResult from './views/BattleResult';
+import Notification from './views/Notification';
+import Challenge from './views/Challenge';
+import ChallengeDetail from './views/ChallengeDetail';
 import MyFashion from './views/MyFashion';
 import SplashScreen from 'react-native-splash-screen';
 import AIReport from './views/AIReport';
@@ -26,8 +27,9 @@ const Stack = createStackNavigator();
 LogBox.ignoreAllLogs();
 
 function App(): React.JSX.Element {
-  const [currentRoute, setCurrentRoute] = useState('MainView');
+  const [currentRoute, setCurrentRoute] = useState("LoginView");
   const [isAppLoaded, setIsAppLoaded] = useState(false);
+  const [isReady, setIsReady] = useState(false); // 네비게이션 준비 상태 추적
 
   // 스플래시 화면
   useEffect(() => {
@@ -46,12 +48,23 @@ function App(): React.JSX.Element {
     }
   };
 
+  if (!isAppLoaded) {
+    return (
+      <SafeAreaView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#4285F4" />
+      </SafeAreaView>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.safeArea}>
-      <NavigationContainer onStateChange={handleStateChange}>
-        {/* Navbar는 LoginView가 아닐 때만 렌더링 */}
-        {currentRoute !== 'LoginView' && <Navbar currentRoute={currentRoute} />}
-        
+      <NavigationContainer
+        onStateChange={handleStateChange}
+        onReady={() => setIsReady(true)} // 네비게이션이 준비되면 isReady를 true로 설정
+      >
+        {/* Navbar는 네비게이션이 준비되었고, 현재 화면이 LoginView가 아닐 때만 렌더링 */}
+        {isReady && currentRoute !== 'LoginView' && <Navbar currentRoute={currentRoute} />}
+
         <Stack.Navigator
           initialRouteName="LoginView"
           screenOptions={{
@@ -74,9 +87,9 @@ function App(): React.JSX.Element {
           <Stack.Screen name="AIReport" component={AIReport} />
           <Stack.Screen name="ProfileView" component={ProfileView} />
         </Stack.Navigator>
-        
-        {/* Footerbar는 LoginView가 아닐 때만 렌더링 */}
-        {currentRoute !== 'LoginView' && <Footerbar currentRoute={currentRoute} />}
+
+        {/* Footerbar는 네비게이션이 준비되었고, 현재 화면이 LoginView가 아닐 때만 렌더링 */}
+        {isReady && currentRoute !== 'LoginView' && <Footerbar currentRoute={currentRoute} />}
       </NavigationContainer>
     </SafeAreaView>
   );
@@ -84,8 +97,13 @@ function App(): React.JSX.Element {
 
 const styles = StyleSheet.create({
   safeArea: {
-    display: "flex",
     flex: 1, // 전체 화면을 차지하도록 설정
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#121212',
   },
   backgroundImage: {
     flex: 1, // 화면 전체를 덮도록 설정
