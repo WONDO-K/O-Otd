@@ -49,7 +49,9 @@ function App(): React.JSX.Element {
   return (
     <SafeAreaView style={styles.safeArea}>
       <NavigationContainer onStateChange={handleStateChange}>
-        <Navbar currentRoute={currentRoute} />
+        {/* Navbar는 LoginView가 아닐 때만 렌더링 */}
+        {currentRoute !== 'LoginView' && <Navbar currentRoute={currentRoute} />}
+        
         <Stack.Navigator
           initialRouteName="LoginView"
           screenOptions={{
@@ -72,12 +74,13 @@ function App(): React.JSX.Element {
           <Stack.Screen name="AIReport" component={AIReport} />
           <Stack.Screen name="ProfileView" component={ProfileView} />
         </Stack.Navigator>
-        <Footerbar currentRoute={currentRoute} />
+        
+        {/* Footerbar는 LoginView가 아닐 때만 렌더링 */}
+        {currentRoute !== 'LoginView' && <Footerbar currentRoute={currentRoute} />}
       </NavigationContainer>
     </SafeAreaView>
   );
 }
-
 
 const styles = StyleSheet.create({
   safeArea: {
