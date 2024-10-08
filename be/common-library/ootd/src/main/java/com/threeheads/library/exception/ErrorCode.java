@@ -42,7 +42,17 @@ public enum ErrorCode {
     NOT_FOUND(404, "S004", "리소스를 찾을 수 없습니다."),
 
     // 로그아웃 관련 에러 코드
-    LOGOUT_FAILED(500, "L001", "로그아웃 실패");
+    LOGOUT_FAILED(500, "L001", "로그아웃 실패"),
+
+    // 배틀 관련 에러 코드
+    BATTLE_NOT_FOUND(404, "B001", "배틀을 찾을 수 없습니다."),
+    BATTLE_ALREADY_COMPLETED(400, "B002", "이미 완료된 배틀입니다."),
+    BATTLE_NOT_ACTIVE(400, "B003", "배틀이 활성 상태가 아니거나 종료되었습니다."),
+    DUPLICATE_VOTE(409, "B004", "이미 해당 배틀에 투표하셨습니다."),
+    INVALID_BATTLE_RESPONSE(400, "B005", "잘못된 배틀 응답입니다."),
+    BATTLE_RESPONSE_NOT_ALLOWED(403, "B006", "해당 배틀에 응답할 권한이 없습니다."),
+    BATTLE_CREATION_FAILED(500, "B007", "배틀 생성 중 오류가 발생했습니다."),
+    BATTLE_VOTE_FAILED(500, "B008", "배틀 투표 중 오류가 발생했습니다.");
 
     private final int status;
     private final String code;
