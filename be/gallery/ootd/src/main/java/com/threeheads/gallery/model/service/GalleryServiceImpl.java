@@ -150,16 +150,62 @@ public class GalleryServiceImpl implements GalleryService {
         return result;
     }
 
+    // @Override
+    // public Object getAiResult(List<String> image_urls) {
+    //     Map<String, List<String>> params = new HashMap<>();
+    //     params.put("image_urls", image_urls);
+
+    //     // 2개일 때
+    //     if(image_urls.size()==2){
+    //         Map<String,Object>response = restTemplate.postForObject(classificationFashionUrl, params, Map.class);
+    //         if (response.get("response")==null) {
+    //             return (String) response.get("err");
+    //         }
+    //         else{
+    //             List<Integer> result = (List<Integer>) response.get("response");
+    //             List<String> twoResult = new ArrayList<>();
+    //             for(int num:result){
+    //                 String name = "img_"+num+".%";
+    //                 twoResult.add(galleryRepository.findUrlByImageName(name));
+    //             }
+    //             for(String data:twoResult)
+    //                 log.info("input two result data: {}", data);
+    //             return twoResult;
+    //         }
+    //     }
+    //     else{ // 1개일 때
+    //         Map<String,Object>response = restTemplate.postForObject(classificationFashionUrl, params, Map.class);
+
+    //         if (response.get("response")==null) {
+    //             return (String) response.get("err");
+    //         }
+    //         else{
+    //             List<Integer> result = (List<Integer>) response.get("response");
+    //             List<String> oneResult = new ArrayList<>();
+    //             for(int num:result){
+    //                 String name = "img_"+num+".%";
+    //                 oneResult.add(galleryRepository.findUrlByImageName(name));
+    //             }
+    //             for(String data:oneResult)
+    //                 log.info("input ont result data: {}", data);
+    //             response.put("response",oneResult);
+    //             return response;
+    //         }
+    //     }
+
+    // }
+
     @Override
-    public Object getAiResult(List<String> image_urls) {
+    public List<String> getAiResult(List<String> image_urls) {
         Map<String, List<String>> params = new HashMap<>();
         params.put("image_urls", image_urls);
-
+        List<String> err= new ArrayList<>();
         // 2개일 때
         if(image_urls.size()==2){
             Map<String,Object>response = restTemplate.postForObject(classificationFashionUrl, params, Map.class);
             if (response.get("response")==null) {
-                return (String) response.get("err");
+                err.add((String)response.get("err"));
+                return err;
             }
             else{
                 List<Integer> result = (List<Integer>) response.get("response");
@@ -174,23 +220,7 @@ public class GalleryServiceImpl implements GalleryService {
             }
         }
         else{ // 1개일 때
-            Map<String,Object>response = restTemplate.postForObject(classificationFashionUrl, params, Map.class);
-
-            if (response.get("response")==null) {
-                return (String) response.get("err");
-            }
-            else{
-                List<Integer> result = (List<Integer>) response.get("response");
-                List<String> oneResult = new ArrayList<>();
-                for(int num:result){
-                    String name = "img_"+num+".%";
-                    oneResult.add(galleryRepository.findUrlByImageName(name));
-                }
-                for(String data:oneResult)
-                    log.info("input ont result data: {}", data);
-                response.put("response",oneResult);
-                return response;
-            }
+           return null;
         }
 
     }
