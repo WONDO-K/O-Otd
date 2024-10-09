@@ -2,6 +2,7 @@ package com.threeheads.gallery.model.repository;
 
 import com.threeheads.gallery.model.entity.Gallery;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -29,7 +30,8 @@ public interface GalleryRepository extends JpaRepository<Gallery,Integer> {
     @Query(value = "SELECT likes_count FROM gallery where gallery_id=:id ",nativeQuery = true)
     int searchLikesCount(@Param("id") long id);
 
+    @Modifying
     @Query(value = "UPDATE gallery SET likes_count = likes_count + 1 WHERE gallery_id = :id",nativeQuery = true)
-    Gallery upLike(@Param("id") long id);
+    void upLike(@Param("id") long id);
     
 }
