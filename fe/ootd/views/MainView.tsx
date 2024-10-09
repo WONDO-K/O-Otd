@@ -200,8 +200,8 @@ function MainView(): React.JSX.Element {
 
   return (
     <ImageBackground
-      source={require('../assets/Images/bg_img.jpg')} // 배경 이미지 경로
-      style={styles.background} // 배경 스타일 설정
+      source={require('../assets/Images/bg_img.jpg')}
+      style={styles.background}
     >
       <View style={styles.container}>
         {isLoading && myFashion.length === 0 ? (
