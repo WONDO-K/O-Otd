@@ -243,8 +243,10 @@ public class GalleryServiceImpl implements GalleryService {
                     String imageUrl = "https://" + hostname + "/" + cdnFilePath;;
                     MyFashion myFashion = new MyFashion(0,LocalDateTime.now(),0,0,false,(int)request.get("userId"),null,imageUrl);
                     myFashionRepository.save(myFashion);
+                    log.info("upload: {}", "true"); // 로그 출력
                     return imageUrl; // 업로드된 이미지 URL 반환
                 } else {
+                    log.info("upload: {}", "false"); // 로그 출력
                     throw new IOException("이미지 업로드 실패");
                 }
             } finally {
@@ -253,6 +255,7 @@ public class GalleryServiceImpl implements GalleryService {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            log.info("upload err: {}", e.getMessage()); // 로그 출력
             throw new RuntimeException("이미지 업로드 중 오류가 발생했습니다.");
         }
     }
