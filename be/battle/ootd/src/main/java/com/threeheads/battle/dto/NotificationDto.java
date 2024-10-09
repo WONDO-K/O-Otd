@@ -25,5 +25,5 @@ public class NotificationDto {
     private String title; // 알림 제목
     private String message; // 알림 메시지
     private LocalDateTime timestamp; // 알림 발생 시간
-    private boolean isRead; // 알림 읽음 여부
+    private boolean isRead; // 알림 읽음 여부 -> dto 상에서 read로 변경되어 출력됨
 }
