@@ -13,4 +13,5 @@ public class CollectionDto {
     private long clothesId;
     private int userId;
     private LocalDateTime likeDateTime;
+    private int likesCount;
 }
