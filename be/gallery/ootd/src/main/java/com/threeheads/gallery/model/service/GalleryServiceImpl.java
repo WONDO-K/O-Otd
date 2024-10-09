@@ -182,7 +182,7 @@ public class GalleryServiceImpl implements GalleryService {
                 }
                 for(String data:oneResult)
                     log.info("input ont result data: {}", data);
-                response.put("respnse",oneResult);
+                response.put("response",oneResult);
                 return response;
             }
         }
