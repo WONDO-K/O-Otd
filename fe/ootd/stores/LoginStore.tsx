@@ -4,11 +4,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 interface LoginState {
   accessToken: string | null;
   refreshToken: string | null;
-  userId: number | null;  // userId를 int로 변경
+  userId: number | null;
   userRole: string | null;
+  API_URL: string; // Add API_URL to the state
   setAccessToken: (accessToken: string) => Promise<void>;
   setRefreshToken: (refreshToken: string) => Promise<void>;
-  setUserId: (userId: number) => Promise<void>;  // userId 함수도 int로 수정
+  setUserId: (userId: number) => Promise<void>;
   setUserRole: (userRole: string) => Promise<void>;
   clearAll: () => Promise<void>;
   loadAll: () => Promise<void>;
@@ -17,8 +18,9 @@ interface LoginState {
 export const useLoginStore = create<LoginState>((set) => ({
   accessToken: null,
   refreshToken: null,
-  userId: null,        // userId를 null로 초기화
+  userId: null,
   userRole: null,
+  API_URL: 'https://j11e104.p.ssafy.io', // Initialize API_URL
 
   // AccessToken 설정 함수
   setAccessToken: async (accessToken) => {
@@ -35,7 +37,7 @@ export const useLoginStore = create<LoginState>((set) => ({
   // UserId 설정 함수 (string으로 저장하고, int로 변환하여 사용)
   setUserId: async (userId: number) => {
     set({ userId });
-    await AsyncStorage.setItem('userId', userId.toString()); // 저장할 때는 string으로 변환
+    await AsyncStorage.setItem('userId', userId.toString());
   },
 
   // UserRole 설정 함수
@@ -61,7 +63,7 @@ export const useLoginStore = create<LoginState>((set) => ({
       AsyncStorage.getItem('userId'),
       AsyncStorage.getItem('userRole'),
     ]);
-    const userId = userIdString ? parseInt(userIdString, 10) : null; // 불러올 때는 int로 변환
+    const userId = userIdString ? parseInt(userIdString, 10) : null;
     set({ accessToken, refreshToken, userId, userRole });
   },
 }));
