@@ -63,8 +63,8 @@ public class BattleController {
             return ResponseEntity.status(HttpStatus.CREATED).body(createdBattle);
         } catch (IllegalArgumentException ex) {
             // 잘못된 요청일 경우, BAD_REQUEST와 함께 예외 메시지를 반환
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
-        }
+            String errorMessage = "배틀 신청 중 오류가 발생했습니다: 요청자와 응답자가 같을 수 없습니다.";
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);        }
     }
 
     // 배틀 응답 API (수락 또는 거절)
