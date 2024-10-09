@@ -61,6 +61,7 @@ public class GalleryServiceImpl implements GalleryService {
         }
     }
 
+    //마이컬렉션 리스트 조회
     @Override
     public List<CollectionDto> getCollectionList(Long userId) {
         List<MyLike> myLikes;
@@ -70,9 +71,14 @@ public class GalleryServiceImpl implements GalleryService {
             result=myLikes.stream().map(myLike -> new CollectionDto(
                     myLike.getClothesId(),
                     myLike.getUserId(),
-                    myLike.getLikeDateTime()
+                    myLike.getLikeDateTime(),
+                    0                   
 
             )).toList();
+            
+            for(CollectionDto c:result){
+                c.setLikesCount(galleryRepository.searchLikesCount(c.getClothesId()));
+            }
             for(CollectionDto dto:result)
                 log.info("CollectionDto: {}", dto); // 로그 출력
             return result;
