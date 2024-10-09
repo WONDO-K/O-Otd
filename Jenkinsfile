@@ -220,7 +220,7 @@ def getChangedServices(services) {
     // changedServices.add("eureka")
     // changedServices.add("apigateway")
     // changedServices.add("user")
-    // changedServices.add("user")
+    changedServices.add("user")
     changedServices.add("battle")
     //changedServices.add("gallery")
     for (service in services) {
