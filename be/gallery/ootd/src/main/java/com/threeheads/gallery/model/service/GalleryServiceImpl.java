@@ -78,12 +78,15 @@ public class GalleryServiceImpl implements GalleryService {
                     myLike.getClothesId(),
                     myLike.getUserId(),
                     myLike.getLikeDateTime(),
-                    0                   
+                    0,
+                    null
 
             )).toList();
             
             for(CollectionDto c:result){
                 c.setLikesCount(galleryRepository.searchLikesCount(c.getClothesId()));
+                String name = "img_"+c.getClothesId()+".%";
+                c.setImageUrl(galleryRepository.findUrlByImageName(name));
             }
             for(CollectionDto dto:result)
                 log.info("CollectionDto: {}", dto); // 로그 출력
