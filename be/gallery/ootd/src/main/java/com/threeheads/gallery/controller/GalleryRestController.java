@@ -8,6 +8,8 @@ import com.threeheads.gallery.model.dto.CollectionDto;
 import com.threeheads.gallery.model.dto.GalleryDetailDto;
 import com.threeheads.gallery.model.service.GalleryServiceImpl;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +24,7 @@ import java.util.Map;
 
 @RestController
 @AllArgsConstructor
+@Slf4j
 public class GalleryRestController {
     private GalleryServiceImpl service;
 
@@ -94,11 +97,15 @@ public class GalleryRestController {
 
     @PostMapping("/upload_cdn")
     public ResponseEntity<?> uploadImage(@RequestBody Map<String, Object> request) {
+        log.info("upload controller: {}", true); // 로그 출력
         try{
+            log.info("upload controller in try: {}", true); // 로그 출력
             String result = service.uploadImage(request);
+
             return ResponseEntity.ok(result);
         }
         catch (Exception e){
+            log.info("upload controller err: {}", e.getMessage()); // 로그 출력
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("upload_cdn, "+e.getMessage());
         }
 
