@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @AllArgsConstructor
@@ -78,7 +79,7 @@ public class GalleryRestController {
     }
 
     @PostMapping("/ai")
-    public ResponseEntity<?> getAiResult(@RequestBody List<String> image_url){
+    public ResponseEntity<?> getAiResult(@RequestBody Map<String,List<String>> image_url){
         Object result = service.getAiResult(image_url);
         if(result instanceof String || result == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ai service에러, "+result);
