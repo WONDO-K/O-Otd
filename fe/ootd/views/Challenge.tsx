@@ -46,6 +46,12 @@ function Challenge({ navigation, route }): React.JSX.Element {
                     "X-User-ID": userId,
                 },
             });
+
+            if (selectedUser === nickname.data.nickname) {
+                console.error('Error: You cannot challenge yourself.');
+                return;
+            }
+
             await axios.post(`https://j11e104.p.ssafy.io/battle/create`, 
                 {
                     "requesterId": userId,
