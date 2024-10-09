@@ -50,6 +50,7 @@ public class NotificationController {
         return notificationService.countUnreadNotifications(userId);
     }
 
+
     /**
      * 특정 알림을 읽음 처리하는 엔드포인트
      * @param notificationId 알림 ID
