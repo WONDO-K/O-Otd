@@ -21,6 +21,7 @@ import org.apache.commons.net.ftp.FTPClient;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -103,8 +104,9 @@ public class GalleryRestController {
         try{
             log.info("upload controller in try: {}", true); // 로그 출력
             String result = service.uploadImage(userId, file);
-
-            return ResponseEntity.ok(result);
+            Map<String,String> responseMap = new HashMap<>();
+            responseMap.put("url",result);
+            return ResponseEntity.ok(responseMap);
         }
         catch (Exception e){
             log.info("upload controller err: {}", e.getMessage()); // 로그 출력
