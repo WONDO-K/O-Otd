@@ -19,64 +19,41 @@ import WishFullIcon from '../assets/Icons/WishFull_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
 import { useLoginStore } from '../stores/LoginStore';
 
-// 통합된 이미지 아이템 인터페이스
-interface ImageItem {
-  imageId?: number;
-  galleryId?: number;
-  photoName?: string;
-  imageUrl?: string; // MainView에서 사용
-  photoUrl?: string; // Carousel에서 사용
-  category?: string;
-  uploadedAt?: string;
-  isDelete?: boolean;
-}
-
 function MainView(): React.JSX.Element {
   const navigation = useNavigation();
 
-  const [inputText, setInputText] = useState(''); // 사용자 입력 텍스트
-  const [searchType, setSearchType] = useState(''); // 실제 검색에 사용되는 텍스트
-  const [myFashion, setMyFashion] = useState<ImageItem[]>([]);
-  const [bookmarked, setBookmarked] = useState<{ [key: number]: boolean }>({});
+  const [inputText, setInputText] = useState(''); 
+  const [searchType, setSearchType] = useState(''); 
+  const [myFashion, setMyFashion] = useState([]);
+  const [bookmarked, setBookmarked] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<ImageItem | null>(null);
+  const [selectedImage, setSelectedImage] = useState(null);
   
-  // 로딩 상태 관리
   const [isLoading, setIsLoading] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  
-  // 에러 상태 관리
-  const [error, setError] = useState<string | null>(null);
-
-  // 추가: 더 이상 데이터가 없는지 추적
+  const [error, setError] = useState(null);
   const [hasMore, setHasMore] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1); // 페이지 번호 관리
+  const [currentPage, setCurrentPage] = useState(1); 
 
   const { accessToken, userId, API_URL } = useLoginStore();
+  const onEndReachedCalledDuringMomentum = useRef(false);
 
-  // onEndReached 호출 제어를 위한 플래그
-  const onEndReachedCalledDuringMomentum = useRef<boolean>(false);
-
-  // 초기 데이터 로드
   useEffect(() => {
-    fetchGallery('', true); // 초기 로드에 빈 검색어 사용
+    fetchGallery('', true); 
   }, []);
 
-  // 검색어가 변경될 때 데이터를 초기화하고 다시 로드
   useEffect(() => {
     if (searchType.trim() === '') {
-      // 빈 검색어는 모든 데이터를 로드하도록 설정할 수 있습니다.
       fetchGallery('', true);
       return;
     }
     setMyFashion([]);
-    setHasMore(true); // 새로운 검색 시 hasMore 초기화
-    setCurrentPage(1); // 페이지 초기화
+    setHasMore(true); 
+    setCurrentPage(1);
     fetchGallery(searchType, true);
   }, [searchType]);
 
-  // API 요청 함수
-  const fetchGallery = async (type: string, isNewSearch: boolean = false) => {
+  const fetchGallery = async (type, isNewSearch = false) => {
     if (isLoading || isLoadingMore || !hasMore) return;
 
     if (isNewSearch) {
@@ -91,7 +68,7 @@ function MainView(): React.JSX.Element {
         params: {
           "type": type.trim(),
           "page": isNewSearch ? 1 : currentPage + 1,
-          "limit": 20, // 예시: 한 번에 20개씩 로드
+          "limit": 20,
         },
         headers: {
           "Authorization": accessToken,
@@ -99,27 +76,21 @@ function MainView(): React.JSX.Element {
           "X-User-ID": userId,
         },
       });
-      const fetchedData: ImageItem[] = response.data; // response.data 사용
-
-      console.log('갤러리 받아오기:', fetchedData);
+      const fetchedData = response.data;
 
       if (fetchedData.length > 0) {
-        // 중복된 imageId 제거 (선택 사항)
         const uniqueData = fetchedData.filter(
           (item, index, self) => index === self.findIndex((t) => t.imageId === item.imageId)
         );
         setMyFashion((prev) => isNewSearch ? uniqueData : [...prev, ...uniqueData]);
-        // 추가: 더 불러올 데이터가 있는지 확인
-        if (uniqueData.length < 20) { // 예시: 받아온 데이터 수가 limit보다 작으면 더 이상 데이터 없음
+        if (uniqueData.length < 20) {
           setHasMore(false);
         } else {
           setCurrentPage(prevPage => prevPage + 1);
         }
       } else {
-        // 더 이상 불러올 데이터가 없을 경우 처리
         setHasMore(false);
       }
-
       setError(null);
     } catch (err) {
       console.error('Error fetching gallery:', err);
@@ -133,14 +104,13 @@ function MainView(): React.JSX.Element {
     }
   };
 
-  // openModal 함수 수정: imageUrl 또는 photoUrl을 사용
-  const openModal = useCallback((item: ImageItem) => {
+  const openModal = useCallback((item) => {
     const imageUrl = item.imageUrl || item.photoUrl;
     if (!imageUrl) {
       console.error('No imageUrl found in the item:', item);
       return;
     }
-    setSelectedImage({ ...item, imageUrl }); // imageUrl을 보장
+    setSelectedImage({ ...item, imageUrl });
     setIsModalVisible(true);
   }, []);
 
@@ -149,54 +119,29 @@ function MainView(): React.JSX.Element {
     setSelectedImage(null);
   }, []);
 
-  // 북마크 토글 함수
-  const toggleBookmark = useCallback((id: number) => {
+  const toggleBookmark = useCallback((id) => {
     setBookmarked((prevState) => ({
       ...prevState,
       [id]: !prevState[id],
     }));
   }, []);
 
-  // 추가 로딩 함수
   const handleLoadMore = useCallback(() => {
     if (!isLoadingMore && hasMore) {
       fetchGallery(searchType);
     }
   }, [isLoadingMore, hasMore, searchType]);
 
-  // 렌더리기 위한 로딩 컴포넌트
-  const renderFooter = useCallback(() => {
-    if (!isLoadingMore) return null;
-    return (
-      <View style={styles.loadingMore}>
-        <ActivityIndicator size="large" color="#ffffff" />
-      </View>
-    );
-  }, [isLoadingMore]);
-
-  // 검색 입력 핸들러는 이제 inputText를 설정함
-  const handleInputChange = useCallback((input: string) => {
+  const handleInputChange = useCallback((input) => {
     setInputText(input);
   }, []);
 
-  // 검색 아이콘 터치 시 searchType을 설정 (변경된 부분)
   const handleSearchPress = useCallback(() => {
     const trimmedInput = inputText.trim();
-    if (trimmedInput !== searchType.trim()) { // 실제로 변경된 경우에만 업데이트
+    if (trimmedInput !== searchType.trim()) {
       setSearchType(trimmedInput);
     }
   }, [inputText, searchType]);
-
-  // FlatList의 헤더 컴포넌트로 사용할 Carousel과 SearchBar를 별도 컴포넌트로 분리 및 메모이제이션
-  const renderHeader = useCallback(() => (
-    <HeaderComponent
-      openModal={openModal}
-      handleSearchPress={handleSearchPress}
-      inputText={inputText}
-      handleInputChange={handleInputChange}
-      isLoading={isLoading}
-    />
-  ), [openModal, handleSearchPress, inputText, handleInputChange, isLoading]);
 
   return (
     <ImageBackground
@@ -204,6 +149,23 @@ function MainView(): React.JSX.Element {
       style={styles.background}
     >
       <View style={styles.container}>
+        <Carousel openModal={openModal} />
+        <View style={styles.searchBar}>
+          <TouchableOpacity onPress={handleSearchPress} disabled={isLoading}>
+            <Image source={require('../assets/Images/searchIcon.png')} style={styles.searchIcon} />
+          </TouchableOpacity>
+          <TextInput
+            style={styles.searchInput}
+            maxLength={30}
+            placeholder="패션 검색"
+            placeholderTextColor="gray"
+            value={inputText}
+            onChangeText={handleInputChange}
+            onSubmitEditing={handleSearchPress}
+            returnKeyType="search"
+          />
+          {isLoading && <ActivityIndicator size="small" color="#ffffff" style={styles.searchLoader} />}
+        </View>
         {isLoading && myFashion.length === 0 ? (
           <View style={styles.loaderContainer}>
             <ActivityIndicator size="large" color="#ffffff" />
@@ -218,25 +180,24 @@ function MainView(): React.JSX.Element {
         ) : (
           <FlatList
             data={myFashion}
-            keyExtractor={(item, index) => `${item.imageId}_${index}`} // 고유 키 설정
+            keyExtractor={(item, index) => `${item.imageId}_${index}`}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => openModal(item)} style={styles.notificationItem}>
                 <ImageBackground source={{ uri: item.imageUrl }} style={styles.notificationImage} resizeMode="cover">
                   <TouchableOpacity style={styles.bookmarkIcon} onPress={() => toggleBookmark(item.imageId || 0)}>
                     {bookmarked[item.imageId || 0] ? (
-                      <WishFullIcon width={30} height={40} /> // 북마크가 활성화된 경우
+                      <WishFullIcon width={30} height={40} />
                     ) : (
-                      <WishIcon width={30} height={40} fill="white" /> // 비활성화된 경우
+                      <WishIcon width={30} height={40} fill="white" />
                     )}
                   </TouchableOpacity>
                 </ImageBackground>
               </TouchableOpacity>
             )}
-            ListHeaderComponent={renderHeader} // 헤더 컴포넌트 추가
+            ListFooterComponent={isLoadingMore ? <ActivityIndicator size="large" color="#ffffff" /> : null}
             numColumns={2}
             onEndReached={handleLoadMore}
             onEndReachedThreshold={0.5}
-            ListFooterComponent={renderFooter}
             contentContainerStyle={styles.flatListContent}
             onMomentumScrollBegin={() => { onEndReachedCalledDuringMomentum.current = false; }}
             onEndReached={() => {
@@ -247,8 +208,6 @@ function MainView(): React.JSX.Element {
             }}
           />
         )}
-
-        {/* 이미지 모달 */}
         <Modal
           visible={isModalVisible}
           transparent={true}
@@ -280,29 +239,6 @@ function MainView(): React.JSX.Element {
     </ImageBackground>
   );
 }
-
-// 별도 헤더 컴포넌트 정의 및 메모이제이션
-const HeaderComponent = React.memo(({ openModal, handleSearchPress, inputText, handleInputChange, isLoading }) => (
-  <>
-    <Carousel openModal={openModal} />
-    <View style={styles.searchBar}>
-      <TouchableOpacity onPress={handleSearchPress} disabled={isLoading}>
-        <Image source={require('../assets/Images/searchIcon.png')} style={styles.searchIcon} />
-      </TouchableOpacity>
-      <TextInput
-        style={styles.searchInput}
-        maxLength={30}
-        placeholder="패션 검색"
-        placeholderTextColor="gray"
-        value={inputText}
-        onChangeText={handleInputChange}
-        onSubmitEditing={handleSearchPress} // 엔터 키로도 검색 트리거
-        returnKeyType="search"
-      />
-      {isLoading && <ActivityIndicator size="small" color="#ffffff" style={styles.searchLoader} />}
-    </View>
-  </>
-));
 
 const styles = StyleSheet.create({
   background: {
