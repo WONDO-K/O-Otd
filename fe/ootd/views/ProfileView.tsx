@@ -130,24 +130,24 @@ const getPictureList = (category: string, sort: string) => {
                 "title": "Summer Fashion Battle",
                 "participantCount": 2,
                 "status": "IN_PROGRESS",
-                "startedAt": "2024-09-25T01:00:00",
-                "leftImage": "https://placekitten.com/200/300",
-                "rightImage": "https://placedog.net/500",
-                "myPick": null,
-                "leftName": "악질유저기무동현",
-                "rightName": "분탕장인손우혁"
+                "createdAt": "2024-09-25T01:00:00",
+                "requesterImage": "https://placekitten.com/200/300",
+                "responderImage": "https://placedog.net/500",
+                "myPickUserId": null,
+                "requesterName": "악질유저기무동현",
+                "responderName": "분탕장인손우혁"
             },
             {
                 "battleId": 3,
                 "title": "Autumn Collection Showdown",
                 "participantCount": 2,
                 "status": "IN_PROGRESS",
-                "startedAt": "2024-09-25T00:00:00",
-                "leftImage": "https://picsum.photos/400/400",
-                "rightImage": "https://picsum.photos/200/300",
-                "myPick": "left",
-                "leftName": "유저네임3",
-                "rightName": "유저네임4"
+                "createdAt": "2024-09-25T00:00:00",
+                "requesterImage": "https://picsum.photos/400/400",
+                "responderImage": "https://picsum.photos/200/300",
+                "myPickUserId": "left",
+                "requesterName": "유저네임3",
+                "responderName": "유저네임4"
             }
         ],
       }

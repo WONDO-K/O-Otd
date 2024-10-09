@@ -2,27 +2,70 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Image, View, Text, StyleSheet, Touchable, TouchableOpacity, ImageBackground } from 'react-native';
 import { ContentBoldText } from '../components/CustomTexts';
+import { useLoginStore } from '../stores/LoginStore';
 
 function BattleDetail({ navigation, route }): React.JSX.Element {
     
     const item = route.params;
-
-    const [battleItem, setBattleItem] = useState({
+    const {accessToken, userId} = useLoginStore();
+    const [battleItem, setBattleItem] = useState<{
+        battleId: number;
+        title: string;
+        status: string;
+        createdAt: string;
+        expiresAt: string;
+        requesterId: number;
+        responderId: number;
+        requesterImage: string;
+        responderImage: string;
+        myPickUserId: number | null;
+        requesterName: string;
+        responderName: string;
+        requesterVotes: number;
+        responderVotes: number;
+    }>({
         battleId: 0,
         title: '',
-        participantCount: 0,
         status: '',
-        startedAt: '',
-        leftImage: '',
-        rightImage: '',
-        myPick: null,
-        leftName: '',
-        rightName: ''
+        createdAt: '',
+        expiresAt: '',
+        requesterId: 0,
+        responderId: 0,
+        requesterImage: '',
+        responderImage: '',
+        myPickUserId: null,
+        requesterName: '',
+        responderName: '',
+        requesterVotes: 0,
+        responderVotes: 0,
     });
 
-    const voteItem = (name : string) => {
-        // axios.post('XXXXXXXXXXXXXXXXXXXXXXXXXX', { battleId: battleItem.battleId, name: name });
-        navigation.navigate('Battle');
+    const voteItem = async(candidate_id : number) => {
+        try {
+            console.log(`https://j11e104.p.ssafy.io/battle/vote/${battleItem.battleId}`)
+            await axios.post(`https://j11e104.p.ssafy.io/battle/vote/${battleItem.battleId}`, 
+                {
+                    "userId": userId,
+                    "votedForId": candidate_id   
+                },
+                {
+                    headers: {
+                        "Authorization": accessToken,
+                        "Content-Type": "application/json",
+                        "X-User-ID": userId,
+                    }
+                }
+            );
+
+            setBattleItem((prev) => ({
+                ...prev,
+                myPickUserId: candidate_id,
+            }));
+
+            navigation.navigate('Battle');
+        } catch (error) {
+            console.error('Vote Error Vote:', error);
+        }
     };
 
     useEffect(() => {
@@ -40,22 +83,22 @@ function BattleDetail({ navigation, route }): React.JSX.Element {
                 <View style={styles.battleItem}>
                     <TouchableOpacity
                         style={styles.leftSide}
-                        onPress={()=>{voteItem(item.leftName)}}
+                        onPress={()=>{voteItem(item.requesterId)}}
                     >
-                        <ContentBoldText style={styles.userNameText}>{battleItem.leftName}</ContentBoldText>
+                        <ContentBoldText style={styles.userNameText}>{battleItem.requesterName}</ContentBoldText>
                         <Image
                             style={styles.image}
-                            source={{ uri: item.leftImage }}
+                            source={{ uri: item.requesterImage }}
                         />
                     </TouchableOpacity>
                     <TouchableOpacity 
                         style={styles.rightSide}
-                        onPress={()=>{voteItem(item.rightName)}}
+                        onPress={()=>{voteItem(item.responderId)}}
                     >
-                        <ContentBoldText style={styles.userNameText}>{battleItem.rightName}</ContentBoldText>
+                        <ContentBoldText style={styles.userNameText}>{battleItem.responderName}</ContentBoldText>
                         <Image
                             style={styles.image}
-                            source={{ uri: item.rightImage }}
+                            source={{ uri: item.responderImage }}
                         />
                     </TouchableOpacity>
                 </View>

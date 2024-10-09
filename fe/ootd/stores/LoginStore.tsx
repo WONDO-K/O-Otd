@@ -1,5 +1,4 @@
-// LoginStore.ts
-import create from 'zustand';
+import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface LoginState {

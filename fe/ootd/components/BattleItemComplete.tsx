@@ -6,7 +6,7 @@ import { ContentText, ContentBoldText } from './CustomTexts';
 type BattleItemProgressProps = {
   item: any;
   onPress: () => void;
-  calculateRemainingTime: (startedAt: string) => string;
+  calculateRemainingTime: (createdAt: string) => string;
   nameSlice: (name: string) => string;
 };
 
@@ -17,47 +17,47 @@ const BattleItemProgress: React.FC<BattleItemProgressProps> = ({ item, onPress, 
             onPress={onPress}
         >
             <View style={styles.battleTitle}>
-                <ContentBoldText style={styles.battleNameText}>{nameSlice(item.leftName)}</ContentBoldText>
-                <ContentText style={styles.battleTimeText}>{calculateRemainingTime(item.startedAt)}</ContentText>
-                <ContentBoldText style={styles.battleNameText}>{nameSlice(item.rightName)}</ContentBoldText>
+                <ContentBoldText style={styles.battleNameText}>{nameSlice(item.requesterName)}</ContentBoldText>
+                <ContentText style={styles.battleTimeText}>{calculateRemainingTime(item.createdAt)}</ContentText>
+                <ContentBoldText style={styles.battleNameText}>{nameSlice(item.responderName)}</ContentBoldText>
             </View>
             <View style={styles.progressBarContainer}>
                 {/* 왼쪽 그라데이션 진행 바 */}
-                {item.leftVote >= item.rightVote ? (
+                {item.requesterVotes >= item.responderVotes ? (
                     <LinearGradient
                         colors={['#ffa6a6', '#FF6B6B']} // 승리한 쪽 색상
                         start={{ x: 0, y: 0 }} 
                         end={{ x: 1, y: 0 }} 
                         style={[
                         styles.progressBar,
-                        { width: `${(item.leftVote / (item.leftVote + item.rightVote)) * 100 ?? 50}%` },
+                        { width: `${(item.requesterVotes / (item.requesterVotes + item.responderVotes)) * 100 ?? 50}%` },
                         ]}
                     />
                 ) : (
                     <View
                         style={[
                         styles.progressBar,
-                        { width: `${(item.leftVote / (item.leftVote + item.rightVote)) * 100 ?? 50}%`, backgroundColor: '#C0C0C0' }, // 회색 (패배)
+                        { width: `${(item.requesterVotes / (item.requesterVotes + item.responderVotes)) * 100 ?? 50}%`, backgroundColor: '#C0C0C0' }, // 회색 (패배)
                         ]}
                     />
                 )}
 
                 {/* 오른쪽 그라데이션 진행 바 */}
-                {item.leftVote <= item.rightVote ? (
+                {item.requesterVotes <= item.responderVotes ? (
                 <LinearGradient
                     colors={['#6FBAFF', '#c1e2ff']} // 승리한 쪽 색상
                     start={{ x: 0, y: 0 }} 
                     end={{ x: 1, y: 0 }} 
                     style={[
                     styles.progressBar,
-                    { width: `${(item.rightVote / (item.leftVote + item.rightVote)) * 100 ?? 50}%` },
+                    { width: `${(item.responderVotes / (item.requesterVotes + item.responderVotes)) * 100 ?? 50}%` },
                     ]}
                 />
                 ) : (
                 <View
                     style={[
                     styles.progressBar,
-                    { width: `${(item.rightVote / (item.leftVote + item.rightVote)) * 100 ?? 50}%`, backgroundColor: '#C0C0C0' }, // 회색 (패배)
+                    { width: `${(item.responderVotes / (item.requesterVotes + item.responderVotes)) * 100 ?? 50}%`, backgroundColor: '#C0C0C0' }, // 회색 (패배)
                     ]}
                 />
                 )}
@@ -67,18 +67,18 @@ const BattleItemProgress: React.FC<BattleItemProgressProps> = ({ item, onPress, 
                 <Image 
                     style={[
                         styles.battleImage,
-                        item.myPick === 'left' && styles.pickedImage,
-                        item.myPick === 'right' && styles.unPickedImage
+                        item.myPickUserId === item.requesterId && styles.pickedImage,
+                        item.myPickUserId === item.responderId && styles.unPickedImage
                     ]} 
-                    source={{ uri: item.leftImage }} 
+                    source={{ uri: item.requesterImage }} 
                 />
                 <Image 
                     style={[
                         styles.battleImage,
-                        item.myPick === 'left' && styles.unPickedImage,
-                        item.myPick === 'right' && styles.pickedImage
+                        item.myPickUserId === item.requesterId && styles.unPickedImage,
+                        item.myPickUserId === item.responderId && styles.pickedImage
                     ]} 
-                    source={{ uri: item.rightImage }} 
+                    source={{ uri: item.responderImage }} 
                 />
             </View>
         </TouchableOpacity>

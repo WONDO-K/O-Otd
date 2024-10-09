@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Switch, StyleSheet, ScrollView, ImageBackground } from 'react-native'; 
 import { FlatList } from 'react-native-gesture-handler';
 import SendIcon from '../assets/Icons/Send_Icon'
+import { useLoginStore } from '../stores/LoginStore';
 
 import { TitleBoldText, ContentBoldText } from '../components/CustomTexts';
 import axios from 'axios';
@@ -15,23 +16,24 @@ type Battle = {
     title: string;
     participantCount: number;
     status: string;
-    startedAt: string;
+    createdAt: string;
     endedAt: string;
-    leftImage: string;
-    rightImage: string;
-    myPick: string | null;
+    requesterImage: string;
+    responderImage: string;
+    myPickUserId: string | null;
 };
 
 function Battle({ navigation }): React.JSX.Element {
 
-    const [selectedCategory, setSelectedCategory] = useState('진행 중');
-    const [selectedSort, setSelectedSort] = useState('최신순');
+    const [selectedCategory, setSelectedCategory] = useState('active');
+    const [selectedSort, setSelectedSort] = useState('recent');
     const [isEnabled, setIsEnabled] = useState(false);
     const [battleList, setBattleList] = useState([]);
+    const {accessToken, userId} = useLoginStore();
 
-    const calculateRemainingTime = (startedAt: string): string => {
+    const calculateRemainingTime = (createdAt: string): string => {
         const now = new Date(); // 현재 시간
-        const startTime = new Date(startedAt);
+        const startTime = new Date(createdAt);
     
         // 경과 시간 (밀리초 단위)
         const elapsedTime = now.getTime() - startTime.getTime();
@@ -59,7 +61,7 @@ function Battle({ navigation }): React.JSX.Element {
   
     const selectCategory = (category: string) => {
         setSelectedCategory(category);
-        setSelectedSort('최신순');
+        setSelectedSort('recent');
     };
     const selectSort = (sort: string) => {
         setSelectedSort(sort);
@@ -73,87 +75,21 @@ function Battle({ navigation }): React.JSX.Element {
         }
     }
 
-    const getBattleList = (category: string, sort: string) => {
-        if (category === '진행 중') {
-            const data = {
-                "ongoingBattles": [
-                    {
-                        "battleId": 1,
-                        "title": "Summer Fashion Battle",
-                        "participantCount": 2,
-                        "status": "IN_PROGRESS",
-                        "startedAt": "2024-09-25T01:00:00",
-                        "leftImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_1/img_1.png",
-                        "rightImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_1/img_10.png",
-                        "myPick": null,
-                        "leftName": "악질유저기무동현",
-                        "rightName": "분탕장인손우혁"
-                    },
-                    {
-                        "battleId": 3,
-                        "title": "Autumn Collection Showdown",
-                        "participantCount": 2,
-                        "status": "IN_PROGRESS",
-                        "startedAt": "2024-09-25T00:00:00",
-                        "leftImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_9/img_184929.png",
-                        "rightImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_9/img_184928.png",
-                        "myPick": "left",
-                        "leftName": "유저네임3",
-                        "rightName": "유저네임4"
-                    }
-                ],
-            }
-
-            setBattleList(data.ongoingBattles);
-        } else {
-            const data = {
-                "completedBattles": [
-                    {
-                        "battleId": 2,
-                        "title": "Winter Fashion Battle",
-                        "participantCount": 2,
-                        "status": "COMPLETED",
-                        "startedAt": "2024-08-01T10:00:00",
-                        "endedAt": "2024-08-10T18:00:00",
-                        "leftImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_9/img_184930.png",
-                        "rightImage": "https://o-otd.b-cdn.net/ootd_images/ootd_images_part_9/img_18493.png",
-                        "myPick": "right",
-                        "leftName": "악질유저기무동현사마",
-                        "rightName": "쌀선대원군",
-                        "leftVote": 159,
-                        "rightVote": 345,
-                    },
-                    {
-                        "battleId": 4,
-                        "title": "Spring Style Competition",
-                        "participantCount": 2,
-                        "status": "COMPLETED",
-                        "startedAt": "2024-07-01T09:00:00",
-                        "endedAt": "2024-07-07T17:00:00",
-                        "leftImage": "https://placekitten.com/200/300",
-                        "rightImage": "https://placedog.net/500",
-                        "myPick": null,
-                        "leftName": "유저네임7",
-                        "rightName": "유저네임8",
-                        "leftVote": 35,
-                        "rightVote": 15,
-                    }
-                ]
-            }
-            setBattleList(data.completedBattles)
-        };
-        // axios.get('https://api.example.com/battle', {
-        //     params: {
-        //         category: category,
-        //         sort: sort
-        //     }
-        // })
-        // .then(response => {
-        //     // setBattleList(response.data); 
-        // })
-        // .catch(error => {
-        //     console.error(error);
-        // });
+    const getBattleList = async(category: string, sort: string) => {
+        setBattleList([]);
+        try {
+            const response = await axios.get(`https://j11e104.p.ssafy.io/battle/list/${category}/${sort}/${userId}`, {
+                headers: {
+                    "Authorization": accessToken,
+                    "Content-Type": "application/json",
+                    "X-User-ID": userId,
+                }
+            });
+            console.log(response.data);
+            setBattleList(response.data); // 상태 업데이트
+        } catch (error) {
+            console.error('Error fetching my fashion:', error);
+        }
     };
 
     useEffect(() => {
@@ -184,20 +120,20 @@ function Battle({ navigation }): React.JSX.Element {
                     <View style={styles.battleCategory}>
                         <TouchableOpacity
                             style={styles.battleCategoryButton}
-                            onPress={() => selectCategory('진행 중')}
+                            onPress={() => selectCategory('active')}
                         >
                             <ContentBoldText
                                 style={[
                                     styles.battleCategoryButtonText,
                                     {
-                                        color: selectedCategory === '진행 중' ? 'white' : 'gray',
-                                        padding: selectedCategory === '진행 중' ? 5 : 0,
+                                        color: selectedCategory === 'active' ? 'white' : 'gray',
+                                        padding: selectedCategory === 'active' ? 5 : 0,
                                     },
                                 ]}
                             >
                                 진행 중
                             </ContentBoldText>
-                            {selectedCategory === '진행 중' &&
+                            {selectedCategory === 'active' &&
                                 <LinearGradient
                                     style={{
                                         width: '63%',
@@ -212,20 +148,20 @@ function Battle({ navigation }): React.JSX.Element {
                         </TouchableOpacity>
                         <TouchableOpacity 
                             style={styles.battleCategoryButton}
-                            onPress={() => selectCategory('결과')}
+                            onPress={() => selectCategory('completed')}
                         >
                             <ContentBoldText
                                 style={[
                                     styles.battleCategoryButtonText,
                                     {
-                                        color: selectedCategory === '결과' ? 'white' : 'gray',
-                                        padding: selectedCategory === '결과' ? 5 : 0,
+                                        color: selectedCategory === 'completed' ? 'white' : 'gray',
+                                        padding: selectedCategory === 'completed' ? 5 : 0,
                                     },
                                 ]}
                             >
                                 결과
                             </ContentBoldText>
-                            {selectedCategory === '결과' &&
+                            {selectedCategory === 'completed' &&
                                 <LinearGradient
                                     style={{
                                         width: '40%',
@@ -246,32 +182,29 @@ function Battle({ navigation }): React.JSX.Element {
                 <View style={styles.battleSort}>
                     <TouchableOpacity style={[
                                 styles.battleSortButton,
-                                {
-                                    // backgroundColor: selectedSort === '최신순' ? '#5b5b5b' : '#6f6f6f',
-                                    
-                                    borderWidth: selectedSort === '최신순' ? 2 : 0,
+                                {   
+                                    borderWidth: selectedSort === 'recent' ? 2 : 0,
                                 },
                             ]}
-                            onPress={() => selectSort('최신순')}>
+                            onPress={() => selectSort('recent')}>
                             <ContentBoldText style={[
                                 styles.battleSortButtonText,
                                 {
-                                    color: selectedSort === '최신순' ? 'white' : 'gray'
+                                    color: selectedSort === 'recent' ? 'white' : 'gray'
                                 }
                             ]}>최신순</ContentBoldText>
                     </TouchableOpacity>
                     <TouchableOpacity style={[
                                 styles.battleSortButton,
                                 {
-                                    // backgroundColor: selectedSort === '인기순' ? '#5b5b5b' : '#6f6f6f',
-                                    borderWidth: selectedSort === '인기순' ? 2 : 0,
+                                    borderWidth: selectedSort === 'popular' ? 2 : 0,
                                 },
                             ]}
-                            onPress={() => selectSort('인기순')}>
+                            onPress={() => selectSort('popular')}>
                         <ContentBoldText style={[
                             styles.battleSortButtonText,
                             {
-                                color: selectedSort === '인기순' ? 'white' : 'gray'
+                                color: selectedSort === 'popular' ? 'white' : 'gray'
                             }
                         ]}>인기순</ContentBoldText>
                     </TouchableOpacity>
@@ -281,7 +214,7 @@ function Battle({ navigation }): React.JSX.Element {
                     data={battleList}
                     keyExtractor={(item, index) => index.toString()}
                     renderItem={({ item }) => (
-                        selectedCategory === '진행 중' ? (
+                        selectedCategory === 'active' ? (
                             <BattleItemProgress
                                 item={item}
                                 onPress={() => navigation.navigate('BattleDetail', item)}
