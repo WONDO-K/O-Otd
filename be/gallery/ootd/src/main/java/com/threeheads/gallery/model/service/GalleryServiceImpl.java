@@ -19,6 +19,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.swing.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -148,13 +149,39 @@ public class GalleryServiceImpl implements GalleryService {
         Map<String, List<String>> params = new HashMap<>();
         params.put("image_urls", image_urls);
 
-        Map<String,Object>response = restTemplate.postForObject(classificationFashionUrl, params, Map.class);
+        // 2개일 때
+        if(image_urls.size()==2){
+            Map<String,Object>response = restTemplate.postForObject(classificationFashionUrl, params, Map.class);
+            if (response.get("response")==null) {
+                return (String) response.get("err");
+            }
+            else{
+                List<Integer> result = (List<Integer>) response.get("response");
+                List<String> twoResult = new ArrayList<>();
+                for(int num:result){
+                    String name = "img_"+num+"%";
+                    twoResult.add(galleryRepository.findUrlByImageName(name));
+                }
+                return twoResult;
+            }
+        }
+        else{ // 1개일 때
+            Map<String,Object>response = restTemplate.postForObject(classificationFashionUrl, params, Map.class);
 
-        if (response.get("response") instanceof String) {
-            return (String) response.get("response");
+            if (response.get("response")==null) {
+                return (String) response.get("err");
+            }
+            else{
+                List<Integer> result = (List<Integer>) response.get("response");
+                List<String> oneResult = new ArrayList<>();
+                for(int num:result){
+                    String name = "img_"+num+"%";
+                    oneResult.add(galleryRepository.findUrlByImageName(name));
+                }
+                response.put("respnse",oneResult);
+                return response;
+            }
         }
-        else{
-            return (List<Integer>) response.get("response");
-        }
+
     }
 }

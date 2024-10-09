@@ -22,4 +22,7 @@ public interface GalleryRepository extends JpaRepository<Gallery,Integer> {
 
     @Query(value = "SELECT * FROM gallery ORDER BY likes_count DESC, gallery_id ASC LIMIT 10", nativeQuery = true)
     List<Gallery> findWeekPick();
+
+    @Query(value = "SELECT photo_url FROM gallery_db.gallery where photo_name LIKE :name",nativeQuery = true)
+    String findUrlByImageName(@Param("name") String name);
 }
