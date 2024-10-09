@@ -22,12 +22,24 @@ interface CarouselProps {
   openModal: (item: any) => void; // openModal의 타입 정의
 }
 
+// 통합된 이미지 아이템 인터페이스
+interface ImageItem {
+  imageId?: number;
+  galleryId?: number;
+  photoName?: string;
+  imageUrl?: string; // MainView에서 사용
+  photoUrl?: string; // Carousel에서 사용
+  category?: string;
+  uploadedAt?: string;
+  isDelete?: boolean;
+}
+
 export default function Carousel({ openModal }: CarouselProps) {
   const scrollX = useRef(new Animated.Value(0)).current; // 스크롤 애니메이션 값
   const flatListRef = useRef(null);
   const intervalRef = useRef<number>(0);
   const [currentIndex, setCurrentIndex] = useState(1);
-  const [WeeklyStyle, setWeeklyStyle] = useState([]);
+  const [weeklyStyle, setWeeklyStyle] = useState<ImageItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -64,11 +76,11 @@ export default function Carousel({ openModal }: CarouselProps) {
 
   // 양 끝에 데이터를 복사하여 무한 스크롤처럼 보이게 함
   const infiniteData = useMemo(() => {
-    if (WeeklyStyle.length === 0) return [];
-    const firstItem = WeeklyStyle[0];
-    const lastItem = WeeklyStyle[WeeklyStyle.length - 1];
-    return [lastItem, ...WeeklyStyle, firstItem];
-  }, [WeeklyStyle]);
+    if (weeklyStyle.length === 0) return [];
+    const firstItem = weeklyStyle[0];
+    const lastItem = weeklyStyle[weeklyStyle.length - 1];
+    return [lastItem, ...weeklyStyle, firstItem];
+  }, [weeklyStyle]);
 
   // 스크롤 위치에 맞춰 크기 변경
   const snapToOffsets = useMemo(() => {
@@ -210,7 +222,7 @@ export default function Carousel({ openModal }: CarouselProps) {
                 <View style={{ borderRadius: 10, overflow: 'hidden' }}>
                   <ImageBackground 
                     style={cardSize} 
-                    source={{ uri: item.photoUrl }} 
+                    source={{ uri: item.imageUrl || item.photoUrl }} // imageUrl 또는 photoUrl 사용
                     onError={(e) => {
                       console.error('이미지 로딩 실패:', e.nativeEvent.error);
                     }}
@@ -223,7 +235,7 @@ export default function Carousel({ openModal }: CarouselProps) {
           );
         }}
         // keyExtractor 수정: 인덱스를 포함하여 키의 고유성 보장
-        keyExtractor={(item, index) => `${item.galleryId}_${item.photoName}_${index}`}
+        keyExtractor={(item, index) => `${item.galleryId || item.imageId}_${item.photoName || index}`}
         getItemLayout={(data, index) => ({
           length: offset, // 각 아이템의 고정 길이
           offset: offset * index, // 각 아이템의 오프셋
