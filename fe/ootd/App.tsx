@@ -18,6 +18,8 @@ import MyFashion from './views/MyFashion';
 import SplashScreen from 'react-native-splash-screen';
 import AIReport from './views/AIReport';
 import ProfileView from './views/ProfileView';
+import axios from 'axios';
+import { useLoginStore } from './stores/LoginStore';
 
 import { NavigationContainer, NavigationState } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -30,6 +32,8 @@ function App(): React.JSX.Element {
   const [currentRoute, setCurrentRoute] = useState("LoginView");
   const [isAppLoaded, setIsAppLoaded] = useState(false);
   const [isReady, setIsReady] = useState(false); // 네비게이션 준비 상태 추적
+  const [unreadCount, setUnreadCount] = useState(0);
+  const { accessToken, userId } = useLoginStore();
 
   // 스플래시 화면
   useEffect(() => {
@@ -40,11 +44,25 @@ function App(): React.JSX.Element {
     }, 1500);  // 1.5초
   }, []);
 
-  const handleStateChange = (state?: NavigationState) => {
+  const handleStateChange = async (state?: NavigationState) => {
     if (!state) return;
     const currentRouteName = state.routes[state.index]?.name;
     if (currentRouteName) {
       setCurrentRoute(currentRouteName);
+      // 모든 페이지 전환 시 요청 보내기
+    try {
+      const response = await axios.get(`https://j11e104.p.ssafy.io/battle/notifications/unread-count/${userId}`, {
+        headers: {
+          "Authorization": accessToken,
+          "Content-Type": "application/json",
+          "X-User-ID": userId,
+        }
+      });
+      setUnreadCount(response.data);
+      console.log('Data fetched on route change:', response.data);
+    } catch (error) {
+      console.error('Error fetching data on route change:', error);
+    }
     }
   };
 
@@ -63,7 +81,7 @@ function App(): React.JSX.Element {
         onReady={() => setIsReady(true)} // 네비게이션이 준비되면 isReady를 true로 설정
       >
         {/* Navbar는 네비게이션이 준비되었고, 현재 화면이 LoginView가 아닐 때만 렌더링 */}
-        {isReady && currentRoute !== 'LoginView' && <Navbar currentRoute={currentRoute} />}
+        {isReady && currentRoute !== 'LoginView' && <Navbar currentRoute={currentRoute} unreadCount={unreadCount} />}
 
         <Stack.Navigator
           initialRouteName="LoginView"
