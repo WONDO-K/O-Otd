@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import { View, StyleSheet, TouchableOpacity, Modal } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { ContentText } from './CustomTexts.tsx';
+import { ContentText, ContentBoldText } from './CustomTexts.tsx';
 
 import LogoIcon from '../assets/Icons/OOTD_Icon.svg';
 import NoticeIcon from '../assets/Icons/Notice_Icon.svg';
@@ -56,9 +56,27 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
     },
+    notificationBadge: {
+        position: 'absolute',
+        top: -5,
+        right: -5,
+        backgroundColor: 'red',
+        borderRadius: 10,
+        paddingHorizontal: 5,
+        paddingVertical: 2,
+        minWidth: 20,
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    notificationText: {
+        color: 'white',
+        fontSize: 12,
+        textAlign: 'center',
+    },
 })
 
-function Navbar({ currentRoute }: { currentRoute: string }): React.JSX.Element {
+function Navbar({ currentRoute, unreadCount }: { currentRoute: string }): React.JSX.Element {
     const navigation = useNavigation();
     const [isModalVisible, setModalVisible] = useState(false);
 
@@ -118,6 +136,11 @@ function Navbar({ currentRoute }: { currentRoute: string }): React.JSX.Element {
                 )}
                 <TouchableOpacity onPress={handleNotificationPress}>
                     <NoticeIcon width={30} height={30} />
+                    {unreadCount > 0 && (
+                        <View style={styles.notificationBadge}>
+                            <ContentBoldText style={styles.notificationText}>{unreadCount}</ContentBoldText>
+                        </View>
+                    )}
                 </TouchableOpacity>
             </View>
 

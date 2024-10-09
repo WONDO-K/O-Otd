@@ -80,7 +80,7 @@ function Challenge({ navigation, route }): React.JSX.Element {
             style={styles.background}  // 스타일 설정
         >
             <View style={styles.container}>
-                <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <View contentContainerStyle={styles.scrollContainer}>
                     {selectedUser ? (
                         <View style={styles.selectedSection}>
                             <TouchableOpacity style={styles.selectedBar} onPress={() => 
@@ -138,7 +138,7 @@ function Challenge({ navigation, route }): React.JSX.Element {
                         </View>
                     )}
                     <MyFashionButton selectedImage={selectedImage} onPress={() => navigation.navigate('MyFashion', { returnScreen: 'Challenge' })} />
-                </ScrollView>
+                </View>
                 <View style={styles.buttonSection}>
                     <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
                         <ContentText style={styles.buttonText}>Cancle</ContentText>
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     buttonSection: {
-        position: 'absolute',
+        position: 'relative',
         bottom: 0,
         width: '80%',
         height: 100,

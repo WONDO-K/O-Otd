@@ -41,6 +41,17 @@ function Notification({ navigation }): React.JSX.Element {
             });
             console.log(response.data);
             setNotifications(response.data); // 상태 업데이트
+            console.log(`https://j11e104.p.ssafy.io/battle/notifications/read-all/${userId}`);
+            await axios.post(`https://j11e104.p.ssafy.io/battle/notifications/read-all/${userId}`,
+                {}, 
+                {
+                    headers: {
+                        "Authorization": accessToken,
+                        "Content-Type": "application/json",
+                        "X-User-ID": userId,
+                    }
+                }
+            );
         } catch (error) {
             console.error('Error fetching notifications:', error);
         }
@@ -63,11 +74,22 @@ function Notification({ navigation }): React.JSX.Element {
                     renderItem={({ item }) => (
                         <TouchableOpacity style={styles.notificationItem}
                             onPress={() => {
-                                navigation.navigate('ChallengeDetail', { item });
+                                if (item.title === 'request') {
+                                    navigation.navigate('ChallengeDetail', { item });
+                                }
                             }}
                         >
-                            <ContentText style={styles.notificationText}>{item.message}</ContentText>
-                            <ContentText style={styles.notificationTime}>{timeSince(item.timestamp)}</ContentText>
+                            {!item.read && (
+                                <View style={styles.unreadIndicator} />
+                            )}
+                            <View style={styles.notificationContent}>
+                                <ContentText style={styles.notificationText}>
+                                    {item.message}
+                                </ContentText>
+                                <ContentText style={styles.notificationTime}>
+                                    {timeSince(item.timestamp)}
+                                </ContentText>
+                            </View>
                         </TouchableOpacity>
                     )}
                 />
@@ -82,14 +104,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#121212',
     },
     notificationItem: {
+        width: '100%',
         display: 'flex',
         flexDirection: 'row',
-        justifyContent:'space-between',
         alignItems: 'center',
-        padding: 15,
     },
     notificationText: {
-        width: '70%',
+        // width: '70%',
         fontSize: 18,
         color: 'white',
     },
@@ -104,6 +125,21 @@ const styles = StyleSheet.create({
     emptyText: {
         fontSize: 18,
         color: 'gray',
+    },
+    unreadIndicator: {
+        width: 10,
+        height: 10,
+        backgroundColor: 'red',
+        borderRadius: 5,
+        marginLeft: 5,
+    },
+    notificationContent: {
+        width: '100%',
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 15,
     },
 });
 
