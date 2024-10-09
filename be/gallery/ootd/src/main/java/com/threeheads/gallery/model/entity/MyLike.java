@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Table(name="MyLike")
 public class MyLike {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long clothesId;
 
     @Column(name="user_id",nullable = false)
