@@ -8,6 +8,7 @@ import com.threeheads.gallery.model.dto.CollectionDto;
 import com.threeheads.gallery.model.dto.GalleryDetailDto;
 import java.util.Map;
 import java.util.List;
+import java.util.Map;
 
 public interface GalleryService {
 
@@ -26,4 +27,6 @@ public interface GalleryService {
     List<Gallery> getWeekPick();
 
     Object getAiResult(List<String> image_urls);
+
+    String uploadImage(Map<String, Object> request);
 }

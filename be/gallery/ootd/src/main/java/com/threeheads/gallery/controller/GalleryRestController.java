@@ -11,7 +11,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 
@@ -85,5 +90,17 @@ public class GalleryRestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ai service에러, "+result);
         else
             return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/upload_cdn")
+    public ResponseEntity<?> uploadImage(@RequestBody Map<String, Object> request) {
+        try{
+            String result = service.uploadImage(request);
+            return ResponseEntity.ok(result);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("upload_cdn, "+e.getMessage());
+        }
+
     }
 }

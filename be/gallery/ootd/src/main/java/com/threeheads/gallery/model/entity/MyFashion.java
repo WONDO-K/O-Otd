@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -17,7 +18,7 @@ public class MyFashion {
     private int wardrobeId;
 
     @Column(name="create_date")
-    private LocalDate createDate;
+    private LocalDateTime createDate;
 
     @Column(name="wardrobe_battle",nullable=false)
     private int wardrobeBattle=0;
@@ -31,6 +32,9 @@ public class MyFashion {
     @Column(name="user_id",nullable=false)
     private int userId;
 
-    @Column(name="category_code",nullable=false)
-    private int categoryCode;
+    @Column(name="category_code",nullable=true)
+    private String Type;
+
+    @Column(name="image_url",nullable = false)
+    private String imageUrl;
 }
