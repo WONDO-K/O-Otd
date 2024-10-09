@@ -162,6 +162,8 @@ public class GalleryServiceImpl implements GalleryService {
                     String name = "img_"+num+"%";
                     twoResult.add(galleryRepository.findUrlByImageName(name));
                 }
+                for(String data:twoResult)
+                    log.info("input two result data: {}", data);
                 return twoResult;
             }
         }
@@ -178,6 +180,8 @@ public class GalleryServiceImpl implements GalleryService {
                     String name = "img_"+num+"%";
                     oneResult.add(galleryRepository.findUrlByImageName(name));
                 }
+                for(String data:oneResult)
+                    log.info("input ont result data: {}", data);
                 response.put("respnse",oneResult);
                 return response;
             }
