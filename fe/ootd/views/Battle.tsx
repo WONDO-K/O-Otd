@@ -76,6 +76,7 @@ function Battle({ navigation }): React.JSX.Element {
     }
 
     const getBattleList = async(category: string, sort: string) => {
+        setBattleList([]);
         try {
             const response = await axios.get(`https://j11e104.p.ssafy.io/battle/list/${category}/${sort}/${userId}`, {
                 headers: {
@@ -84,6 +85,7 @@ function Battle({ navigation }): React.JSX.Element {
                     "X-User-ID": userId,
                 }
             });
+            console.log(response.data);
             setBattleList(response.data); // 상태 업데이트
         } catch (error) {
             console.error('Error fetching my fashion:', error);

@@ -8,7 +8,22 @@ function BattleDetail({ navigation, route }): React.JSX.Element {
     
     const item = route.params;
     const {accessToken, userId} = useLoginStore();
-    const [battleItem, setBattleItem] = useState({
+    const [battleItem, setBattleItem] = useState<{
+        battleId: number;
+        title: string;
+        status: string;
+        createdAt: string;
+        expiresAt: string;
+        requesterId: number;
+        responderId: number;
+        requesterImage: string;
+        responderImage: string;
+        myPickUserId: number | null;
+        requesterName: string;
+        responderName: string;
+        requesterVotes: number;
+        responderVotes: number;
+    }>({
         battleId: 0,
         title: '',
         status: '',
@@ -41,6 +56,12 @@ function BattleDetail({ navigation, route }): React.JSX.Element {
                     }
                 }
             );
+
+            setBattleItem((prev) => ({
+                ...prev,
+                myPickUserId: candidate_id,
+            }));
+
             navigation.navigate('Battle');
         } catch (error) {
             console.error('Vote Error Vote:', error);

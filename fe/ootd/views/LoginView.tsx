@@ -53,7 +53,7 @@ function LoginView(): React.JSX.Element {
 
       console.log('!!!!!!!!!!!!!!!!!!!데이타',response.data);
 
-      if (response.data.existed) {
+      if (response.data.existed === true) {
 
         // 토큰 저장
         await setAccessToken(response.data.accessToken); // accessToken 설정
