@@ -9,12 +9,19 @@ import com.threeheads.gallery.model.dto.GalleryDetailDto;
 import com.threeheads.gallery.model.repository.GalleryRepository;
 import com.threeheads.gallery.model.repository.LikeRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import javax.swing.*;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Slf4j
@@ -22,10 +29,15 @@ public class GalleryServiceImpl implements GalleryService {
 
     private final LikeRepository likeRepository;
     private final GalleryRepository galleryRepository;
+    private final RestTemplate restTemplate;
 
-    public GalleryServiceImpl(LikeRepository likeRepository, GalleryRepository galleryRepository){
+    @Value("${spring.classificationFashion.service.url}")
+    private String classificationFashionUrl;
+
+    public GalleryServiceImpl(LikeRepository likeRepository, GalleryRepository galleryRepository, RestTemplateBuilder restTemplateBuilder){
         this.likeRepository = likeRepository;
         this.galleryRepository = galleryRepository;
+        this.restTemplate = restTemplateBuilder.build();
 
     }
 
@@ -129,5 +141,20 @@ public class GalleryServiceImpl implements GalleryService {
         List<Gallery> result;
         result = galleryRepository.findWeekPick();
         return result;
+    }
+
+    @Override
+    public Object getAiResult(List<String> image_urls) {
+        Map<String, List<String>> params = new HashMap<>();
+        params.put("image_urls", image_urls);
+
+        Map<String,Object>response = restTemplate.postForObject(classificationFashionUrl, params, Map.class);
+
+        if (response.get("response") instanceof String) {
+            return (String) response.get("response");
+        }
+        else{
+            return (List<Integer>) response.get("response");
+        }
     }
 }
