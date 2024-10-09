@@ -80,7 +80,7 @@ public class BattleServiceImpl implements BattleService {
                 .senderId(battle.getRequesterId())
                 .senderNickname(battle.getRequesterName()) // 보낸 사람 닉네임 반환
                 .battleId(battle.getId())
-                .title("새로운 배틀 요청")
+                .title("request")
                 .message(battle.getRequesterName() + " 님이 배틀을 요청했습니다.")
                 .timestamp(LocalDateTime.now())
                 .build();
@@ -182,9 +182,9 @@ public class BattleServiceImpl implements BattleService {
         battle.setExpiresAt(LocalDateTime.now().plusDays(1));
 
         // 배틀 수락 알림 및 배틀 시작 알림
-        sendNotification(battle.getRequesterId(), battle.getResponderId(), battle.getResponderName(), "배틀 수락",
+        sendNotification(battle.getRequesterId(), battle.getResponderId(), battle.getResponderName(), "alarm",
                 battle.getResponderName() + " 님과의 배틀이 수락되었습니다.", battle.getId());
-        sendNotification(battle.getResponderId(), battle.getRequesterId(), battle.getRequesterName(), "배틀 시작",
+        sendNotification(battle.getResponderId(), battle.getRequesterId(), battle.getRequesterName(), "alarm",
                 battle.getRequesterName() + " 님과의 배틀이 시작되었습니다!", battle.getId());
 
         rescheduleBattleCompletion(battle);
@@ -196,9 +196,9 @@ public class BattleServiceImpl implements BattleService {
         battle.setStatus(BattleStatus.CANCELED);
 
         // 배틀 거절 알림
-        sendNotification(battle.getRequesterId(), battle.getResponderId(), battle.getResponderName(), "배틀 거절",
+        sendNotification(battle.getRequesterId(), battle.getResponderId(), battle.getResponderName(), "alarm",
                 battle.getResponderName() + " 님이 배틀을 거절했습니다.", battle.getId());
-        sendNotification(battle.getResponderId(), battle.getRequesterId(), battle.getRequesterName(), "배틀 거절",
+        sendNotification(battle.getResponderId(), battle.getRequesterId(), battle.getRequesterName(), "alarm",
                 battle.getRequesterName() + " 님과의 배틀이 거절되었습니다.", battle.getId());
 
         log.info("배틀 ID {}가 CANCELED 상태로 변경되었습니다.", battle.getId());
