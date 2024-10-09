@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
@@ -34,7 +34,8 @@ interface ImageItem {
 function MainView(): React.JSX.Element {
   const navigation = useNavigation();
 
-  const [searchType, setSearchType] = useState('');
+  const [inputText, setInputText] = useState(''); // 사용자 입력 텍스트
+  const [searchType, setSearchType] = useState(''); // 실제 검색에 사용되는 텍스트
   const [myFashion, setMyFashion] = useState<ImageItem[]>([]);
   const [bookmarked, setBookmarked] = useState<{ [key: number]: boolean }>({});
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -49,23 +50,30 @@ function MainView(): React.JSX.Element {
 
   // 추가: 더 이상 데이터가 없는지 추적
   const [hasMore, setHasMore] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1); // 페이지 번호 관리
 
   const { accessToken, userId, API_URL } = useLoginStore();
 
   // onEndReached 호출 제어를 위한 플래그
   const onEndReachedCalledDuringMomentum = useRef<boolean>(false);
 
-  // 검색어가 변경될 때 데이터를 초기화하고 다시 로드
-  useEffect(() => {
-    setMyFashion([]);
-    setHasMore(true); // 새로운 검색 시 hasMore 초기화
-    fetchGallery(searchType, true);
-  }, [searchType]);
-
   // 초기 데이터 로드
   useEffect(() => {
-    fetchGallery(searchType);
+    fetchGallery('', true); // 초기 로드에 빈 검색어 사용
   }, []);
+
+  // 검색어가 변경될 때 데이터를 초기화하고 다시 로드
+  useEffect(() => {
+    if (searchType.trim() === '') {
+      // 빈 검색어는 모든 데이터를 로드하도록 설정할 수 있습니다.
+      fetchGallery('', true);
+      return;
+    }
+    setMyFashion([]);
+    setHasMore(true); // 새로운 검색 시 hasMore 초기화
+    setCurrentPage(1); // 페이지 초기화
+    fetchGallery(searchType, true);
+  }, [searchType]);
 
   // API 요청 함수
   const fetchGallery = async (type: string, isNewSearch: boolean = false) => {
@@ -73,6 +81,7 @@ function MainView(): React.JSX.Element {
 
     if (isNewSearch) {
       setIsLoading(true);
+      setCurrentPage(1);
     } else {
       setIsLoadingMore(true);
     }
@@ -81,7 +90,8 @@ function MainView(): React.JSX.Element {
       const response = await axios.get(`${API_URL}/gallery/list`, {
         params: {
           "type": type.trim(),
-          // 페이지네이션을 위해 추가 파라미터 (예: page, limit) 필요 시 추가
+          "page": isNewSearch ? 1 : currentPage + 1,
+          "limit": 20, // 예시: 한 번에 20개씩 로드
         },
         headers: {
           "Authorization": accessToken,
@@ -100,8 +110,10 @@ function MainView(): React.JSX.Element {
         );
         setMyFashion((prev) => isNewSearch ? uniqueData : [...prev, ...uniqueData]);
         // 추가: 더 불러올 데이터가 있는지 확인
-        if (uniqueData.length === 0) {
+        if (uniqueData.length < 20) { // 예시: 받아온 데이터 수가 limit보다 작으면 더 이상 데이터 없음
           setHasMore(false);
+        } else {
+          setCurrentPage(prevPage => prevPage + 1);
         }
       } else {
         // 더 이상 불러올 데이터가 없을 경우 처리
@@ -122,7 +134,7 @@ function MainView(): React.JSX.Element {
   };
 
   // openModal 함수 수정: imageUrl 또는 photoUrl을 사용
-  const openModal = (item: ImageItem) => {
+  const openModal = useCallback((item: ImageItem) => {
     const imageUrl = item.imageUrl || item.photoUrl;
     if (!imageUrl) {
       console.error('No imageUrl found in the item:', item);
@@ -130,60 +142,61 @@ function MainView(): React.JSX.Element {
     }
     setSelectedImage({ ...item, imageUrl }); // imageUrl을 보장
     setIsModalVisible(true);
-  };
+  }, []);
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsModalVisible(false);
     setSelectedImage(null);
-  };
+  }, []);
 
   // 북마크 토글 함수
-  const toggleBookmark = (id: number) => {
+  const toggleBookmark = useCallback((id: number) => {
     setBookmarked((prevState) => ({
       ...prevState,
       [id]: !prevState[id],
     }));
-  };
+  }, []);
 
   // 추가 로딩 함수
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     if (!isLoadingMore && hasMore) {
       fetchGallery(searchType);
     }
-  };
+  }, [isLoadingMore, hasMore, searchType]);
 
   // 렌더리기 위한 로딩 컴포넌트
-  const renderFooter = () => {
+  const renderFooter = useCallback(() => {
     if (!isLoadingMore) return null;
     return (
       <View style={styles.loadingMore}>
         <ActivityIndicator size="large" color="#ffffff" />
       </View>
     );
-  };
+  }, [isLoadingMore]);
 
-  // 검색 입력 핸들러 (디바운싱 적용 가능)
-  const handleSearchChange = (input: string) => {
-    setSearchType(input);
-  };
+  // 검색 입력 핸들러는 이제 inputText를 설정함
+  const handleInputChange = useCallback((input: string) => {
+    setInputText(input);
+  }, []);
 
-  // FlatList의 헤더 컴포넌트로 사용할 Carousel과 SearchBar
-  const renderHeader = () => (
-    <>
-      <Carousel openModal={openModal} />
-      <View style={styles.searchBar}>
-        <Image source={require('../assets/Images/searchIcon.png')} style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          maxLength={30}
-          placeholder="패션 검색"
-          placeholderTextColor="gray"
-          value={searchType}
-          onChangeText={handleSearchChange}
-        />
-      </View>
-    </>
-  );
+  // 검색 아이콘 터치 시 searchType을 설정 (변경된 부분)
+  const handleSearchPress = useCallback(() => {
+    const trimmedInput = inputText.trim();
+    if (trimmedInput !== searchType.trim()) { // 실제로 변경된 경우에만 업데이트
+      setSearchType(trimmedInput);
+    }
+  }, [inputText, searchType]);
+
+  // FlatList의 헤더 컴포넌트로 사용할 Carousel과 SearchBar를 별도 컴포넌트로 분리 및 메모이제이션
+  const renderHeader = useCallback(() => (
+    <HeaderComponent
+      openModal={openModal}
+      handleSearchPress={handleSearchPress}
+      inputText={inputText}
+      handleInputChange={handleInputChange}
+      isLoading={isLoading}
+    />
+  ), [openModal, handleSearchPress, inputText, handleInputChange, isLoading]);
 
   return (
     <ImageBackground
@@ -198,11 +211,14 @@ function MainView(): React.JSX.Element {
         ) : error ? (
           <View style={styles.errorContainer}>
             <Text style={styles.errorText}>{error}</Text>
+            <TouchableOpacity onPress={() => fetchGallery(searchType, true)} style={styles.retryButton}>
+              <Text style={styles.retryText}>다시 시도하기</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <FlatList
             data={myFashion}
-            keyExtractor={(item, index) => `${item.imageId}_${index}`} // 고유 키 설정 (프리픽스 추가)
+            keyExtractor={(item, index) => `${item.imageId}_${index}`} // 고유 키 설정
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => openModal(item)} style={styles.notificationItem}>
                 <ImageBackground source={{ uri: item.imageUrl }} style={styles.notificationImage} resizeMode="cover">
@@ -265,6 +281,29 @@ function MainView(): React.JSX.Element {
   );
 }
 
+// 별도 헤더 컴포넌트 정의 및 메모이제이션
+const HeaderComponent = React.memo(({ openModal, handleSearchPress, inputText, handleInputChange, isLoading }) => (
+  <>
+    <Carousel openModal={openModal} />
+    <View style={styles.searchBar}>
+      <TouchableOpacity onPress={handleSearchPress} disabled={isLoading}>
+        <Image source={require('../assets/Images/searchIcon.png')} style={styles.searchIcon} />
+      </TouchableOpacity>
+      <TextInput
+        style={styles.searchInput}
+        maxLength={30}
+        placeholder="패션 검색"
+        placeholderTextColor="gray"
+        value={inputText}
+        onChangeText={handleInputChange}
+        onSubmitEditing={handleSearchPress} // 엔터 키로도 검색 트리거
+        returnKeyType="search"
+      />
+      {isLoading && <ActivityIndicator size="small" color="#ffffff" style={styles.searchLoader} />}
+    </View>
+  </>
+));
+
 const styles = StyleSheet.create({
   background: {
     flex: 1,
@@ -276,7 +315,6 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
     width: '90%',
     height: 60,
@@ -289,7 +327,7 @@ const styles = StyleSheet.create({
   searchIcon: {
     width: 20,
     height: 20,
-    marginRight: 5,
+    marginRight: 10, // 검색 아이콘과 입력 필드 사이 간격 조정
   },
   searchInput: {
     flex: 1,
@@ -297,6 +335,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontFamily: 'SUIT-Regular',
+  },
+  searchLoader: {
+    marginLeft: 10,
   },
   notificationItem: {
     flex: 1,
@@ -355,6 +396,16 @@ const styles = StyleSheet.create({
     color: '#ff0000',
     fontSize: 16,
     textAlign: 'center',
+  },
+  retryButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 5,
+  },
+  retryText: {
+    color: '#000000',
+    fontSize: 16,
   },
   loadingMore: {
     paddingVertical: 20,
