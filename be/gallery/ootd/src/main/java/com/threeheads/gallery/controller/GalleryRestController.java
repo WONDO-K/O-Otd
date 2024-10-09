@@ -84,6 +84,6 @@ public class GalleryRestController {
         if(result instanceof String || result == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ai service에러, "+result);
         else
-            return ResponseEntity.ok(image_url);
+            return ResponseEntity.ok(result);
     }
 }
