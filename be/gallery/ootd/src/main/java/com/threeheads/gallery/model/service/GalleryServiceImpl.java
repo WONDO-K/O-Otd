@@ -215,7 +215,7 @@ public class GalleryServiceImpl implements GalleryService {
         int port = 21;
         String password = "2520bae7-9f1f-4830-bc7d67555674-f020-43c4";
 
-        String userId = (String) request.get("userId");
+        int userId = (int) request.get("userId");
         String base64Image = (String) request.get("formData");
         String timestamp = String.valueOf(System.currentTimeMillis());
 
