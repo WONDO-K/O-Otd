@@ -203,7 +203,7 @@ public class GalleryServiceImpl implements GalleryService {
         // params.put("image_urls", image_urls);
         List<String> err= new ArrayList<>();
         // 2개일 때
-        if(image_urls.size()==2){
+        if(image_urls.get("image_urls").size()==2){
             Map<String,Object>response = restTemplate.postForObject(classificationFashionUrl, image_urls, Map.class);
             if (response.get("response")==null) {
                 err.add((String)response.get("err"));
