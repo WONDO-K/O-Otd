@@ -19,24 +19,68 @@ import WishFullIcon from '../assets/Icons/WishFull_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
 import { useLoginStore } from '../stores/LoginStore';
 
+// Carousel 컴포넌트를 메모이제이션하여 불필요한 리렌더링 방지
+const MemoizedCarousel = React.memo(({ openModal }: { openModal: (item: any) => void }) => (
+  <Carousel openModal={openModal} />
+));
+
+// SearchBar 컴포넌트 분리 및 내부 상태 관리
+const SearchBar: React.FC<{ onSearchPress: (searchTerm: string) => void; isLoading: boolean }> = React.memo(({ onSearchPress, isLoading }) => {
+  const [inputText, setInputText] = useState<string>('');
+
+  const handleChangeText = useCallback((text: string) => {
+    setInputText(text);
+  }, []);
+
+  const handlePress = useCallback(() => {
+    onSearchPress(inputText.trim());
+  }, [onSearchPress, inputText]);
+
+  return (
+    <View style={styles.searchBar}>
+      <TouchableOpacity onPress={handlePress} disabled={isLoading}>
+        <Image source={require('../assets/Images/searchIcon.png')} style={styles.searchIcon} />
+      </TouchableOpacity>
+      <TextInput
+        style={styles.searchInput}
+        maxLength={30}
+        placeholder="패션 검색"
+        placeholderTextColor="gray"
+        value={inputText}
+        onChangeText={handleChangeText}
+        onSubmitEditing={handlePress}
+        returnKeyType="search"
+      />
+      {isLoading && <ActivityIndicator size="small" color="#ffffff" style={styles.searchLoader} />}
+    </View>
+  );
+});
+
+// HeaderComponent는 Carousel과 SearchBar를 포함하며, 메모이제이션됨
+const HeaderComponent: React.FC<{ openModal: (item: any) => void; onSearchPress: (searchTerm: string) => void; isLoading: boolean }> = React.memo(({ openModal, onSearchPress, isLoading }) => (
+  <>
+    <MemoizedCarousel openModal={openModal} />
+    <SearchBar onSearchPress={onSearchPress} isLoading={isLoading} />
+  </>
+));
+
 function MainView(): React.JSX.Element {
   const navigation = useNavigation();
 
-  const [inputText, setInputText] = useState(''); 
-  const [searchType, setSearchType] = useState(''); 
-  const [myFashion, setMyFashion] = useState([]);
-  const [bookmarked, setBookmarked] = useState({});
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [searchType, setSearchType] = useState<string>(''); 
+  const [myFashion, setMyFashion] = useState<any[]>([]);
+  const [bookmarked, setBookmarked] = useState<{ [key: string]: boolean }>({});
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<any>(null);
   
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [error, setError] = useState(null);
-  const [hasMore, setHasMore] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1); 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1); 
 
   const { accessToken, userId, API_URL } = useLoginStore();
-  const onEndReachedCalledDuringMomentum = useRef(false);
+  const onEndReachedCalledDuringMomentum = useRef<boolean>(false);
 
   useEffect(() => {
     fetchGallery('', true); 
@@ -53,7 +97,7 @@ function MainView(): React.JSX.Element {
     fetchGallery(searchType, true);
   }, [searchType]);
 
-  const fetchGallery = async (type, isNewSearch = false) => {
+  const fetchGallery = useCallback(async (type: string, isNewSearch: boolean = false) => {
     if (isLoading || isLoadingMore || !hasMore) return;
 
     if (isNewSearch) {
@@ -80,7 +124,7 @@ function MainView(): React.JSX.Element {
 
       if (fetchedData.length > 0) {
         const uniqueData = fetchedData.filter(
-          (item, index, self) => index === self.findIndex((t) => t.imageId === item.imageId)
+          (item: any, index: number, self: any[]) => index === self.findIndex((t) => t.imageId === item.imageId)
         );
         setMyFashion((prev) => isNewSearch ? uniqueData : [...prev, ...uniqueData]);
         if (uniqueData.length < 20) {
@@ -102,9 +146,9 @@ function MainView(): React.JSX.Element {
         setIsLoadingMore(false);
       }
     }
-  };
+  }, [isLoading, isLoadingMore, hasMore, currentPage, API_URL, accessToken, userId]);
 
-  const openModal = useCallback((item) => {
+  const openModal = useCallback((item: any) => {
     const imageUrl = item.imageUrl || item.photoUrl;
     if (!imageUrl) {
       console.error('No imageUrl found in the item:', item);
@@ -119,29 +163,65 @@ function MainView(): React.JSX.Element {
     setSelectedImage(null);
   }, []);
 
-  const toggleBookmark = useCallback((id) => {
+  const toggleBookmark = useCallback(async (id: string) => {
+    const isBookmarked = !!bookmarked[id];
+
     setBookmarked((prevState) => ({
       ...prevState,
-      [id]: !prevState[id],
+      [id]: !isBookmarked,
     }));
-  }, []);
+
+    const body = {
+      userId: userId,
+      clothesId: id,
+    };
+
+    try {
+      if (!isBookmarked) {
+        await axios.post(`${API_URL}/gallery/my-collection`, body, {
+          headers: {
+            "Authorization": accessToken,
+            "Content-Type": "application/json",
+          },
+        });
+      } else {
+        await axios.delete(`${API_URL}/gallery/my-collection`, {
+          data: body,
+          headers: {
+            "Authorization": accessToken,
+            "Content-Type": "application/json",
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+      setBookmarked((prevState) => ({
+        ...prevState,
+        [id]: isBookmarked,
+      }));
+    }
+  }, [bookmarked, API_URL, accessToken, userId]);
 
   const handleLoadMore = useCallback(() => {
     if (!isLoadingMore && hasMore) {
       fetchGallery(searchType);
     }
-  }, [isLoadingMore, hasMore, searchType]);
+  }, [isLoadingMore, hasMore, searchType, fetchGallery]);
 
-  const handleInputChange = useCallback((input) => {
-    setInputText(input);
-  }, []);
-
-  const handleSearchPress = useCallback(() => {
-    const trimmedInput = inputText.trim();
-    if (trimmedInput !== searchType.trim()) {
-      setSearchType(trimmedInput);
+  const onSearchPress = useCallback((searchTerm: string) => {
+    if (searchTerm !== searchType.trim()) {
+      setSearchType(searchTerm);
     }
-  }, [inputText, searchType]);
+  }, [searchType]);
+
+  // useCallback을 사용하여 renderHeader 함수 메모이제이션
+  const renderHeader = useCallback(() => (
+    <HeaderComponent 
+      openModal={openModal} 
+      onSearchPress={onSearchPress} 
+      isLoading={isLoading} 
+    />
+  ), [openModal, onSearchPress, isLoading]);
 
   return (
     <ImageBackground
@@ -149,23 +229,6 @@ function MainView(): React.JSX.Element {
       style={styles.background}
     >
       <View style={styles.container}>
-        <Carousel openModal={openModal} />
-        <View style={styles.searchBar}>
-          <TouchableOpacity onPress={handleSearchPress} disabled={isLoading}>
-            <Image source={require('../assets/Images/searchIcon.png')} style={styles.searchIcon} />
-          </TouchableOpacity>
-          <TextInput
-            style={styles.searchInput}
-            maxLength={30}
-            placeholder="패션 검색"
-            placeholderTextColor="gray"
-            value={inputText}
-            onChangeText={handleInputChange}
-            onSubmitEditing={handleSearchPress}
-            returnKeyType="search"
-          />
-          {isLoading && <ActivityIndicator size="small" color="#ffffff" style={styles.searchLoader} />}
-        </View>
         {isLoading && myFashion.length === 0 ? (
           <View style={styles.loaderContainer}>
             <ActivityIndicator size="large" color="#ffffff" />
@@ -184,8 +247,8 @@ function MainView(): React.JSX.Element {
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => openModal(item)} style={styles.notificationItem}>
                 <ImageBackground source={{ uri: item.imageUrl }} style={styles.notificationImage} resizeMode="cover">
-                  <TouchableOpacity style={styles.bookmarkIcon} onPress={() => toggleBookmark(item.imageId || 0)}>
-                    {bookmarked[item.imageId || 0] ? (
+                  <TouchableOpacity style={styles.bookmarkIcon} onPress={() => toggleBookmark(item.imageId)}>
+                    {bookmarked[item.imageId] ? (
                       <WishFullIcon width={30} height={40} />
                     ) : (
                       <WishIcon width={30} height={40} fill="white" />
@@ -194,6 +257,7 @@ function MainView(): React.JSX.Element {
                 </ImageBackground>
               </TouchableOpacity>
             )}
+            ListHeaderComponent={renderHeader}
             ListFooterComponent={isLoadingMore ? <ActivityIndicator size="large" color="#ffffff" /> : null}
             numColumns={2}
             onEndReached={handleLoadMore}
@@ -223,8 +287,8 @@ function MainView(): React.JSX.Element {
                     style={styles.fixedModalImage}
                     resizeMode="contain"
                   />
-                  <TouchableOpacity style={styles.modalBookmarkIcon} onPress={() => toggleBookmark(selectedImage.imageId || selectedImage.galleryId || 0)}>
-                    {bookmarked[selectedImage.imageId || selectedImage.galleryId || 0] ? (
+                  <TouchableOpacity style={styles.modalBookmarkIcon} onPress={() => toggleBookmark(selectedImage.imageId)}>
+                    {bookmarked[selectedImage.imageId] ? (
                       <WishFullIcon width={30} height={40} />
                     ) : (
                       <WishIcon width={30} height={40} fill="white" />
@@ -243,7 +307,7 @@ function MainView(): React.JSX.Element {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    resizeMode: 'cover', // 배경 이미지를 뷰에 맞게 조정
+    resizeMode: 'cover',
   },
   container: {
     flex: 1,
@@ -263,7 +327,7 @@ const styles = StyleSheet.create({
   searchIcon: {
     width: 20,
     height: 20,
-    marginRight: 10, // 검색 아이콘과 입력 필드 사이 간격 조정
+    marginRight: 10,
   },
   searchInput: {
     flex: 1,
@@ -271,6 +335,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontFamily: 'SUIT-Regular',
+    padding: 5,
   },
   searchLoader: {
     marginLeft: 10,
@@ -278,12 +343,12 @@ const styles = StyleSheet.create({
   notificationItem: {
     flex: 1,
     margin: 5,
-    height: 200, // 적절한 높이 설정
+    height: 200,
   },
   notificationImage: {
     width: '100%',
     height: '100%',
-    justifyContent: 'flex-end', // 아이콘을 하단에 배치
+    justifyContent: 'flex-end',
     borderRadius: 10,
     overflow: 'hidden',
   },
@@ -296,14 +361,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // 모달 배경 어둡게
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   fixedModalContent: {
     width: '80%',
     height: '70%',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative', // 아이콘을 절대 위치로 배치할 수 있도록 함
+    position: 'relative',
     overflow: 'hidden',
   },
   fixedModalImage: {
@@ -312,8 +377,8 @@ const styles = StyleSheet.create({
   },
   modalBookmarkIcon: {
     position: 'absolute',
-    right: 10, // 우측에서 10px 떨어짐
-    bottom: 10, // 하단에서 10px 떨어짐
+    right: 10,
+    bottom: 10,
   },
   loaderContainer: {
     flex: 1,
