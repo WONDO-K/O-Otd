@@ -76,4 +76,13 @@ public class GalleryRestController {
         List<Gallery> result = service.getWeekPick();
         return ResponseEntity.ok(result);
     }
+
+    @PostMapping("/ai")
+    public ResponseEntity<?> getAiResult(@RequestBody List<String> image_url){
+        Object result = service.getAiResult(image_url);
+        if(result instanceof String || result == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ai service에러, "+result);
+        else
+            return ResponseEntity.ok(image_url);
+    }
 }
