@@ -25,5 +25,5 @@ public interface GalleryService {
 
     List<Gallery> getWeekPick();
 
-    Object getAiResult(Map<String,List<String>> image_urls);
+    Object getAiResult(List<String> image_urls);
 }
