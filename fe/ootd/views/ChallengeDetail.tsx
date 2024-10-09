@@ -72,6 +72,27 @@ function ChallengeDetail({ navigation, route }): React.JSX.Element {
         }
     };
 
+    const battleDecline = async() => {
+        try {
+            await axios.post(`https://j11e104.p.ssafy.io/battle/response/${battleId}`,
+            {
+                "userId": userId,
+                "status": "CANCLED",
+                "responderImage": null
+            },
+            {
+                headers: {
+                    "Authorization": accessToken,
+                    "Content-Type": "application/json",
+                    "X-User-ID": userId,
+                }
+            });
+            navigation.navigate('Battle');
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+        }
+    };
+
     const selectImage = () => {
         const options: ImageLibraryOptions = {
             mediaType: 'photo', // 'photo', 'video', 또는 'mixed'
@@ -108,7 +129,7 @@ function ChallengeDetail({ navigation, route }): React.JSX.Element {
                     <MyFashionButton selectedImage={selectedImage} onPress={() => navigation.navigate('MyFashion', { returnScreen: 'ChallengeDetail' })} />
                 </View>
                 <View style={styles.buttonSection}>
-                    <TouchableOpacity style={styles.button} onPress={() => navigation.goBack()}>
+                    <TouchableOpacity style={styles.button} onPress={() => battleDecline()}>
                         <ContentText style={styles.buttonText}>Decline</ContentText>
                     </TouchableOpacity>
                     <TouchableOpacity

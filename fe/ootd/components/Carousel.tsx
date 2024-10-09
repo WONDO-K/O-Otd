@@ -98,6 +98,8 @@ export default function Carousel({ openModal }: CarouselProps) {
     }
   };
 
+  // 자동 스크롤 기능 주석 처리 시작
+  /*
   const startAutoScroll = () => {
     intervalRef.current = setInterval(() => {
       setCurrentIndex((prevIndex) => {
@@ -138,17 +140,20 @@ export default function Carousel({ openModal }: CarouselProps) {
       clearInterval(intervalRef.current);
     }
   };
+  */
+  // 자동 스크롤 기능 주석 처리 끝
 
   useEffect(() => {
     if (infiniteData.length > 0) {
       flatListRef.current?.scrollToOffset({ offset: offset, animated: false });
       setCurrentIndex(1);
-      startAutoScroll();
+      // 자동 스크롤 시작 주석 처리
+      // startAutoScroll();
     }
 
-    // 컴포넌트 언마운트 시 타이머 정리
+    // 컴포넌트 언마운트 시 타이머 정리 주석 처리
     return () => {
-      stopAutoScroll();
+      // stopAutoScroll();
     };
   }, [infiniteData, offset]);
 
@@ -217,15 +222,17 @@ export default function Carousel({ openModal }: CarouselProps) {
             </TouchableOpacity>
           );
         }}
-        keyExtractor={(item) => `${item.galleryId}_${item.photoName}`} // 고유 키 설정
+        // keyExtractor 수정: 인덱스를 포함하여 키의 고유성 보장
+        keyExtractor={(item, index) => `${item.galleryId}_${item.photoName}_${index}`}
         getItemLayout={(data, index) => ({
           length: offset, // 각 아이템의 고정 길이
           offset: offset * index, // 각 아이템의 오프셋
           index, // 현재 인덱스
         })}
         onMomentumScrollEnd={handleScrollEnd}
-        onScrollBeginDrag={stopAutoScroll} // 사용자가 스크롤 시작 시 자동 스크롤 중지
-        onScrollEndDrag={startAutoScroll} // 사용자가 스크롤을 끝내면 자동 스크롤 재개
+        // 자동 스크롤 중지/재개 이벤트 주석 처리
+        // onScrollBeginDrag={stopAutoScroll} // 사용자가 스크롤 시작 시 자동 스크롤 중지
+        // onScrollEndDrag={startAutoScroll} // 사용자가 스크롤을 끝내면 자동 스크롤 재개
         scrollEventThrottle={16}
         initialScrollIndex={1}
       />
