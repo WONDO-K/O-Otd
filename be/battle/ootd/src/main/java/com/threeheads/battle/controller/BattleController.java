@@ -57,9 +57,14 @@ public class BattleController {
     // 배틀 신청 API
     @PostMapping("/create")
     @Operation(summary = "배틀 신청", description = "배틀을 신청합니다.")
-    public ResponseEntity<BattleDto> createBattle(@RequestBody BattleRequestDto request) {
-        BattleDto createdBattle = battleService.createBattle(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdBattle);
+    public ResponseEntity<?> createBattle(@RequestBody BattleRequestDto request) {
+        try {
+            BattleDto createdBattle = battleService.createBattle(request);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdBattle);
+        } catch (IllegalArgumentException ex) {
+            // 잘못된 요청일 경우, BAD_REQUEST와 함께 예외 메시지를 반환
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+        }
     }
 
     // 배틀 응답 API (수락 또는 거절)
