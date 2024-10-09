@@ -28,4 +28,8 @@ public interface GalleryRepository extends JpaRepository<Gallery,Integer> {
 
     @Query(value = "SELECT likes_count FROM gallery where gallery_id=:id ",nativeQuery = true)
     int searchLikesCount(@Param("id") long id);
+
+    @Query(value = "UPDATE gallery SET likes_count = likes_count + 1 WHERE gallery_id = :id",nativeQuery = true)
+    Gallery upLike(@Param("id") long id);
+    
 }
