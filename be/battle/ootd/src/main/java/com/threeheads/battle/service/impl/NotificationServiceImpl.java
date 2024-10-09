@@ -123,4 +123,18 @@ public class NotificationServiceImpl implements NotificationService {
         notificationRepository.save(notification);
         logger.info("알림 ID {}가 읽음 상태로 변경되었습니다.", notificationId);
     }
+
+    @Override
+    public void markAllAsRead(Long userId) {
+        // 사용자 ID로 해당 사용자의 모든 읽지 않은 알림을 조회
+        List<Notification> notifications = notificationRepository.findAllByUserIdAndIsReadFalse(userId);
+
+        // 각 알림을 읽음 상태로 변경
+        notifications.forEach(notification -> notification.setRead(true));
+
+        // 변경된 알림들을 저장
+        notificationRepository.saveAll(notifications);
+
+        logger.info("사용자 ID {}의 모든 알림이 읽음 상태로 변경되었습니다.", userId);
+    }
 }

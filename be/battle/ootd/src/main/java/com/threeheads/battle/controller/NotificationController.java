@@ -60,4 +60,10 @@ public class NotificationController {
         notificationService.markAsRead(notificationId);
         return ResponseEntity.ok("알림이 읽음 상태로 변경되었습니다.");
     }
+
+    @PostMapping("/read-all/{userId}")
+    public ResponseEntity<String> markAllAsRead(@PathVariable Long userId) {
+        notificationService.markAllAsRead(userId);
+        return ResponseEntity.ok("특정 사용자의 읽지 않은 알림을 모두 읽음 처리합니다.");
+    }
 }
