@@ -1,3 +1,4 @@
+// LoginView.tsx
 import React, { useState, useRef } from 'react';
 import {
   SafeAreaView,
@@ -35,23 +36,17 @@ function LoginView(): React.JSX.Element {
     setRefreshToken,
     userId,
     setUserId,
+    API_URL,
   } = useLoginStore();
 
-  // Kakao OAuth URL
+
   const KAKAO_AUTH_URL =
-    'https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=fb7d24f77e374b62fe33b066aac83003&redirect_uri=https://j11e104.p.ssafy.io/login/oauth2/code/kakao';
-
-  // API 주소
-  const API_URL = 'https://j11e104.p.ssafy.io';
-
-
+    `https://kauth.kakao.com/oauth/authorize?response_type=code&client_id=fb7d24f77e374b62fe33b066aac83003&redirect_uri=${API_URL}/login/oauth2/code/kakao`;
 
   // Kakao 로그인 처리 함수
   const handleKakaoLogin = async (code: string) => {
     try {
       const response = await axios.get(`${API_URL}/user/auth/kakao-login?code=${code}`);
-
-      console.log('!!!!!!!!!!!!!!!!!!!데이타',response.data);
 
       if (response.data.existed === true) {
 
@@ -60,7 +55,7 @@ function LoginView(): React.JSX.Element {
         await setRefreshToken(response.data.refreshToken); // refreshToken 설정
 
         // 헤더에서 userId 추출하여 저장
-        setUserId(response.headers['x-user-id']);
+        setUserId(parseInt(response.headers['x-user-id'], 10)); // Ensure userId is a number
 
         navigateToMainView();
       } else {
@@ -68,12 +63,12 @@ function LoginView(): React.JSX.Element {
         await setAccessToken(response.data.accessToken); // accessToken 설정
         await setRefreshToken(response.data.refreshToken); // refreshToken 설정
         // 헤더에서 userId 추출하여 저장
-        setUserId(response.headers['x-user-id']);
+        setUserId(parseInt(response.headers['x-user-id'], 10));
 
         setModalVisible(true);
       }
     } catch (error) {
-      console.error('!!!!!!!!!!!!!!! Kakao 로그인 중 오류 발생:', error);
+      console.error('Kakao 로그인 중 오류 발생:', error);
       setServiceMessage('로그인 중 오류가 발생했습니다.');
       setModalVisible(true);
     }
@@ -94,9 +89,9 @@ function LoginView(): React.JSX.Element {
         },
         {
           headers: {
-            "Authorization": accessToken,
-            "Content-Type": "application/json",
-            "X-User-ID" : userId,
+            Authorization: accessToken,
+            'Content-Type': 'application/json',
+            'X-User-ID': userId,
           },
         }
       );
@@ -118,15 +113,15 @@ function LoginView(): React.JSX.Element {
 
     try {
       const response = await axios.get(
-        `${API_URL}/user/check/nickname`,  // URL에서 nickname 부분을 제거
+        `${API_URL}/user/check/nickname`, // Updated URL using API_URL from store
         {
           params: {
-            nickname: nickname.trim(),  // nickname을 params로 전송
+            nickname: nickname.trim(), // nickname을 params로 전송
           },
           headers: {
-            "Authorization": accessToken,
-            "Content-Type": "application/json",
-            "X-User-ID": userId,
+            Authorization: accessToken,
+            'Content-Type': 'application/json',
+            'X-User-ID': userId,
           },
         }
       );
@@ -145,6 +140,13 @@ function LoginView(): React.JSX.Element {
       setErrorMessage('* 서버와의 통신에 문제가 있습니다.');
       triggerShake();
     }
+  };
+
+  // 서비스 준비 중 모달 트리거
+  const handleServiceNotAvailable = () => {
+    setServiceMessage('서비스 준비중입니다.');
+    setModalVisible(true);
+    triggerShake();
   };
 
   // 쉐이크 애니메이션 트리거
@@ -199,6 +201,18 @@ function LoginView(): React.JSX.Element {
           <Image source={require('../assets/Images/kakao.png')} style={styles.btnLogo} />
           <Text style={styles.kakaoButtonText}>카카오로 로그인</Text>
         </TouchableOpacity>
+
+        {/* Google 로그인 버튼 */}
+        <TouchableOpacity style={styles.googleButton} onPress={handleServiceNotAvailable}>
+          <Image source={require('../assets/Images/google.png')} style={styles.btnLogo} />
+          <Text style={styles.googleButtonText}>Google로 로그인</Text>
+        </TouchableOpacity>
+
+        {/* Naver 로그인 버튼 */}
+        <TouchableOpacity style={styles.naverButton} onPress={handleServiceNotAvailable}>
+          <Image source={require('../assets/Images/naver.png')} style={styles.btnLogo} />
+          <Text style={styles.naverButtonText}>Naver로 로그인</Text>
+        </TouchableOpacity>
       </View>
 
       {/* WebView 모달 */}
@@ -211,7 +225,7 @@ function LoginView(): React.JSX.Element {
           source={{ uri: KAKAO_AUTH_URL }}
           onNavigationStateChange={(navState) => {
             const { url } = navState;
-            if (url.startsWith('https://j11e104.p.ssafy.io/login/oauth2/code/kakao')) {
+            if (url.startsWith(`${API_URL}/login/oauth2/code/kakao`)) {
               const codeMatch = url.match(/code=([^&]+)/);
               if (codeMatch && codeMatch[1]) {
                 const code = codeMatch[1];
@@ -332,6 +346,40 @@ const styles = StyleSheet.create({
     width: 200,
     height: 200,
     resizeMode: 'contain',
+  },
+  googleButton: {
+    backgroundColor: 'white',
+    width: 250,
+    height: 50,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#4285F4',
+  },
+  naverButton: {
+    backgroundColor: '#03C75A',
+    width: 250,
+    height: 50,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginBottom: 20,
+  },
+  googleButtonText: {
+    color: '#4285F4',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 10,
+  },
+  naverButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 10,
   },
   // 모달 관련 스타일
   modalOverlay: {
