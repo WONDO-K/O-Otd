@@ -24,4 +24,6 @@ public interface GalleryService {
     List<Gallery> searchLook(String type);
 
     List<Gallery> getWeekPick();
+
+    Object getAiResult(List<String> image_urls);
 }
