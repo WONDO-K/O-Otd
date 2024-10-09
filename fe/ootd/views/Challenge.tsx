@@ -3,6 +3,7 @@ import { Text, View, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView,
 import axios from 'axios';
 import MyFashionButton from '../components/MyFashionButton';
 import { ContentText, ContentBoldText } from '../components/CustomTexts';
+import { useLoginStore } from '../stores/LoginStore';
 
 function Challenge({ navigation, route }): React.JSX.Element {
     const selectedSrc = route.params?.selectedImage;
@@ -10,7 +11,9 @@ function Challenge({ navigation, route }): React.JSX.Element {
     const [searchId, setSearchId] = useState('');
     const [searchResult, setSearchResult] = useState<string[]>([]);
     const [selectedUser, setSelectedUser] = useState('');
+    const [selectedUserId, setSelectedUserId] = useState(0);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const {accessToken, userId} = useLoginStore();
 
     useEffect(() => {
         if (selectedSrc) {
@@ -18,48 +21,58 @@ function Challenge({ navigation, route }): React.JSX.Element {
         }
     }, [selectedSrc]);
 
-    const getSearch = (searchId : string) => {
-        // axios.get(`https://api.example.com/users/${searchId}`)
-        // .then(response => {
-        //     setSearchResult(response.data);
-        // }).catch(error => {
-        //     console.log(error);
-        // })
-        const data = ['키무라', '키무라기무동현', '키무라김기무동현'];
-        setSearchResult(data);
+    const getSearch = async(searchId : string) => {
+        try {
+            const response = await axios.get(`https://j11e104.p.ssafy.io/user/user-list/search?nickname=${searchId}`, {
+                headers: {
+                    "Authorization": accessToken,
+                    "Content-Type": "application/json",
+                    "X-User-ID": userId,
+                },
+            });
+            console.log(response.data);
+            setSearchResult(response.data); // 상태 업데이트
+        } catch (error) {
+            console.error('Error fetching my fashion:', error);
+        }
     };
 
-    const battleRequest = (selectedUser : string, selectedImage : string) => {
-        // axios.post('https://api.example.com/battle', {
-        //     userId: selectedUserId,
-        //     image: selectedImage
-        // }).then(response => {
-        //     console.log(response.data);
-        // }).catch(error => {
-        //     console.log(error);
-        // })
-        navigation.navigate('Battle');
-    };
+    const battleRequest = async(selectedUser : string, selectedUserId : number, selectedImage : string) => {
+        try {
+            const nickname = await axios.get('https://j11e104.p.ssafy.io/user/myinfo', {
+                headers: {
+                    "Authorization": accessToken,
+                    "Content-Type": "application/json",
+                    "X-User-ID": userId,
+                },
+            });
 
-    // const selectImage = () => {
-    //     const options: ImageLibraryOptions = {
-    //         mediaType: 'photo', // 'photo', 'video', 또는 'mixed'
-    //         quality: 1,
-    //       };
-    
-    //     launchImageLibrary(options, (response) => {
-    //         if (response.didCancel) {
-    //             console.log('사용자가 취소했습니다.');
-    //         } else if (response.errorMessage) {
-    //             console.log('에러:', response.errorMessage);
-    //         } else if (response.assets && response.assets.length > 0) {
-    //             const selectedImageUri = response.assets[0].uri; // 선택된 이미지의 URI
-    //             if (selectedImageUri) { // undefined가 아닌 경우에만 상태를 업데이트
-    //                 setSelectedImage(selectedImageUri); // string | null 타입만 할당
-    //             }
-    //         }
-    //     });
-    // };
+            if (selectedUser === nickname.data.nickname) {
+                console.error('Error: You cannot challenge yourself.');
+                return;
+            }
+
+            await axios.post(`https://j11e104.p.ssafy.io/battle/create`, 
+                {
+                    "requesterId": userId,
+                    "requesterName": nickname.data.nickname,
+                    "requesterImage": selectedImage,
+                    "responderId": selectedUserId,
+                    "responderName": selectedUser
+                },
+                {
+                    headers: {
+                        Authorization: accessToken,
+                        "Content-Type": "application/json",
+                        "X-User-ID": userId,
+                    },
+                }
+            );
+            navigation.navigate('Battle');
+        } catch (error) {
+            console.error('Challenge Error:', error);
+        }
+    };
 
     return (
         <ImageBackground 
@@ -70,7 +83,11 @@ function Challenge({ navigation, route }): React.JSX.Element {
                 <ScrollView contentContainerStyle={styles.scrollContainer}>
                     {selectedUser ? (
                         <View style={styles.selectedSection}>
-                            <TouchableOpacity style={styles.selectedBar} onPress={() => setSelectedUser('')}>
+                            <TouchableOpacity style={styles.selectedBar} onPress={() => 
+                                {
+                                    setSelectedUser('')
+                                    setSelectedUserId(0)
+                                }}>
                                 <ContentBoldText style={styles.selectedText}>{selectedUser}</ContentBoldText>
                             </TouchableOpacity>
                         </View>
@@ -108,9 +125,12 @@ function Challenge({ navigation, route }): React.JSX.Element {
                                             style={[
                                                 styles.resultItem
                                             ]}
-                                            onPress={() => setSelectedUser(item)}
+                                            onPress={() => {
+                                                setSelectedUser(item.nickname)
+                                                setSelectedUserId(item.id)
+                                            }}
                                         >
-                                            <ContentText style={styles.resultText}>{item}</ContentText>
+                                            <ContentText style={styles.resultText}>{item.nickname}</ContentText>
                                         </TouchableOpacity>
                                     ))}
                                 </View>
@@ -126,7 +146,7 @@ function Challenge({ navigation, route }): React.JSX.Element {
                     <TouchableOpacity
                         style={(selectedUser && selectedImage) ? styles.activeButton : styles.deactiveButton}
                         disabled={!(selectedUser && selectedImage)}
-                        onPress={() => battleRequest(selectedUser, selectedImage)}           
+                        onPress={() => battleRequest(selectedUser, selectedUserId, selectedImage)}           
                     >
                         <ContentText style={(selectedUser && selectedImage) ? styles.buttonText : styles.deactiveButtonText}>Accept</ContentText>
                     </TouchableOpacity>
