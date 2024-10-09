@@ -159,7 +159,7 @@ public class GalleryServiceImpl implements GalleryService {
                 List<Integer> result = (List<Integer>) response.get("response");
                 List<String> twoResult = new ArrayList<>();
                 for(int num:result){
-                    String name = "img_"+num+"%";
+                    String name = "img_"+num+".%";
                     twoResult.add(galleryRepository.findUrlByImageName(name));
                 }
                 for(String data:twoResult)
@@ -177,7 +177,7 @@ public class GalleryServiceImpl implements GalleryService {
                 List<Integer> result = (List<Integer>) response.get("response");
                 List<String> oneResult = new ArrayList<>();
                 for(int num:result){
-                    String name = "img_"+num+"%";
+                    String name = "img_"+num+".%";
                     oneResult.add(galleryRepository.findUrlByImageName(name));
                 }
                 for(String data:oneResult)
@@ -188,4 +188,6 @@ public class GalleryServiceImpl implements GalleryService {
         }
 
     }
+
+    
 }
