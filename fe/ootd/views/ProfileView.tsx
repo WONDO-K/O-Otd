@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+// ProfileView.js
+
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
@@ -12,10 +14,10 @@ import {
   TouchableWithoutFeedback,
   Animated,
   Easing,
+  ActivityIndicator,
+  Image,
 } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import useAIStore from '../stores/AIStore';
-import { useLoginStore } from '../stores/LoginStore';
 import axios from 'axios';
 
 import WishFullIcon from '../assets/Icons/WishFull_Icon.svg';
@@ -25,8 +27,8 @@ import MyFashionIcon from '../assets/Icons/MyFashion_Icon.svg';
 import BattleIcon from '../assets/Icons/Battle_Icon.svg';
 import LinearGradient from 'react-native-linear-gradient';
 import { ContentBoldText } from '../components/CustomTexts';
+import { useLoginStore } from '../stores/LoginStore';
 
-// 메인 페이지
 function ProfileView(): React.JSX.Element {
   const navigation = useNavigation();
   const route = useRoute();
@@ -40,19 +42,27 @@ function ProfileView(): React.JSX.Element {
   const [pictureList, setPictureList] = useState([]);
   const [nickname, setNickname] = useState(null);
 
+  // 갤러리 데이터 관련 상태
+  const [myGalleryList, setMyGalleryList] = useState([]); // 북마크된 갤러리 리스트
+  const [isGalleryLoading, setIsGalleryLoading] = useState(false);
+  const [galleryError, setGalleryError] = useState(null);
+
   // 모달 관련 상태
-  const [modalVisible, setModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  // 닉네임 변경 관련 상태
+  const [nicknameModalVisible, setNicknameModalVisible] = useState(false);
   const [newNickname, setNewNickname] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const shakeAnimation = useRef(new Animated.Value(0)).current;
-
 
   const selectCategory = (category: string) => {
     setSelectedCategory(category);
     setSelectedSort('최신순');
   };
   const selectSort = (sort: string) => {
-      setSelectedSort(sort);
+    setSelectedSort(sort);
   };
 
   // API에서 nickname 가져오는 로직
@@ -78,95 +88,102 @@ function ProfileView(): React.JSX.Element {
     getNickname();  // 컴포넌트가 마운트될 때 nickname 가져오기
   }, []);
 
-const getPictureList = (category: string, sort: string) => {
-  if (category === '마이 패션') {
-      const data = {
-          "myFashionList": [
-              {
-                "wardrobeId": 1,
-                "createdAt": "2024-09-25T00:00:00",
-                "ImageUrl": "https://placekitten.com/200/300",
-                "wardrobeBattle": 3,
-                "wardrobeWin": 2,
-              },
-              {
-                "wardrobeId": 2,
-                "createdAt": "2024-09-20T00:00:00",
-                "imageUrl": "https://picsum.photos/400/400",
-                "wardrobeBattle": 2,
-                "wardrobeWin": 1,
-              }
-          ],
+  // 마이 갤러리 데이터 가져오기 함수
+  const fetchMyCollection = useCallback(async () => {
+    setIsGalleryLoading(true);
+    setGalleryError(null);
+    console.log('!!!!!!!!!찜목록 요청');
+    try {
+      const response = await axios.get(`${API_URL}/gallery/my-collection/${userId}`, {
+        headers: {
+          "Authorization": accessToken,
+          "Content-Type": "application/json",
+          "X-User-ID": userId,
+        },
+      });
+      let fetchedData = response.data; // 응답 데이터 형식에 따라 조정 필요
+      
+      console.log('!!!!!!!!!찜목록 요청결과 : ', fetchedData);
+
+      // 정렬 로직
+      if (selectedSort === '최신순') {
+        fetchedData.sort((a, b) => new Date(b.likeDateTime) - new Date(a.likeDateTime));
+      } else if (selectedSort === '인기순') {
+        fetchedData.sort((a, b) => b.likesCount - a.likesCount);
       }
 
-      setPictureList(data.myFashionList);
-  } else if (category === '마이 갤러리') {
-      const data = {
-          "myGalleryList": [
-              {
-                "clotheId": 2,
-                "likeAt": "2024-09-22T00:00:00",
-                "imageUrl": "https://picsum.photos/200/300",
-                "totalPick": 43,
-                "monthlyPick": 15,
-                "weeklyPick": 3,
-              },
-              {
-                "clotheId": 2,
-                "likeAt": "2024-09-24T00:00:00",
-                "imageUrl": "https://placedog.net/500",
-                "totalPick": 46,
-                "monthlyPick": 14,
-                "weeklyPick": 13,
-              }
-          ]
-      }
-      setPictureList(data.myGalleryList)
-    } else if(category === '마이 문철') {
-      const data = {
-        "myBattleList": [
-            {
-                "battleId": 1,
-                "title": "Summer Fashion Battle",
-                "participantCount": 2,
-                "status": "IN_PROGRESS",
-                "createdAt": "2024-09-25T01:00:00",
-                "requesterImage": "https://placekitten.com/200/300",
-                "responderImage": "https://placedog.net/500",
-                "myPickUserId": null,
-                "requesterName": "악질유저기무동현",
-                "responderName": "분탕장인손우혁"
-            },
-            {
-                "battleId": 3,
-                "title": "Autumn Collection Showdown",
-                "participantCount": 2,
-                "status": "IN_PROGRESS",
-                "createdAt": "2024-09-25T00:00:00",
-                "requesterImage": "https://picsum.photos/400/400",
-                "responderImage": "https://picsum.photos/200/300",
-                "myPickUserId": "left",
-                "requesterName": "유저네임3",
-                "responderName": "유저네임4"
-            }
-        ],
-      }
-      setPictureList(data.myBattleList);
-    };
-  };
+      setMyGalleryList(fetchedData);
+    } catch (error) {
+      console.error('Error fetching my collection:', error);
+      setGalleryError('찜 목록을 불러오는 데 실패했습니다.');
+    } finally {
+      setIsGalleryLoading(false);
+    }
+  }, [API_URL, accessToken, userId, selectedSort]);
 
-  const toggleBookmark = (id) => {
+  useEffect(() => {
+    if (selectedCategory === '마이 갤러리') {
+      fetchMyCollection();
+    }
+  }, [selectedCategory, fetchMyCollection]);
+
+  useEffect(() => {
+    if (selectedCategory === '마이 갤러리') {
+      fetchMyCollection();
+    }
+  }, [selectedSort, selectedCategory, fetchMyCollection]);
+
+  // 북마크 토글 함수
+  const toggleBookmark = useCallback(async (id: string) => {
+    const isBookmarked = !!bookmarked[id];
+
     setBookmarked((prevState) => ({
       ...prevState,
-      [id]: !prevState[id],  // 북마크 상태를 토글
+      [id]: !isBookmarked,
     }));
-  };
 
-  // useEffect(() => {
-  //   getMyFashion();  // 컴포넌트가 마운트될 때 데이터 가져오기
-  // }, []);
+    const body = {
+      userId: userId,
+      clothesId: id,
+    };
 
-  // 닉네임 변경 핸들러
+    console.log('!!!!!!!!!!!!!!!Toggling bookmark 요청 들어옴!');
+
+    try {
+      if (!isBookmarked) {
+        const bookmarkedResponse = await axios.post(`${API_URL}/gallery/my-collection`, body, {
+          headers: {
+            "Authorization": accessToken,
+            "Content-Type": "application/json",
+            "X-User-ID": userId,
+          },
+        });
+        console.log('!!!!!!!!!!!!!!!Toggling bookmark 요청 결과:', bookmarkedResponse.data);
+      } else {
+        await axios.delete(`${API_URL}/gallery/my-collection`, {
+          data: body,
+          headers: {
+            "Authorization": accessToken,
+            "Content-Type": "application/json",
+            "X-User-ID": userId,
+          },
+        });
+      }
+
+      // '마이 갤러리'일 경우, 북마크 토글 후 리스트를 다시 불러옴
+      if (selectedCategory === '마이 갤러리') {
+        fetchMyCollection();
+      }
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+      setBookmarked((prevState) => ({
+        ...prevState,
+        [id]: isBookmarked,
+      }));
+    }
+  }, [bookmarked, API_URL, accessToken, userId, selectedCategory, fetchMyCollection]);
+
+  // 닉네임 변경 핸들러 (기존 코드 유지)
   const handleChangeNickname = async () => {
     if (!newNickname.trim()) {
       setErrorMessage('닉네임을 입력해주세요.');
@@ -185,9 +202,9 @@ const getPictureList = (category: string, sort: string) => {
         },
       });
 
-      console.log('!!!!!!!!!!!!!!!!!!!!!중복확인',checkResponse.data);
+      console.log('!!!!!!!!!!!!!!!!!!!!!중복확인', checkResponse.data);
 
-      if (checkResponse.data) {
+      if (checkResponse.data.exists) { // API 응답 형식에 따라 조정
         setErrorMessage('이미 존재하는 닉네임입니다.');
         triggerShake();
         return;
@@ -208,7 +225,7 @@ const getPictureList = (category: string, sort: string) => {
       // 닉네임 변경 성공 후 최신 닉네임을 다시 가져오기
       await getNickname();
 
-      setModalVisible(false);
+      setNicknameModalVisible(false);
       setNewNickname('');
       setErrorMessage('');
     } catch (error) {
@@ -218,7 +235,7 @@ const getPictureList = (category: string, sort: string) => {
     }
   };
 
-  // 쉐이크 애니메이션 트리거
+  // 쉐이크 애니메이션 트리거 (기존 코드 유지)
   const triggerShake = () => {
     shakeAnimation.setValue(0);
     Animated.sequence([
@@ -249,13 +266,29 @@ const getPictureList = (category: string, sort: string) => {
     ]).start();
   };
 
-  // 모달 닫기 및 상태 초기화
-  const closeModal = () => {
-    setModalVisible(false);
+  // 모달 닫기 및 상태 초기화 (기존 코드 유지)
+  const closeNicknameModal = () => {
+    setNicknameModalVisible(false);
     setNewNickname('');
     setErrorMessage('');
   };
 
+  // openModal 함수 정의
+  const openModal = useCallback((item: any) => {
+    const imageUrl = item.imageUrl || item.photoUrl;
+    if (!imageUrl) {
+      console.error('No imageUrl found in the item:', item);
+      return;
+    }
+    setSelectedImage({ ...item, imageUrl });
+    setIsModalVisible(true);
+  }, []);
+
+  // closeModal 함수 정의
+  const closeImageModal = useCallback(() => {
+    setIsModalVisible(false);
+    setSelectedImage(null);
+  }, []);
 
   return (
     <ImageBackground
@@ -263,28 +296,29 @@ const getPictureList = (category: string, sort: string) => {
       style={styles.background} // 배경 스타일 설정
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-      <View style={styles.container}>
-        <TouchableOpacity
-          style={styles.nicknameBox}
-          onPress={() => setModalVisible(true)}
+        <View style={styles.container}>
+          {/* 닉네임 박스 */}
+          <TouchableOpacity
+            style={styles.nicknameBox}
+            onPress={() => setNicknameModalVisible(true)}
           >
-          <Text style={styles.nickname}>{nickname}</Text>
-          <PencilIcon width={30} height={30} style={styles.pencil} />
-        </TouchableOpacity>
+            <Text style={styles.nickname}>{nickname}</Text>
+            <PencilIcon width={30} height={30} style={styles.pencil} />
+          </TouchableOpacity>
 
-          {/* 모달 구현 */}
+          {/* 닉네임 변경 모달 */}
           <Modal
             animationType="slide"
             transparent={true}
-            visible={modalVisible}
-            onRequestClose={closeModal}
+            visible={nicknameModalVisible}
+            onRequestClose={closeNicknameModal}
           >
-            <TouchableWithoutFeedback onPress={closeModal}>
-              <View style={styles.modalOverlay}>
+            <TouchableWithoutFeedback onPress={closeNicknameModal}>
+              <View style={styles.nicknameModalOverlay}>
                 <TouchableWithoutFeedback>
                   <Animated.View
                     style={[
-                      styles.modalContainer,
+                      styles.nicknameModalContainer,
                       {
                         transform: [{ translateX: shakeAnimation }],
                       },
@@ -307,7 +341,7 @@ const getPictureList = (category: string, sort: string) => {
                       <TouchableOpacity style={styles.confirmButton} onPress={handleChangeNickname}>
                         <Text style={styles.confirmButtonText}>확인</Text>
                       </TouchableOpacity>
-                      <TouchableOpacity style={styles.cancelButton} onPress={closeModal}>
+                      <TouchableOpacity style={styles.cancelButton} onPress={closeNicknameModal}>
                         <Text style={styles.cancelButtonText}>취소</Text>
                       </TouchableOpacity>
                     </View>
@@ -317,148 +351,213 @@ const getPictureList = (category: string, sort: string) => {
             </TouchableWithoutFeedback>
           </Modal>
 
-        <View style={styles.profileCategory}>
-          <View style={styles.iconContainer}>
-            <TouchableOpacity
-              style={styles.profileCategoryButton}
-              onPress={() => selectCategory('마이 패션')}
-            >
-              <View
-                style={[
-                  styles.iconWrapper,
-                ]}
+          {/* 카테고리 선택 */}
+          <View style={styles.profileCategory}>
+            <View style={styles.iconContainer}>
+              <TouchableOpacity
+                style={styles.profileCategoryButton}
+                onPress={() => selectCategory('마이 패션')}
               >
-                <MyFashionIcon
-                  fill={selectedCategory === '마이 패션' ? 'white' : '#949494'}
-                  width={30}
-                  height={30}
-                />
-                {selectedCategory === '마이 패션' &&
-                  <LinearGradient
-                    style={{
-                      width: '63%',
-                      alignSelf : 'center',
-                      height: 3,
-                    }}
-                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
+                <View style={styles.iconWrapper}>
+                  <MyFashionIcon
+                    fill={selectedCategory === '마이 패션' ? 'white' : '#949494'}
+                    width={30}
+                    height={30}
                   />
-                }
-              </View>
-            </TouchableOpacity>
+                  {selectedCategory === '마이 패션' &&
+                    <LinearGradient
+                      style={styles.linearGradient}
+                      colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                    />
+                  }
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.iconContainer}>
+              <TouchableOpacity
+                style={styles.profileCategoryButton}
+                onPress={() => selectCategory('마이 갤러리')}
+              >
+                <View style={styles.iconWrapper}>
+                  <WishIcon
+                    fill={selectedCategory === '마이 갤러리' ? 'white' : '#949494'}
+                    width={30}
+                    height={30}
+                  />
+                  {selectedCategory === '마이 갤러리' &&
+                    <LinearGradient
+                      style={styles.linearGradient}
+                      colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                    />
+                  }
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.iconContainer}>
+              <TouchableOpacity
+                style={styles.profileCategoryButton}
+                onPress={() => selectCategory('마이 문철')}
+              >
+                <View style={styles.iconWrapper}>
+                  <BattleIcon
+                    fill={selectedCategory === '마이 문철' ? 'white' : '#949494'}
+                    width={30}
+                    height={30}
+                  />
+                  {selectedCategory === '마이 문철' &&
+                    <LinearGradient
+                      style={styles.linearGradient}
+                      colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 0 }}
+                    />
+                  }
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
 
-          <View style={styles.iconContainer}>
-            <TouchableOpacity
-              style={styles.profileCategoryButton}
-              onPress={() => selectCategory('마이 갤러리')}
-            >
-              <View
+          {/* 정렬 선택 */}
+          <View style={styles.profileSort}>
+            {selectedCategory === '마이 패션' && ['최신순', '출전 수', '승리 수'].map((sort) => (
+              <TouchableOpacity
+                key={sort}
                 style={[
-                  styles.iconWrapper,
+                  styles.profileSortButton,
+                  {
+                    borderWidth: selectedSort === sort ? 2 : 0,
+                  },
                 ]}
+                onPress={() => selectSort(sort)}
               >
-                <WishIcon
-                  fill={selectedCategory === '마이 갤러리' ? 'white' : '#949494'}
-                  width={30}
-                  height={30}
-                />
-                {selectedCategory === '마이 갤러리' &&
-                  <LinearGradient
-                    style={{
-                      width: '63%',
-                      alignSelf : 'center',
-                      height: 3,
-                    }}
-                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                  />
-                }
-              </View>
-            </TouchableOpacity>
+                <ContentBoldText style={styles.profileSortButtonText}>{sort}</ContentBoldText>
+              </TouchableOpacity>
+            ))}
+
+            {selectedCategory === '마이 갤러리' && ['최신순', '인기순'].map((sort) => (
+              <TouchableOpacity
+                key={sort}
+                style={[
+                  styles.profileSortButton,
+                  {
+                    borderWidth: selectedSort === sort ? 2 : 0,
+                  },
+                ]}
+                onPress={() => selectSort(sort)}
+              >
+                <ContentBoldText style={styles.profileSortButtonText}>{sort}</ContentBoldText>
+              </TouchableOpacity>
+            ))}
+
+            {selectedCategory === '마이 문철' && ['최신순', '투표 수'].map((sort) => (
+              <TouchableOpacity
+                key={sort}
+                style={[
+                  styles.profileSortButton,
+                  {
+                    borderWidth: selectedSort === sort ? 2 : 0,
+                  },
+                ]}
+                onPress={() => selectSort(sort)}
+              >
+                <ContentBoldText style={styles.profileSortButtonText}>{sort}</ContentBoldText>
+              </TouchableOpacity>
+            ))}
           </View>
 
-          <View style={styles.iconContainer}>
-            <TouchableOpacity
-              style={styles.profileCategoryButton}
-              onPress={() => selectCategory('마이 문철')}
-            >
-              <View
-                style={[
-                  styles.iconWrapper,
-                ]}
-              >
-                <BattleIcon
-                  fill={selectedCategory === '마이 문철' ? 'white' : '#949494'}
-                  width={30}
-                  height={30}
-                />
-                {selectedCategory === '마이 문철' &&
-                  <LinearGradient
-                    style={{
-                      width: '63%',
-                      alignSelf : 'center',
-                      height: 3,
-                    }}
-                    colors={['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.65)', 'rgba(255, 255, 255, 0)']}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 0 }}
-                  />
-                }
+          {/* 마이 갤러리 콘텐츠 */}
+          {selectedCategory === '마이 갤러리' && (
+            isGalleryLoading ? (
+              <ActivityIndicator size="large" color="#ffffff" style={styles.galleryLoader} />
+            ) : galleryError ? (
+              <View style={styles.errorContainer}>
+                <Text style={styles.errorText}>{galleryError}</Text>
+                <TouchableOpacity onPress={fetchMyCollection} style={styles.retryButton}>
+                  <Text style={styles.retryText}>다시 시도하기</Text>
+                </TouchableOpacity>
               </View>
-            </TouchableOpacity>
-          </View>
+            ) : (
+              <FlatList
+                data={myGalleryList}
+                keyExtractor={(item, index) => `${item.clothesId}_${index}`}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => openModal(item)} style={styles.notificationItem}>
+                    <ImageBackground source={{ uri: item.imageUrl }} style={styles.notificationImage} resizeMode="cover">
+                      <TouchableOpacity style={styles.bookmarkIcon} onPress={() => toggleBookmark(item.clothesId)}>
+                        {bookmarked[item.clothesId] ? (
+                          <WishFullIcon width={30} height={40} />
+                        ) : (
+                          <WishIcon width={30} height={40} fill="white" />
+                        )}
+                      </TouchableOpacity>
+                    </ImageBackground>
+                  </TouchableOpacity>
+                )}
+                numColumns={2}
+                contentContainerStyle={styles.flatListContent}
+              />
+            )
+          )}
+
+          {selectedCategory !== '마이 갤러리' && (
+            <View style={styles.flatListContainer}>
+              <FlatList
+                data={pictureList}
+                keyExtractor={(item, index) => `${item.imageId}_${index}`}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => openModal(item)} style={styles.notificationItem}>
+                    <ImageBackground source={{ uri: item.imageUrl }} style={styles.notificationImage} resizeMode="cover">
+                      <TouchableOpacity style={styles.bookmarkIcon} onPress={() => toggleBookmark(item.clothesId)}>
+                        {bookmarked[item.clothesId] ? (
+                          <WishFullIcon width={30} height={40} />
+                        ) : (
+                          <WishIcon width={30} height={40} fill="white" />
+                        )}
+                      </TouchableOpacity>
+                    </ImageBackground>
+                  </TouchableOpacity>
+                )}
+                numColumns={2}
+                contentContainerStyle={styles.flatListContent}
+              />
+            </View>
+          )}
+
+          {/* 이미지 모달 구현 */}
+          <Modal
+            visible={isModalVisible}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={closeImageModal}
+          >
+            <TouchableWithoutFeedback onPress={closeImageModal}>
+              <View style={styles.profileModalContainer}>
+                {selectedImage && (
+                  <View style={styles.profileFixedModalContent}>
+                    <Image
+                      source={{ uri: selectedImage.imageUrl }}
+                      style={styles.profileFixedModalImage}
+                      resizeMode="contain"
+                    />
+                    <TouchableOpacity style={styles.profileModalBookmarkIcon} onPress={() => toggleBookmark(selectedImage.clothesId || selectedImage.imageId)}>
+                      {bookmarked[selectedImage.clothesId || selectedImage.imageId] ? (
+                        <WishFullIcon width={30} height={40} />
+                      ) : (
+                        <WishIcon width={30} height={40} fill="white" />
+                      )}
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            </TouchableWithoutFeedback>
+          </Modal>
         </View>
-      <View style={styles.profileSort}>
-      {selectedCategory === '마이 패션' && ['최신순', '출전 수', '승리 수'].map((sort) => (
-        <TouchableOpacity
-          key={sort}
-          style={[
-            styles.profileSortButton,
-            {
-              borderWidth: selectedSort === sort ? 2 : 0,
-            },
-          ]}
-          onPress={() => selectSort(sort)}
-        >
-          <ContentBoldText style={styles.profileSortButtonText}>{sort}</ContentBoldText>
-        </TouchableOpacity>
-      ))}
-
-      {selectedCategory === '마이 갤러리' && ['최신순', '인기순'].map((sort) => (
-        <TouchableOpacity
-          key={sort}
-          style={[
-            styles.profileSortButton,
-            {
-              borderWidth: selectedSort === sort ? 2 : 0,
-            },
-          ]}
-          onPress={() => selectSort(sort)}
-        >
-          <ContentBoldText style={styles.profileSortButtonText}>{sort}</ContentBoldText>
-        </TouchableOpacity>
-      ))}
-
-      {selectedCategory === '마이 문철' && ['최신순', '투표 수'].map((sort) => (
-        <TouchableOpacity
-          key={sort}
-          style={[
-            styles.profileSortButton,
-            {
-              borderWidth: selectedSort === sort ? 2 : 0,
-            },
-          ]}
-          onPress={() => selectSort(sort)}
-        >
-          <ContentBoldText style={styles.profileSortButtonText}>{sort}</ContentBoldText>
-        </TouchableOpacity>
-        ))}
-      </View>
-    </View>
-
       </ScrollView>
     </ImageBackground>
   );
@@ -505,14 +604,25 @@ const styles = StyleSheet.create({
     color: '#ffffff',
     marginTop: 20,
   },
+  flatListContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    marginBottom: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   notificationItem: {
-    width: '50%',
+    width: '48%',
     height: 300,
+    marginBottom: 10,
+    marginRight: 10,
   },
   notificationImage: {
     width: '100%',
     height: '100%',
     justifyContent: 'flex-end',
+    borderRadius: 10,
+    overflow: 'hidden',
   },
   bookmarkIcon: {
     position: 'absolute',
@@ -529,23 +639,23 @@ const styles = StyleSheet.create({
     width: '100%', // 선의 길이를 부모의 너비로 설정
     marginTop: 10,
   },
-  profileCategoryButton:{
-      width: "90%",
-      height: 40,
-      justifyContent: 'center',
-      alignItems: 'center',
+  profileCategoryButton: {
+    width: "90%",
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  profileCategoryButtonText:{
-      color: 'black',
-      fontSize: 20,
-      fontWeight: 'bold',
-      textAlign: 'center',
+  profileCategoryButtonText: {
+    color: 'black',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
   profileSort: {
     width: "100%",
     display: 'flex',
     flexDirection: 'row',
-    justifyContent : 'flex-start',
+    justifyContent: 'flex-start',
     paddingLeft: 5,
   },
   profileSortButton: {
@@ -561,13 +671,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   profileSortButtonText: {
-      fontSize: 16,
-      color: 'white',
-      textAlign: 'center',
-      marginBottom: 2,
+    fontSize: 16,
+    color: 'white',
+    textAlign: 'center',
+    marginBottom: 2,
   },
   switchText: {
-      color: 'white',
+    color: 'white',
   },
   profileCategory: {
     display: 'flex',
@@ -593,20 +703,50 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 3,
   },
-// 모달 관련 스타일
-  modalOverlay: {
+  linearGradient: {
+    width: '63%',
+    alignSelf: 'center',
+    height: 3,
+  },
+  // 닉네임 변경 모달 관련 스타일
+  nicknameModalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.8)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  modalContainer: {
+  nicknameModalContainer: {
     width: '80%',
     backgroundColor: 'white',
     borderRadius: 20,
     padding: 20,
     alignItems: 'center',
   },
+  // 이미지 모달 관련 스타일
+  profileModalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)', // MainView와 동일하게 설정
+  },
+  profileFixedModalContent: {
+    width: '80%',
+    height: '70%',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  profileFixedModalImage: {
+    flex: 1,
+    aspectRatio: 1,
+  },
+  profileModalBookmarkIcon: {
+    position: 'absolute',
+    right: 10,
+    bottom: 10,
+  },
+  // 공통 모달 스타일 (이미지 모달)
   modalTitle: {
     fontSize: 23,
     marginBottom: 15,
@@ -659,6 +799,30 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  galleryLoader: {
+    marginTop: 20,
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: 'transparent',
+  },
+  retryButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 5,
+  },
+  retryText: {
+    color: '#000000',
+    fontSize: 16,
+  },
+  flatListContent: {
+    paddingHorizontal: 10,
+    paddingBottom: 20,
   },
 });
 

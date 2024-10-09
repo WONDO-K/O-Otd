@@ -176,20 +176,25 @@ function MainView(): React.JSX.Element {
       clothesId: id,
     };
 
+    console.log('!!!!!!!!!!!!!!!Toggling bookmark 요청 들어옴!');
+
     try {
       if (!isBookmarked) {
-        await axios.post(`${API_URL}/gallery/my-collection`, body, {
+        const bookmarked = await axios.post(`${API_URL}/gallery/my-collection`, body, {
           headers: {
             "Authorization": accessToken,
             "Content-Type": "application/json",
+            "X-User-ID": userId,
           },
         });
+        console.log('!!!!!!!!!!!!!!!Toggling bookmark 요청 결과:', bookmarked.data);
       } else {
         await axios.delete(`${API_URL}/gallery/my-collection`, {
           data: body,
           headers: {
             "Authorization": accessToken,
             "Content-Type": "application/json",
+            "X-User-ID": userId,
           },
         });
       }
