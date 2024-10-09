@@ -6,7 +6,7 @@ import com.threeheads.gallery.model.entity.MyLike;
 import com.threeheads.gallery.model.dto.AddCollectionDto;
 import com.threeheads.gallery.model.dto.CollectionDto;
 import com.threeheads.gallery.model.dto.GalleryDetailDto;
-
+import java.util.Map;
 import java.util.List;
 
 public interface GalleryService {
@@ -25,5 +25,5 @@ public interface GalleryService {
 
     List<Gallery> getWeekPick();
 
-    Object getAiResult(List<String> image_urls);
+    Object getAiResult(Map<String,List<String>> image_urls);
 }
