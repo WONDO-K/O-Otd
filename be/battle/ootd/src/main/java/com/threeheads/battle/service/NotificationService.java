@@ -42,4 +42,5 @@ public interface NotificationService {
      * @param notificationId 알림 ID
      */
     void markAsRead(Long notificationId);
+    void markAllAsRead(Long notificationId);
 }
