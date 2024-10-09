@@ -42,6 +42,7 @@ public class GalleryServiceImpl implements GalleryService {
 
     }
 
+    // 마이 컬렉션 추가
     @Override
     public MyLike addCollection(AddCollectionDto dto) {
         int userId = dto.getUserId();
@@ -53,6 +54,7 @@ public class GalleryServiceImpl implements GalleryService {
         myLikeEntity.setUserId(userId);
         myLikeEntity.setLikeDateTime(LocalDateTime.now());
         try {
+            galleryRepository.upLike(clothesId);
             return likeRepository.save(myLikeEntity);  // 데이터베이스에 저장
         } catch (DataAccessException e) {
             // 에러 발생 시 예외 처리
@@ -196,13 +198,13 @@ public class GalleryServiceImpl implements GalleryService {
     // }
 
     @Override
-    public List<String> getAiResult(List<String> image_urls) {
-        Map<String, List<String>> params = new HashMap<>();
-        params.put("image_urls", image_urls);
+    public List<String> getAiResult(Map<String, List<String>> image_urls) {
+        // Map<String, List<String>> params = new HashMap<>();
+        // params.put("image_urls", image_urls);
         List<String> err= new ArrayList<>();
         // 2개일 때
         if(image_urls.size()==2){
-            Map<String,Object>response = restTemplate.postForObject(classificationFashionUrl, params, Map.class);
+            Map<String,Object>response = restTemplate.postForObject(classificationFashionUrl, image_urls, Map.class);
             if (response.get("response")==null) {
                 err.add((String)response.get("err"));
                 return err;
