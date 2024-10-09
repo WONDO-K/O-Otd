@@ -11,8 +11,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 
@@ -95,12 +97,12 @@ public class GalleryRestController {
             return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/upload_cdn")
-    public ResponseEntity<?> uploadImage(@RequestBody Map<String, Object> request) {
+    @PostMapping(value = "/upload_cdn", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadImage(@RequestParam("userId") int userId, @RequestParam("file") MultipartFile file) {
         log.info("upload controller: {}", true); // 로그 출력
         try{
             log.info("upload controller in try: {}", true); // 로그 출력
-            String result = service.uploadImage(request);
+            String result = service.uploadImage(userId, file);
 
             return ResponseEntity.ok(result);
         }
