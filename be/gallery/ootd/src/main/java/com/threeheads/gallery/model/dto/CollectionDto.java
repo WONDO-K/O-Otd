@@ -14,4 +14,5 @@ public class CollectionDto {
     private int userId;
     private LocalDateTime likeDateTime;
     private int likesCount;
+    private String imageUrl;
 }
