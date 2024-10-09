@@ -79,8 +79,8 @@ public class GalleryRestController {
     }
 
     @PostMapping("/ai")
-    public ResponseEntity<?> getAiResult(@RequestBody Map<String,List<String>> image_url){
-        Object result = service.getAiResult(image_url);
+    public ResponseEntity<?> getAiResult(@RequestBody List<String> image_urls){
+        Object result = service.getAiResult(image_urls);
         if(result instanceof String || result == null)
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Ai service에러, "+result);
         else
