@@ -11,6 +11,7 @@ import com.threeheads.gallery.model.service.GalleryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -87,6 +88,21 @@ public class ServiceTest extends AbstractTest {
     public void getWeekPick(){
         List<Gallery> result = service.getWeekPick();
         assertEquals(result.size(),10);
+    }
+
+    @Test
+    public void classificationFashionTest(){
+        List<String> urls = new ArrayList<>();
+        urls.add("https://ootd-ssafy.b-cdn.net/img_1.png");
+        urls.add("https://ootd-ssafy.b-cdn.net/img_10.png");
+        Object result1= service.getAiResult(urls);
+        List<Integer> resultList = (List<Integer>)result1;
+        assertEquals(resultList.size(),20);
+
+//        urls.clear();
+//        result1= service.getAiResult(urls);
+//        assertEquals(result1,"지원하지 않는 이미지 개수입니다. 1개 또는 2개의 이미지 URL을 제공해주세요.");
+
     }
 
 }
