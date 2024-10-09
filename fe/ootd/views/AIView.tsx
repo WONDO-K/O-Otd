@@ -15,6 +15,7 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import { TitleText, TitleBoldText, ContentText, ContentBoldText } from '../components/CustomTexts';
 import axios from 'axios';
 import { useLoginStore } from '../stores/LoginStore';
+import RNBlobUtil from 'react-native-blob-util';
 
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
 import useAIStore from '../stores/AIStore';
@@ -53,79 +54,87 @@ function AIView(): React.JSX.Element {
   //   try {
   //     const formData = new FormData();
   //     formData.append('file', `data:image/jpeg;base64,${base64Image}`);
-      
+  //     formData.append('userId', userId);
+  //     console.log('formData', formData);
   //     const response = await axios.post(
-  //       'https://j11e104.p.ssafy.io/upload_cdn', // 나중에 cdn api로 대체
+  //       'https://j11e104.p.ssafy.io/gallery/upload_cdn',
   //       formData,
   //       {
   //         headers: {
-  //           'Content-Type': 'multipart/form-data',
+  //           "Authorization": accessToken,
+  //           "Content-Type": "multipart/form-data",
+  //           "X-User-ID": userId,
   //         },
   //       }
   //     );
-  
-  //     return response.data.url;
+  //     return response;
   //   } catch (error) {
   //     console.error('CDN 업로드 오류:', error);
   //     throw new Error('이미지 업로드 중 오류가 발생했습니다.');
   //   }
   // };
 
-  // const fetchAIResult = async () => {
-  //   setLoading(true);
-  
-  //   try {
-  //     if (!photo || !photo.assets || !photo.assets[0].base64) {
-  //       Alert.alert('오류', '이미지를 선택해 주세요.');
-  //       setLoading(false);
-  //       return;
-  //     }
-  
-  //     const imageUrl = await uploadImageToCDN(photo.assets[0].base64);
-  //     console.log('업로드된 이미지 URL:', imageUrl);
-  
-  //     const response = await axios.post(
-  //       'https://j11e104.p.ssafy.io/gallery/ai',
-  //       [imageUrl], // 이미지 URL을 배열로 전송
-  //       {
-  //         headers: {
-  //           "Authorization": accessToken,
-  //           "Content-Type": "application/json",
-  //           "X-User-ID": userId,
-  //         },
-  //       }
-  //     );
-  
-  //     console.log('AI 분석 결과:', response.data);
-  //     navigation.navigate('AIReport', {
-  //       images: response.data.response,
-  //       type: response.data.top_class.class,
-  //     });
-  //   } catch (error) {
-  //     console.error('AI 분석 요청 오류:', error);
-  //     Alert.alert('오류', 'AI 분석 중 문제가 발생했습니다. 다시 시도해 주세요.');
-  //   } finally {
-  //     setLoading(false); // 로딩 상태 해제
-  //   }
-  // };
+  const uploadImageToCDN = async (base64Image: string) => {
+    try {
+        const response = await RNBlobUtil.fetch(
+            'POST',
+            'https://j11e104.p.ssafy.io/gallery/upload_cdn',
+            {
+                'Authorization': accessToken,
+                'Content-Type': 'multipart/form-data',
+            },
+            [
+                { name: 'file', filename: 'image.jpg', type: 'image/jpeg', data: base64Image.replace(/^data:image\/jpeg;base64,/, '') },
+                { name: 'userId', data: String(userId) }
+            ]
+        );
+
+        if (response.respInfo.status === 200) {
+            const result = response.json();
+            console.log('업로드 성공:', result.url);
+            return result.url;
+        } else {
+            console.error('업로드 실패:', response.text());
+            throw new Error('이미지 업로드에 실패했습니다.');
+        }
+    } catch (error) {
+        console.error('CDN 업로드 오류:', error);
+        Alert.alert('오류', '이미지 업로드 중 오류가 발생했습니다.');
+        throw error;
+    }
+  };
+
 
   const fetchAIResult = async () => {
     setLoading(true);
   
     try {
-      const response = await axios.post('https://j11e104.p.ssafy.io/gallery/ai',
-        // [photo.assets[0].base64], 
-        ['https://ootd-ssafy.b-cdn.net/img_10.png'], 
+      if (!photo || !photo.assets || !photo.assets[0].base64) {
+        Alert.alert('오류', '이미지를 선택해 주세요.');
+        setLoading(false);
+        return;
+      }
+  
+      const imageUrl = await uploadImageToCDN(photo.assets[0].base64);
+      console.log('업로드된 이미지 URL:', imageUrl);
+  
+      const response = await axios.post(
+        'https://j11e104.p.ssafy.io/gallery/ai',
+        [imageUrl],
         {
           headers: {
             "Authorization": accessToken,
             "Content-Type": "application/json",
             "X-User-ID": userId,
-          }
+          },
         }
       );
+  
       console.log('AI 분석 결과:', response.data);
-      navigation.navigate('AIReport', { images: response.data.response, type: response.data.top_class.class });
+      navigation.navigate('AIReport', {
+        images: response.data.response,
+        type: response.data.top_class.class,
+      });
     } catch (error) {
       console.error('AI 분석 요청 오류:', error);
       Alert.alert('오류', 'AI 분석 중 문제가 발생했습니다. 다시 시도해 주세요.');
@@ -133,6 +142,31 @@ function AIView(): React.JSX.Element {
       setLoading(false); // 로딩 상태 해제
     }
   };
+
+  // const fetchAIResult = async () => {
+  //   setLoading(true);
+  
+  //   try {
+  //     const response = await axios.post('https://j11e104.p.ssafy.io/gallery/ai',
+  //       // [photo.assets[0].base64], 
+  //       ['https://ootd-ssafy.b-cdn.net/img_10.png'], 
+  //       {
+  //         headers: {
+  //           "Authorization": accessToken,
+  //           "Content-Type": "application/json",
+  //           "X-User-ID": userId,
+  //         }
+  //       }
+  //     );
+  //     console.log('AI 분석 결과:', response.data);
+  //     navigation.navigate('AIReport', { images: response.data.response, type: response.data.top_class.class });
+  //   } catch (error) {
+  //     console.error('AI 분석 요청 오류:', error);
+  //     Alert.alert('오류', 'AI 분석 중 문제가 발생했습니다. 다시 시도해 주세요.');
+  //   } finally {
+  //     setLoading(false); // 로딩 상태 해제
+  //   }
+  // };
 
   useEffect(() => {
       const textList = ['Loading', 'Loading.', 'Loading..', 'Loading...'];
