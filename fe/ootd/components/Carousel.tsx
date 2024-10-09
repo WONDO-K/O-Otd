@@ -6,8 +6,12 @@ import {
   Animated,
   TouchableOpacity,
   ImageBackground,
+  ActivityIndicator,
+  Text,
 } from 'react-native';
+import axios from 'axios';
 import { TitleText, TitleBoldText } from '../components/CustomTexts';
+import { useLoginStore } from '../stores/LoginStore';
 
 const windowWidth = Dimensions.get('window').width;
 const margin = 12; // 좌우 여백 크기 재조정
@@ -23,70 +27,62 @@ export default function Carousel({ openModal }: CarouselProps) {
   const flatListRef = useRef(null);
   const intervalRef = useRef<number>(0);
   const [currentIndex, setCurrentIndex] = useState(1);
+  const [WeeklyStyle, setWeeklyStyle] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const data = useMemo(
-    () => [
-      {
-        src: require('../assets/Whale.jpg'),
-      },
-      {
-        src: require('../assets/Son.jpg'),
-      },
-      {
-        src: require('../assets/RealMan.jpg'),
-      },
-      {
-        src: require('../assets/IronMan_Japan.jpg'),
-      },
-      {
-        src: require('../assets/SpecialAgent_J.jpg'),
-      },
-      {
-        src: require('../assets/Whale_student.jpg'),
-      },
-    ],
-    []
-  );
+  const {
+    accessToken,
+    userId,
+    API_URL,
+  } = useLoginStore();
+
+  const getWeeklyStyle = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/gallery/week-pick`, {
+        headers: {
+          "Authorization": accessToken,
+          "Content-Type": "application/json",
+          "X-User-ID": userId,
+        },
+      });
+      console.log('금주의 스타일:', response.data);
+
+      // isDelete가 false인 데이터만 설정 (선택 사항)
+      setWeeklyStyle(response.data.filter((item: any) => !item.isDelete));
+      setLoading(false);
+    } catch (error) {
+      console.error('Weekly Style Error:', error);
+      setError('스타일을 불러오는 데 실패했습니다.');
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    getWeeklyStyle();
+  }, []);
 
   // 양 끝에 데이터를 복사하여 무한 스크롤처럼 보이게 함
   const infiniteData = useMemo(() => {
-    const firstItem = data[0];
-    const lastItem = data[data.length - 1];
-    return [lastItem, ...data, firstItem];
-  }, [data]);
+    if (WeeklyStyle.length === 0) return [];
+    const firstItem = WeeklyStyle[0];
+    const lastItem = WeeklyStyle[WeeklyStyle.length - 1];
+    return [lastItem, ...WeeklyStyle, firstItem];
+  }, [WeeklyStyle]);
 
   // 스크롤 위치에 맞춰 크기 변경
   const snapToOffsets = useMemo(() => {
-    return Array.from({ length: infiniteData.length }).map((_, index) => index * offset);
+    return infiniteData.map((_, index) => index * offset);
   }, [infiniteData]);
 
-  // const handleScrollEnd = (e) => {
-  //   const contentOffsetX = e.nativeEvent.contentOffset.x;
-  //   const currentIndex = Math.round(contentOffsetX / offset);
-
-  //   if (!flatListRef.current) return; // 방어 코드
-
-  //   if (currentIndex === 0) {
-  //     flatListRef.current.scrollToOffset({
-  //       offset: (infiniteData.length - 2) * offset,
-  //       animated: false,
-  //     });
-  //   } else if (currentIndex === infiniteData.length - 1) {
-  //     flatListRef.current.scrollToOffset({
-  //       offset: offset,
-  //       animated: false,
-  //     });
-  //   }
-  // };
-
-  const handleScrollEnd = (e) => {
+  const handleScrollEnd = (e: any) => {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
     const newIndex = Math.round(contentOffsetX / offset);
-  
+
     if (!flatListRef.current) return; // 방어 코드
-  
+
     setCurrentIndex(newIndex); // 스크롤이 멈출 때 현재 인덱스 업데이트
-  
+
     if (newIndex === 0) {
       flatListRef.current.scrollToOffset({
         offset: (infiniteData.length - 2) * offset,
@@ -115,11 +111,13 @@ export default function Carousel({ openModal }: CarouselProps) {
           });
 
           // 다음 애니메이션을 위한 짧은 지연 후 첫 번째 인덱스로 이동
-          flatListRef.current?.scrollToOffset({
-            offset: offset,
-            animated: false, // 애니메이션 없이 첫 번째로 이동
-          });
-          setCurrentIndex(1);
+          setTimeout(() => {
+            flatListRef.current?.scrollToOffset({
+              offset: offset,
+              animated: false, // 애니메이션 없이 첫 번째로 이동
+            });
+            setCurrentIndex(1);
+          }, 300); // 애니메이션 시간과 맞추기 위해 지연 시간 설정
 
           nextIndex = 1;
         } else {
@@ -132,7 +130,7 @@ export default function Carousel({ openModal }: CarouselProps) {
 
         return nextIndex;
       });
-    }, 5000); // 3초 간격으로 스크롤
+    }, 5000); // 5초 간격으로 스크롤
   };
 
   const stopAutoScroll = () => {
@@ -142,17 +140,39 @@ export default function Carousel({ openModal }: CarouselProps) {
   };
 
   useEffect(() => {
-    startAutoScroll();
+    if (infiniteData.length > 0) {
+      flatListRef.current?.scrollToOffset({ offset: offset, animated: false });
+      setCurrentIndex(1);
+      startAutoScroll();
+    }
 
     // 컴포넌트 언마운트 시 타이머 정리
     return () => {
       stopAutoScroll();
     };
   }, [infiniteData, offset]);
-  
+
+  if (loading) {
+    return (
+      <View style={styles.loaderContainer}>
+        <ActivityIndicator size="large" color="#ffffff" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.errorContainer}>
+        <Text style={styles.errorText}>{error}</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
-      <TitleText style={styles.title}><TitleBoldText>Weekly</TitleBoldText> Styles</TitleText>
+      <TitleText style={styles.title}>
+        <TitleBoldText>Weekly</TitleBoldText> Styles
+      </TitleText>
       <Animated.FlatList
         ref={flatListRef}
         data={infiniteData}
@@ -180,24 +200,29 @@ export default function Carousel({ openModal }: CarouselProps) {
           });
 
           return (
-            <TouchableOpacity  onPress={() => openModal(item)} style={{ marginRight: margin }}>
+            <TouchableOpacity onPress={() => openModal(item)} style={{ marginRight: margin }}>
               <Animated.View style={{ transform: [{ scale }] }}>
                 <View style={{ borderRadius: 10, overflow: 'hidden' }}>
-                  <ImageBackground style={cardSize} source={item.src} />
+                  <ImageBackground 
+                    style={cardSize} 
+                    source={{ uri: item.photoUrl }} 
+                    onError={(e) => {
+                      console.error('이미지 로딩 실패:', e.nativeEvent.error);
+                    }}
+                  >
+                    {/* 이미지 위에 추가적인 정보 표시 가능 */}
+                  </ImageBackground>
                 </View>
               </Animated.View>
             </TouchableOpacity>
           );
         }}
-        keyExtractor={(_, index) => String(index)}
-
-        // getItemLayout 추가
+        keyExtractor={(item) => `${item.galleryId}_${item.photoName}`} // 고유 키 설정
         getItemLayout={(data, index) => ({
           length: offset, // 각 아이템의 고정 길이
           offset: offset * index, // 각 아이템의 오프셋
           index, // 현재 인덱스
         })}
-
         onMomentumScrollEnd={handleScrollEnd}
         onScrollBeginDrag={stopAutoScroll} // 사용자가 스크롤 시작 시 자동 스크롤 중지
         onScrollEndDrag={startAutoScroll} // 사용자가 스크롤을 끝내면 자동 스크롤 재개
@@ -224,5 +249,23 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#ffffff',
     zIndex: 2,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#000000', // 배경 색상
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    backgroundColor: '#000000', // 배경 색상
+  },
+  errorText: {
+    color: '#ff0000',
+    fontSize: 16,
+    textAlign: 'center',
   },
 });

@@ -11,6 +11,7 @@ import {
   ScrollView,
   Modal,
 } from 'react-native';
+import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import Carousel from '../components/Carousel';
 import WishFullIcon from '../assets/Icons/WishFull_Icon.svg';

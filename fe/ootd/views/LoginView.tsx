@@ -48,11 +48,12 @@ function LoginView(): React.JSX.Element {
     try {
       const response = await axios.get(`${API_URL}/user/auth/kakao-login?code=${code}`);
 
-      if (response.data.existed === true) {
-
+      if (response.data.existed = true) {
         // 토큰 저장
         await setAccessToken(response.data.accessToken); // accessToken 설정
         await setRefreshToken(response.data.refreshToken); // refreshToken 설정
+
+        console.log('!!!!!!!!!왜 또 True인데?????????')
 
         // 헤더에서 userId 추출하여 저장
         setUserId(parseInt(response.headers['x-user-id'], 10)); // Ensure userId is a number
