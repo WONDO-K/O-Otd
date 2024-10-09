@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   StyleSheet,
   Text,
@@ -19,60 +19,90 @@ import WishFullIcon from '../assets/Icons/WishFull_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
 import { useLoginStore } from '../stores/LoginStore';
 
-// 통합된 이미지 아이템 인터페이스
-interface ImageItem {
-  imageId?: number;
-  galleryId?: number;
-  photoName?: string;
-  imageUrl?: string; // MainView에서 사용
-  photoUrl?: string; // Carousel에서 사용
-  category?: string;
-  uploadedAt?: string;
-  isDelete?: boolean;
-}
+// Carousel 컴포넌트를 메모이제이션하여 불필요한 리렌더링 방지
+const MemoizedCarousel = React.memo(({ openModal }: { openModal: (item: any) => void }) => (
+  <Carousel openModal={openModal} />
+));
+
+// SearchBar 컴포넌트 분리 및 내부 상태 관리
+const SearchBar: React.FC<{ onSearchPress: (searchTerm: string) => void; isLoading: boolean }> = React.memo(({ onSearchPress, isLoading }) => {
+  const [inputText, setInputText] = useState<string>('');
+
+  const handleChangeText = useCallback((text: string) => {
+    setInputText(text);
+  }, []);
+
+  const handlePress = useCallback(() => {
+    onSearchPress(inputText.trim());
+  }, [onSearchPress, inputText]);
+
+  return (
+    <View style={styles.searchBar}>
+      <TouchableOpacity onPress={handlePress} disabled={isLoading}>
+        <Image source={require('../assets/Images/searchIcon.png')} style={styles.searchIcon} />
+      </TouchableOpacity>
+      <TextInput
+        style={styles.searchInput}
+        maxLength={30}
+        placeholder="패션 검색"
+        placeholderTextColor="gray"
+        value={inputText}
+        onChangeText={handleChangeText}
+        onSubmitEditing={handlePress}
+        returnKeyType="search"
+      />
+      {isLoading && <ActivityIndicator size="small" color="#ffffff" style={styles.searchLoader} />}
+    </View>
+  );
+});
+
+// HeaderComponent는 Carousel과 SearchBar를 포함하며, 메모이제이션됨
+const HeaderComponent: React.FC<{ openModal: (item: any) => void; onSearchPress: (searchTerm: string) => void; isLoading: boolean }> = React.memo(({ openModal, onSearchPress, isLoading }) => (
+  <>
+    <MemoizedCarousel openModal={openModal} />
+    <SearchBar onSearchPress={onSearchPress} isLoading={isLoading} />
+  </>
+));
 
 function MainView(): React.JSX.Element {
   const navigation = useNavigation();
 
-  const [searchType, setSearchType] = useState('');
-  const [myFashion, setMyFashion] = useState<ImageItem[]>([]);
-  const [bookmarked, setBookmarked] = useState<{ [key: number]: boolean }>({});
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<ImageItem | null>(null);
+  const [searchType, setSearchType] = useState<string>(''); 
+  const [myFashion, setMyFashion] = useState<any[]>([]);
+  const [bookmarked, setBookmarked] = useState<{ [key: string]: boolean }>({});
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+  const [selectedImage, setSelectedImage] = useState<any>(null);
   
-  // 로딩 상태 관리
-  const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  
-  // 에러 상태 관리
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoadingMore, setIsLoadingMore] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  // 추가: 더 이상 데이터가 없는지 추적
-  const [hasMore, setHasMore] = useState(true);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const [currentPage, setCurrentPage] = useState<number>(1); 
 
   const { accessToken, userId, API_URL } = useLoginStore();
-
-  // onEndReached 호출 제어를 위한 플래그
   const onEndReachedCalledDuringMomentum = useRef<boolean>(false);
 
-  // 검색어가 변경될 때 데이터를 초기화하고 다시 로드
   useEffect(() => {
+    fetchGallery('', true); 
+  }, []);
+
+  useEffect(() => {
+    if (searchType.trim() === '') {
+      fetchGallery('', true);
+      return;
+    }
     setMyFashion([]);
-    setHasMore(true); // 새로운 검색 시 hasMore 초기화
+    setHasMore(true); 
+    setCurrentPage(1);
     fetchGallery(searchType, true);
   }, [searchType]);
 
-  // 초기 데이터 로드
-  useEffect(() => {
-    fetchGallery(searchType);
-  }, []);
-
-  // API 요청 함수
-  const fetchGallery = async (type: string, isNewSearch: boolean = false) => {
+  const fetchGallery = useCallback(async (type: string, isNewSearch: boolean = false) => {
     if (isLoading || isLoadingMore || !hasMore) return;
 
     if (isNewSearch) {
       setIsLoading(true);
+      setCurrentPage(1);
     } else {
       setIsLoadingMore(true);
     }
@@ -81,7 +111,8 @@ function MainView(): React.JSX.Element {
       const response = await axios.get(`${API_URL}/gallery/list`, {
         params: {
           "type": type.trim(),
-          // 페이지네이션을 위해 추가 파라미터 (예: page, limit) 필요 시 추가
+          "page": isNewSearch ? 1 : currentPage + 1,
+          "limit": 20,
         },
         headers: {
           "Authorization": accessToken,
@@ -89,25 +120,21 @@ function MainView(): React.JSX.Element {
           "X-User-ID": userId,
         },
       });
-      const fetchedData: ImageItem[] = response.data; // response.data 사용
-
-      console.log('갤러리 받아오기:', fetchedData);
+      const fetchedData = response.data;
 
       if (fetchedData.length > 0) {
-        // 중복된 imageId 제거 (선택 사항)
         const uniqueData = fetchedData.filter(
-          (item, index, self) => index === self.findIndex((t) => t.imageId === item.imageId)
+          (item: any, index: number, self: any[]) => index === self.findIndex((t) => t.imageId === item.imageId)
         );
         setMyFashion((prev) => isNewSearch ? uniqueData : [...prev, ...uniqueData]);
-        // 추가: 더 불러올 데이터가 있는지 확인
-        if (uniqueData.length === 0) {
+        if (uniqueData.length < 20) {
           setHasMore(false);
+        } else {
+          setCurrentPage(prevPage => prevPage + 1);
         }
       } else {
-        // 더 이상 불러올 데이터가 없을 경우 처리
         setHasMore(false);
       }
-
       setError(null);
     } catch (err) {
       console.error('Error fetching gallery:', err);
@@ -119,76 +146,92 @@ function MainView(): React.JSX.Element {
         setIsLoadingMore(false);
       }
     }
-  };
+  }, [isLoading, isLoadingMore, hasMore, currentPage, API_URL, accessToken, userId]);
 
-  // openModal 함수 수정: imageUrl 또는 photoUrl을 사용
-  const openModal = (item: ImageItem) => {
+  const openModal = useCallback((item: any) => {
     const imageUrl = item.imageUrl || item.photoUrl;
     if (!imageUrl) {
       console.error('No imageUrl found in the item:', item);
       return;
     }
-    setSelectedImage({ ...item, imageUrl }); // imageUrl을 보장
+    setSelectedImage({ ...item, imageUrl });
     setIsModalVisible(true);
-  };
+  }, []);
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setIsModalVisible(false);
     setSelectedImage(null);
-  };
+  }, []);
 
-  // 북마크 토글 함수
-  const toggleBookmark = (id: number) => {
+  const toggleBookmark = useCallback(async (id: string) => {
+    const isBookmarked = !!bookmarked[id];
+
     setBookmarked((prevState) => ({
       ...prevState,
-      [id]: !prevState[id],
+      [id]: !isBookmarked,
     }));
-  };
 
-  // 추가 로딩 함수
-  const handleLoadMore = () => {
+    const body = {
+      userId: userId,
+      clothesId: id,
+    };
+
+    console.log('!!!!!!!!!!!!!!!Toggling bookmark 요청 들어옴!');
+
+    try {
+      if (!isBookmarked) {
+        const bookmarked = await axios.post(`${API_URL}/gallery/my-collection`, body, {
+          headers: {
+            "Authorization": accessToken,
+            "Content-Type": "application/json",
+            "X-User-ID": userId,
+          },
+        });
+        console.log('!!!!!!!!!!!!!!!Toggling bookmark 요청 결과:', bookmarked.data);
+      } else {
+        await axios.delete(`${API_URL}/gallery/my-collection`, {
+          data: body,
+          headers: {
+            "Authorization": accessToken,
+            "Content-Type": "application/json",
+            "X-User-ID": userId,
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+      setBookmarked((prevState) => ({
+        ...prevState,
+        [id]: isBookmarked,
+      }));
+    }
+  }, [bookmarked, API_URL, accessToken, userId]);
+
+  const handleLoadMore = useCallback(() => {
     if (!isLoadingMore && hasMore) {
       fetchGallery(searchType);
     }
-  };
+  }, [isLoadingMore, hasMore, searchType, fetchGallery]);
 
-  // 렌더리기 위한 로딩 컴포넌트
-  const renderFooter = () => {
-    if (!isLoadingMore) return null;
-    return (
-      <View style={styles.loadingMore}>
-        <ActivityIndicator size="large" color="#ffffff" />
-      </View>
-    );
-  };
+  const onSearchPress = useCallback((searchTerm: string) => {
+    if (searchTerm !== searchType.trim()) {
+      setSearchType(searchTerm);
+    }
+  }, [searchType]);
 
-  // 검색 입력 핸들러 (디바운싱 적용 가능)
-  const handleSearchChange = (input: string) => {
-    setSearchType(input);
-  };
-
-  // FlatList의 헤더 컴포넌트로 사용할 Carousel과 SearchBar
-  const renderHeader = () => (
-    <>
-      <Carousel openModal={openModal} />
-      <View style={styles.searchBar}>
-        <Image source={require('../assets/Images/searchIcon.png')} style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          maxLength={30}
-          placeholder="패션 검색"
-          placeholderTextColor="gray"
-          value={searchType}
-          onChangeText={handleSearchChange}
-        />
-      </View>
-    </>
-  );
+  // useCallback을 사용하여 renderHeader 함수 메모이제이션
+  const renderHeader = useCallback(() => (
+    <HeaderComponent 
+      openModal={openModal} 
+      onSearchPress={onSearchPress} 
+      isLoading={isLoading} 
+    />
+  ), [openModal, onSearchPress, isLoading]);
 
   return (
     <ImageBackground
-      source={require('../assets/Images/bg_img.jpg')} // 배경 이미지 경로
-      style={styles.background} // 배경 스타일 설정
+      source={require('../assets/Images/bg_img.jpg')}
+      style={styles.background}
     >
       <View style={styles.container}>
         {isLoading && myFashion.length === 0 ? (
@@ -198,29 +241,32 @@ function MainView(): React.JSX.Element {
         ) : error ? (
           <View style={styles.errorContainer}>
             <Text style={styles.errorText}>{error}</Text>
+            <TouchableOpacity onPress={() => fetchGallery(searchType, true)} style={styles.retryButton}>
+              <Text style={styles.retryText}>다시 시도하기</Text>
+            </TouchableOpacity>
           </View>
         ) : (
           <FlatList
             data={myFashion}
-            keyExtractor={(item, index) => `${item.imageId}_${index}`} // 고유 키 설정 (프리픽스 추가)
+            keyExtractor={(item, index) => `${item.imageId}_${index}`}
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => openModal(item)} style={styles.notificationItem}>
                 <ImageBackground source={{ uri: item.imageUrl }} style={styles.notificationImage} resizeMode="cover">
-                  <TouchableOpacity style={styles.bookmarkIcon} onPress={() => toggleBookmark(item.imageId || 0)}>
-                    {bookmarked[item.imageId || 0] ? (
-                      <WishFullIcon width={30} height={40} /> // 북마크가 활성화된 경우
+                  <TouchableOpacity style={styles.bookmarkIcon} onPress={() => toggleBookmark(item.imageId)}>
+                    {bookmarked[item.imageId] ? (
+                      <WishFullIcon width={30} height={40} />
                     ) : (
-                      <WishIcon width={30} height={40} fill="white" /> // 비활성화된 경우
+                      <WishIcon width={30} height={40} fill="white" />
                     )}
                   </TouchableOpacity>
                 </ImageBackground>
               </TouchableOpacity>
             )}
-            ListHeaderComponent={renderHeader} // 헤더 컴포넌트 추가
+            ListHeaderComponent={renderHeader}
+            ListFooterComponent={isLoadingMore ? <ActivityIndicator size="large" color="#ffffff" /> : null}
             numColumns={2}
             onEndReached={handleLoadMore}
             onEndReachedThreshold={0.5}
-            ListFooterComponent={renderFooter}
             contentContainerStyle={styles.flatListContent}
             onMomentumScrollBegin={() => { onEndReachedCalledDuringMomentum.current = false; }}
             onEndReached={() => {
@@ -231,8 +277,6 @@ function MainView(): React.JSX.Element {
             }}
           />
         )}
-
-        {/* 이미지 모달 */}
         <Modal
           visible={isModalVisible}
           transparent={true}
@@ -248,8 +292,8 @@ function MainView(): React.JSX.Element {
                     style={styles.fixedModalImage}
                     resizeMode="contain"
                   />
-                  <TouchableOpacity style={styles.modalBookmarkIcon} onPress={() => toggleBookmark(selectedImage.imageId || selectedImage.galleryId || 0)}>
-                    {bookmarked[selectedImage.imageId || selectedImage.galleryId || 0] ? (
+                  <TouchableOpacity style={styles.modalBookmarkIcon} onPress={() => toggleBookmark(selectedImage.imageId)}>
+                    {bookmarked[selectedImage.imageId] ? (
                       <WishFullIcon width={30} height={40} />
                     ) : (
                       <WishIcon width={30} height={40} fill="white" />
@@ -268,7 +312,7 @@ function MainView(): React.JSX.Element {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    resizeMode: 'cover', // 배경 이미지를 뷰에 맞게 조정
+    resizeMode: 'cover',
   },
   container: {
     flex: 1,
@@ -276,7 +320,6 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     flexDirection: 'row',
-    justifyContent: 'center',
     alignItems: 'center',
     width: '90%',
     height: 60,
@@ -289,7 +332,7 @@ const styles = StyleSheet.create({
   searchIcon: {
     width: 20,
     height: 20,
-    marginRight: 5,
+    marginRight: 10,
   },
   searchInput: {
     flex: 1,
@@ -297,16 +340,20 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontFamily: 'SUIT-Regular',
+    padding: 5,
+  },
+  searchLoader: {
+    marginLeft: 10,
   },
   notificationItem: {
     flex: 1,
     margin: 5,
-    height: 200, // 적절한 높이 설정
+    height: 200,
   },
   notificationImage: {
     width: '100%',
     height: '100%',
-    justifyContent: 'flex-end', // 아이콘을 하단에 배치
+    justifyContent: 'flex-end',
     borderRadius: 10,
     overflow: 'hidden',
   },
@@ -319,14 +366,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // 모달 배경 어둡게
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
   },
   fixedModalContent: {
     width: '80%',
     height: '70%',
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'relative', // 아이콘을 절대 위치로 배치할 수 있도록 함
+    position: 'relative',
     overflow: 'hidden',
   },
   fixedModalImage: {
@@ -335,8 +382,8 @@ const styles = StyleSheet.create({
   },
   modalBookmarkIcon: {
     position: 'absolute',
-    right: 10, // 우측에서 10px 떨어짐
-    bottom: 10, // 하단에서 10px 떨어짐
+    right: 10,
+    bottom: 10,
   },
   loaderContainer: {
     flex: 1,
@@ -355,6 +402,16 @@ const styles = StyleSheet.create({
     color: '#ff0000',
     fontSize: 16,
     textAlign: 'center',
+  },
+  retryButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: '#ffffff',
+    borderRadius: 5,
+  },
+  retryText: {
+    color: '#000000',
+    fontSize: 16,
   },
   loadingMore: {
     paddingVertical: 20,
