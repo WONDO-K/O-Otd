@@ -2,13 +2,17 @@ package com.threeheads.gallery.model.service;
 
 import com.threeheads.gallery.model.dto.GalleryListResponseDto;
 import com.threeheads.gallery.model.entity.Gallery;
+import com.threeheads.gallery.model.entity.MyFashion;
 import com.threeheads.gallery.model.entity.MyLike;
 import com.threeheads.gallery.model.dto.AddCollectionDto;
 import com.threeheads.gallery.model.dto.CollectionDto;
 import com.threeheads.gallery.model.dto.GalleryDetailDto;
 import com.threeheads.gallery.model.repository.GalleryRepository;
 import com.threeheads.gallery.model.repository.LikeRepository;
+import com.threeheads.gallery.model.repository.MyFashionRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.dao.DataAccessException;
@@ -18,11 +22,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.swing.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -31,14 +34,15 @@ public class GalleryServiceImpl implements GalleryService {
     private final LikeRepository likeRepository;
     private final GalleryRepository galleryRepository;
     private final RestTemplate restTemplate;
-
+    private final MyFashionRepository myFashionRepository;
     @Value("${spring.classificationFashion.service.url}")
     private String classificationFashionUrl;
 
-    public GalleryServiceImpl(LikeRepository likeRepository, GalleryRepository galleryRepository, RestTemplateBuilder restTemplateBuilder){
+    public GalleryServiceImpl(LikeRepository likeRepository, GalleryRepository galleryRepository, RestTemplateBuilder restTemplateBuilder, MyFashionRepository myFashionRepository){
         this.likeRepository = likeRepository;
         this.galleryRepository = galleryRepository;
         this.restTemplate = restTemplateBuilder.build();
+        this.myFashionRepository = myFashionRepository;
 
     }
 
@@ -187,5 +191,54 @@ public class GalleryServiceImpl implements GalleryService {
             }
         }
 
+    }
+
+    @Override
+    public String uploadImage(Map<String, Object> request) {
+        String username = "ootd-myfashion";
+        String hostname = "sg.storage.bunnycdn.com";
+        int port = 21;
+        String password = "2520bae7-9f1f-4830-bc7d67555674-f020-43c4";
+
+        String userId = (String) request.get("userId");
+        String base64Image = (String) request.get("formData");
+        String timestamp = String.valueOf(System.currentTimeMillis());
+
+        // CDN에 저장할 경로 및 파일 이름 지정 (userId를 활용)
+        String cdnFilePath = "img_" + userId + "_" + timestamp + ".png"; // 파일 이름 수정
+
+        try {
+            // 데이터 URL 형식에서 Base64 부분만 추출
+            String base64 = base64Image.split(",")[1];
+
+            // Base64로 인코딩된 이미지를 바이트 배열로 변환
+            byte[] imageBytes = Base64.getDecoder().decode(base64);
+
+            // FTP 클라이언트 설정
+            FTPClient ftpClient = new FTPClient();
+            ftpClient.connect(hostname, port);
+            ftpClient.login(username, password);
+            ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+            ftpClient.enterLocalPassiveMode();
+
+            // 이미지 업로드
+            try (ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes)) {
+                boolean success = ftpClient.storeFile(cdnFilePath, inputStream);
+                if (success) {
+                    String imageUrl = "https://" + hostname + "/" + cdnFilePath;;
+                    MyFashion myFashion = new MyFashion(0,LocalDateTime.now(),0,0,false,(int)request.get("userId"),null,imageUrl);
+                    myFashionRepository.save(myFashion);
+                    return imageUrl; // 업로드된 이미지 URL 반환
+                } else {
+                    throw new IOException("이미지 업로드 실패");
+                }
+            } finally {
+                ftpClient.logout();
+                ftpClient.disconnect();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("이미지 업로드 중 오류가 발생했습니다.");
+        }
     }
 }
