@@ -22,49 +22,10 @@ function AIReport(): React.JSX.Element {
   const navigation = useNavigation();
   const route = useRoute();
 
+  const { images, type } = route.params;
   const { image } = useAIStore(); // Zustand에서 이미지 가져오기
 
-  const [myFashion, setMyFashion] = useState([]);
   const [bookmarked, setBookmarked] = useState({});
-
-  const getMyFashion = async () => {
-      // 실제 API 호출 부분
-      // try {
-      //     const response = await axios.get('');
-      //     setMyFashion(response.data);
-      // } catch (error) {
-      //     console.error('Error fetching my fashion:', error);
-      // }
-
-      // 테스트용 데이터
-      const data = [
-          {
-              id: 1,
-              src: require('../assets/Son.jpg')
-          },
-          {
-              id: 2,
-              src: require('../assets/SpecialAgent_J.jpg')
-          },
-          {
-              id: 3,
-              src: require('../assets/RealMan.jpg')
-          },
-          {
-              id: 4,
-              src: require('../assets/IronMan_Japan.jpg')
-          },  
-          {
-              id: 5,
-              src: require('../assets/Whale_student.jpg')
-          },
-          {
-              id: 6,
-              src: require('../assets/Whale.jpg')
-          },
-      ];
-      setMyFashion(data);  // 상태 업데이트
-  };
 
   const toggleBookmark = (id) => {
     setBookmarked((prevState) => ({
@@ -73,9 +34,47 @@ function AIReport(): React.JSX.Element {
     }));
   };
 
-  useEffect(() => {
-    getMyFashion();  // 컴포넌트가 마운트될 때 데이터 가져오기
-  }, []);
+  const getTypeExplain = (type: string) => {
+    switch (type) {
+      case 'street_look':
+        return {
+          title: '스트릿 룩',
+          description: '길거리 패션에서 영감을 받은 자유롭고 개성 넘치는 스타일입니다. 유행을 빠르게 반영하고 자신만의 독특한 패션을 표현하는 것이 특징입니다.',
+        };
+      case 'casual_look':
+        return {
+          title: '캐주얼 룩',
+          description: '실용적인 옷차림으로 일상에서 자주 입으며, 편안함을 중시하는 스타일입니다. 격식을 차리지 않고 편하게 입는 패션입니다.',
+        };
+      case 'sporty_look':
+        return {
+          title: '스포티 룩',
+          description: '운동복에서 영감을 받은 활동적인 스타일입니다. 애슬레저 트렌드로 일상에서도 운동복을 착용하는 것이 특징입니다.',
+        };
+      case 'chic_look':
+        return {
+          title: '시크 룩',
+          description: '세련되고 도시적인 느낌을 주는 스타일입니다. 주로 검정, 회색, 화이트 색상과 깔끔한 실루엣을 사용해 우아하면서도 차가운 이미지를 연출하는 패션입니다.',
+        };
+      case 'minimal_look':
+        return {
+          title: '미니멀 룩',
+          description: '세련되고 도시적인 느낌을 주는 스타일입니다. 주로 검정, 회색, 화이트 색상과 깔끔한 실루엣을 사용해 우아하면서도 차가운 이미지를 연출하는 패션입니다.',
+        };
+      case 'classic_look':
+        return {
+          title: '클래식 룩',
+          description: '시간이 지나도 변하지 않는 우아하고 품격 있는 스타일입니다. 단정하고 격식 있는 이미지를 표현하는 것이 특징입니다.',
+        };
+      default:
+        return {
+          title: '알 수 없는 스타일',
+          description: '이 스타일에 대한 설명을 찾을 수 없습니다. 다른 이미지를 시도해 보세요.',
+        };
+    } 
+  }
+
+  const { title, description } = getTypeExplain(type);
 
   return (
     <ImageBackground
@@ -105,11 +104,10 @@ function AIReport(): React.JSX.Element {
           )}
             <View style={styles.reportContents}>
               <ContentText style={styles.reportName}>
-                시티보이 룩
+                {title}
               </ContentText>
               <ContentText style={styles.reportText}>
-                시티보이룩은 시티보이 룩입니다.
-                그것이 시티보이 룩이니까.
+                {description}
               </ContentText>
             </View>
           </View>
@@ -117,24 +115,24 @@ function AIReport(): React.JSX.Element {
           <TitleText style={styles.title}>Similar Styles</TitleText>
           <FlatList
             style={{marginTop: 20}}
-            data={myFashion}
+            data={images}
             keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
+            renderItem={({ item, index }) => (
               <View style={styles.notificationItem}>
                 <ImageBackground
-                  source={item.src}
+                  source={{ uri: item }}
                   style={styles.notificationImage}
                   resizeMode="cover"
                 >
                   <TouchableOpacity
                     style={styles.bookmarkIcon}
-                    onPress={() => toggleBookmark(item.id)}
+                    onPress={() => toggleBookmark(index)}
                   >
-                  {bookmarked[item.id] ? (
-                    <WishFullIcon width={30} height={40} fill={'white'} /> // 북마크가 활성화된 경우
-                  ) : (
-                    <WishIcon width={30} height={40} fill={'white'} /> // 비활성화된 경우
-                  )}
+                    {bookmarked[index] ? (
+                      <WishFullIcon width={30} height={40} fill={'white'} /> // 북마크가 활성화된 경우
+                    ) : (
+                      <WishIcon width={30} height={40} fill={'white'} /> // 비활성화된 경우
+                    )}
                   </TouchableOpacity>
                 </ImageBackground>
               </View>
