@@ -16,7 +16,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
+import org.springframework.transaction.annotation.Transactional;
 import javax.swing.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,6 +26,7 @@ import java.util.Map;
 
 @Service
 @Slf4j
+
 public class GalleryServiceImpl implements GalleryService {
 
     private final LikeRepository likeRepository;
@@ -42,8 +43,11 @@ public class GalleryServiceImpl implements GalleryService {
 
     }
 
+
     // 마이 컬렉션 추가
+    
     @Override
+    @Transactional
     public MyLike addCollection(AddCollectionDto dto) {
         int userId = dto.getUserId();
         long clothesId = dto.getClothesId();
