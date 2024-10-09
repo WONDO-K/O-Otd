@@ -30,8 +30,15 @@ function MainView(): React.JSX.Element {
   const getMyFashion = async () => {
     // 실제 API 호출 부분
     // try {
-    //     const response = await axios.get('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
-    //     setMyFashion(response.data);
+    //     const response = axios.get(`https://j11e104.p.ssafy.io/gallery/list`, {
+    //         headers: {
+    //             "Authorization": accessToken,
+    //             "Content-Type": "application/json",
+    //             "X-User-ID": userId,
+    //         }
+    //     });
+    //     console.log(response.data);
+    //     setBattleList(response.data); // 상태 업데이트
     // } catch (error) {
     //     console.error('Error fetching my fashion:', error);
     // }

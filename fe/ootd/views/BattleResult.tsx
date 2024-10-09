@@ -14,14 +14,14 @@ function BattleResult({ navigation, route }): React.JSX.Element {
         title: '',
         participantCount: 0,
         status: '',
-        startedAt: '',
-        leftImage: '',
-        rightImage: '',
-        myPick: null,
-        leftName: '',
-        rightName: '',
-        leftVote: 0,
-        rightVote: 0,
+        createdAt: '',
+        requesterImage: '',
+        responderImage: '',
+        myPickUserId: null,
+        requesterName: '',
+        responderName: '',
+        requesterVotes: 0,
+        responderVotes: 0,
     });
 
     useEffect(() => {
@@ -34,7 +34,7 @@ function BattleResult({ navigation, route }): React.JSX.Element {
     const strokeWidth = 15; // 선의 두께
     const radius = (size - strokeWidth) / 2; // 원의 반지름
     const circumference = 2 * Math.PI * radius; // 원의 둘레
-    const leftPercentage = (battleItem.leftVote / (battleItem.leftVote + battleItem.rightVote)) * 100;
+    const leftPercentage = (battleItem.requesterVotes / (battleItem.requesterVotes + battleItem.responderVotes)) * 100;
     const rightPercentage = 100 - leftPercentage;
 
     const leftOffset = circumference - (leftPercentage / 100) * circumference;
@@ -48,17 +48,17 @@ function BattleResult({ navigation, route }): React.JSX.Element {
             <View style={styles.container}>
                 <View style={styles.battleItem}>
                     <View style={styles.leftSide}>
-                        <Image style={styles.image} source={{ uri: item.leftImage }} />
+                        <Image style={styles.image} source={{ uri: item.requesterImage }} />
                         <View style={{flexDirection:'row', alignItems: 'center'}}>
                             <View style={styles.leftColor}></View>
-                            <ContentBoldText style={styles.userNameText}>{item.leftName}</ContentBoldText>
+                            <ContentBoldText style={styles.userNameText}>{item.requesterName}</ContentBoldText>
                         </View>
                     </View>
                     <View style={styles.rightSide}>
-                        <Image style={styles.image} source={{ uri: item.rightImage }} />
+                        <Image style={styles.image} source={{ uri: item.responderImage }} />
                         <View style={{flexDirection:'row'}}>
                             <View style={styles.rightColor}></View>
-                            <ContentBoldText style={styles.userNameText}>{item.rightName}</ContentBoldText>
+                            <ContentBoldText style={styles.userNameText}>{item.responderName}</ContentBoldText>
                         </View>
                     </View>
                 </View>
@@ -129,7 +129,7 @@ function BattleResult({ navigation, route }): React.JSX.Element {
                         </Svg>
                     </View> */}
                     <View style={styles.resultLog}>
-                        <ContentText style={styles.allVoteCount}>총 투표 수 : {item.leftVote + item.rightVote}</ContentText>
+                        <ContentText style={styles.allVoteCount}>총 투표 수 : {item.requesterVotes + item.responderVotes}</ContentText>
                         <View style={styles.resultLegend}>
                             <View style={{flexDirection:'row'}}>
                                 <View style={styles.leftColor}></View>

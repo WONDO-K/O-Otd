@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import { ContentText } from '../components/CustomTexts';
+import { useLoginStore } from '../stores/LoginStore';
 import axios from 'axios';
 
 function Notification({ navigation }): React.JSX.Element {
 
     const [notifications, setNotifications] = useState<string[]>([]);
+    const {accessToken, userId} = useLoginStore();
 
     // 시간을 계산하는 함수
     const timeSince = (dateString:string) => {
@@ -17,8 +19,6 @@ function Notification({ navigation }): React.JSX.Element {
         const hours = Math.floor(difference / (1000 * 60 * 60)); // 시간
         const days = Math.floor(difference / (1000 * 60 * 60 * 24)); // 일
         
-        // return `${now}`;
-
         if (days > 0) {
             return `${days}일 전`;
         } else if (hours > 0) {
@@ -30,67 +30,48 @@ function Notification({ navigation }): React.JSX.Element {
         }
     };
 
-    useEffect(() => {
-        const fetchNotifications = async () => {
-            // try {
-            //     const response = await axios.get('https://api.example.com/notifications');
-            //     setNotifications(response.data);
-            // } catch (error) {
-            //     console.error('Error fetching notifications:', error);
-            // }
-            const data = [
-                {
-                    id: 1,
-                    userId: 12345, // 수신자의 아이디
-                    title: "request",
-                    senderUserName: "가소롭다는표정의손우혁",
-                    message: "가소롭다는표정의손우혁님께서 대전을 신청하셨습니다.",
-                    timestamp: "2024-10-04T12:00:00",
-                    isRead: false
-                },
-                {
-                    id: 2,
-                    userId: 12345, // 수신자의 아이디
-                    title: "request",
-                    senderUserName: "다해줬잖아표정의손우혁",
-                    message: "다해줬잖아표정의손우혁님께서 대전을 신청하셨습니다.",
-                    timestamp: "2024-10-04T12:00:00",
-                    isRead: false
-                },
-                {
-                    id: 3,
-                    userId: 12345, // 수신자의 아이디
-                    title: "request",
-                    senderUserName: "한심하다는표정의손우혁",
-                    message: "한심하다는표정의손우혁님께서 대전을 신청하셨습니다.",
-                    timestamp: "2024-10-04T12:00:00",
-                    isRead: false
-                },
-            ];
-            setNotifications(data);
-        };
+    const fetchNotifications = async () => {
+        try {
+            const response = await axios.get(`https://j11e104.p.ssafy.io/battle/notifications/list/${userId}`, {
+                headers: {
+                    "Authorization": accessToken,
+                    "Content-Type": "application/json",
+                    "X-User-ID": userId,
+                }
+            });
+            console.log(response.data);
+            setNotifications(response.data); // 상태 업데이트
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+        }
+    };
 
+    useEffect(() => {
         fetchNotifications();
     }, []);
     
     return (
         <View style={styles.container}>
-            <FlatList
-                data={notifications}
-                keyExtractor={(item, index) => index.toString()}
-                renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.notificationItem}
-                        onPress={() => {
-                            setTimeout(() => {
+            {notifications.length === 0 ? (
+                <View style={styles.emptyContainer}>
+                    <ContentText style={styles.emptyText}>아직 알림이 없습니다.</ContentText>
+                </View>
+            ) : (
+                <FlatList
+                    data={notifications}
+                    keyExtractor={(item, index) => index.toString()}
+                    renderItem={({ item }) => (
+                        <TouchableOpacity style={styles.notificationItem}
+                            onPress={() => {
                                 navigation.navigate('ChallengeDetail', { item });
-                            }, 0);  // 렌더링 후에 navigation 호출
-                        }}
-                    >
-                        <ContentText style={styles.notificationText}>{item.message}</ContentText>
-                        <ContentText style={styles.notificationTime}>{timeSince(item.timestamp)}</ContentText>
-                    </TouchableOpacity>
-                )}
-            />
+                            }}
+                        >
+                            <ContentText style={styles.notificationText}>{item.message}</ContentText>
+                            <ContentText style={styles.notificationTime}>{timeSince(item.timestamp)}</ContentText>
+                        </TouchableOpacity>
+                    )}
+                />
+            )}
         </View>
     );
 }
@@ -114,7 +95,16 @@ const styles = StyleSheet.create({
     },
     notificationTime: {
         color: 'white',
-    }
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyText: {
+        fontSize: 18,
+        color: 'gray',
+    },
 });
 
 export default Notification;

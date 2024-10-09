@@ -162,10 +162,10 @@ function AIView(): React.JSX.Element {
           )}
         </TouchableOpacity>
 
-        {/* <ContentText style={styles.textContents}>
+        <ContentText style={styles.textContents}>
           AI가 당신의 패션을 분석하고,{"\n"}
           유사한 스타일을 추천합니다.{"\n"}
-        </ContentText> */}
+        </ContentText>
 
         <View style={styles.btnContainer}>
           <TouchableOpacity
@@ -206,10 +206,11 @@ const styles = StyleSheet.create({
   uploadBox: {
     width: "60%",
     height: "45%",
-    borderRadius: 15,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 62,
+    marginTop: 20,
+    marginBottom: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
     borderColor: '#ffffff',
     borderWidth: 5,
