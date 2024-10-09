@@ -6,6 +6,8 @@ import com.threeheads.gallery.model.entity.MyLike;
 import com.threeheads.gallery.model.dto.AddCollectionDto;
 import com.threeheads.gallery.model.dto.CollectionDto;
 import com.threeheads.gallery.model.dto.GalleryDetailDto;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Map;
 import java.util.List;
 import java.util.Map;
@@ -28,5 +30,5 @@ public interface GalleryService {
 
     Object getAiResult(List<String> image_urls);
 
-    String uploadImage(Map<String, Object> request);
+    String uploadImage(int userId, MultipartFile file);
 }

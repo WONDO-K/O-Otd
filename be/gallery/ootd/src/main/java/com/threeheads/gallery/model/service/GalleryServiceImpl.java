@@ -21,9 +21,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
 import javax.swing.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -209,26 +212,18 @@ public class GalleryServiceImpl implements GalleryService {
     }
 
     @Override
-    public String uploadImage(Map<String, Object> request) {
+    public String uploadImage(int userId, MultipartFile file) {
         String username = "ootd-myfashion";
         String hostname = "sg.storage.bunnycdn.com";
         int port = 21;
         String password = "2520bae7-9f1f-4830-bc7d67555674-f020-43c4";
 
-        int userId = (int) request.get("userId");
-        String base64Image = (String) request.get("formData");
         String timestamp = String.valueOf(System.currentTimeMillis());
 
         // CDN에 저장할 경로 및 파일 이름 지정 (userId를 활용)
         String cdnFilePath = "img_" + userId + "_" + timestamp + ".png"; // 파일 이름 수정
 
         try {
-            // 데이터 URL 형식에서 Base64 부분만 추출
-            String base64 = base64Image.split(",")[1];
-
-            // Base64로 인코딩된 이미지를 바이트 배열로 변환
-            byte[] imageBytes = Base64.getDecoder().decode(base64);
-
             // FTP 클라이언트 설정
             FTPClient ftpClient = new FTPClient();
             ftpClient.connect(hostname, port);
@@ -237,11 +232,11 @@ public class GalleryServiceImpl implements GalleryService {
             ftpClient.enterLocalPassiveMode();
 
             // 이미지 업로드
-            try (ByteArrayInputStream inputStream = new ByteArrayInputStream(imageBytes)) {
+            try (InputStream inputStream = file.getInputStream()) {
                 boolean success = ftpClient.storeFile(cdnFilePath, inputStream);
                 if (success) {
                     String imageUrl = "https://" + hostname + "/" + cdnFilePath;;
-                    MyFashion myFashion = new MyFashion(0,LocalDateTime.now(),0,0,false,(int)request.get("userId"),null,imageUrl);
+                    MyFashion myFashion = new MyFashion(0,LocalDateTime.now(),0,0,false,userId,null,imageUrl);
                     myFashionRepository.save(myFashion);
                     log.info("upload: {}", "true"); // 로그 출력
                     return imageUrl; // 업로드된 이미지 URL 반환
