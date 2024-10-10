@@ -18,6 +18,7 @@ import Carousel from '../components/Carousel';
 import WishFullIcon from '../assets/Icons/WishFull_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
 import { useLoginStore } from '../stores/LoginStore';
+import { ContentBoldText } from '../components/CustomTexts';
 
 // Carousel 컴포넌트를 메모이제이션하여 불필요한 리렌더링 방지
 const MemoizedCarousel = React.memo(({ openModal }: { openModal: (item: any) => void }) => (
@@ -96,6 +97,25 @@ function MainView(): React.JSX.Element {
     setCurrentPage(1);
     fetchGallery(searchType, true);
   }, [searchType]);
+
+  const getTypeText = (type: string) => {
+    switch (type) {
+      case 'street_look':
+        return '# 스트릿 룩';
+      case 'casual_look':
+        return '# 캐주얼 룩';
+      case 'sporty_look':
+        return '# 스포티 룩';
+      case 'chic_look':
+        return '# 시크 룩';
+      case 'minimal_look':
+        return '# 미니멀 룩';
+      case 'classic_look':
+        return '# 클래식 룩';
+      default:
+        return '알 수 없는 스타일';
+    }
+  };
 
   const fetchGallery = useCallback(async (type: string, isNewSearch: boolean = false) => {
     if (isLoading || isLoadingMore || !hasMore) return;
@@ -283,9 +303,27 @@ function MainView(): React.JSX.Element {
           animationType="fade"
           onRequestClose={closeModal}
         >
-          <TouchableWithoutFeedback onPress={closeModal}>
-            <View style={styles.modalContainer}>
-              {selectedImage && (
+          {selectedImage && (
+            <TouchableWithoutFeedback onPress={closeModal}>
+              <View style={styles.modalContainer}>
+              {(selectedImage.type && selectedImage.type !== 'Unknown') && (
+                  <ContentBoldText style={{
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                    borderRadius: 10,
+                    fontSize: 14,
+                    backgroundColor: 'white', 
+                    color: 'black',
+                    position: 'absolute', 
+                    bottom: '10%', 
+                    left: '50%',
+                    transform: [
+                      { translateX: -50 },
+                    ]
+                  }}>
+                    {getTypeText(selectedImage.type)}
+                  </ContentBoldText>
+              )}
                 <View style={styles.fixedModalContent}>
                   <Image
                     source={{ uri: selectedImage.imageUrl }}
@@ -300,9 +338,9 @@ function MainView(): React.JSX.Element {
                     )}
                   </TouchableOpacity>
                 </View>
-              )}
-            </View>
-          </TouchableWithoutFeedback>
+              </View>
+            </TouchableWithoutFeedback>
+          )}
         </Modal>
       </View>
     </ImageBackground>
@@ -375,6 +413,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     overflow: 'hidden',
+    borderRadius: 20,
   },
   fixedModalImage: {
     flex: 1,

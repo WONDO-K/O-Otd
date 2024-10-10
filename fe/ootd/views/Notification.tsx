@@ -52,6 +52,7 @@ function Notification({ navigation }): React.JSX.Element {
                     }
                 }
             );
+            console.log(response.data);
         } catch (error) {
             console.error('Error fetching notifications:', error);
         }
@@ -110,7 +111,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     notificationText: {
-        // width: '70%',
+        width: '80%',
         fontSize: 18,
         color: 'white',
     },

@@ -293,7 +293,7 @@ function AIView(): React.JSX.Element {
             }}
             disabled={!photo}
           >
-            <ContentBoldText style={[styles.btnText, { color: photo ? 'white' : '#949494' }]}>{ loading ? loadingText : 'Analyze !'}</ContentBoldText>
+            <ContentBoldText style={[styles.btnText, { color: photo ? 'white' : '#949494' }]}>{ loading ? loadingText : 'Try !'}</ContentBoldText>
           </TouchableOpacity>
         </View>
       </View>
@@ -355,7 +355,6 @@ const styles = StyleSheet.create({
   btn: {
     borderColor: '#ffffff',
     borderWidth: 2,
-    padding: 10,
     width: 150,
     height: 50,
     borderRadius: 10,
@@ -364,7 +363,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   btnText: {
-    fontSize: 20,
+    fontSize: 24,
   },
   modalBackground: {
     flex: 1,

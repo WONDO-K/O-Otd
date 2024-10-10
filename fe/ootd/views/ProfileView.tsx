@@ -842,6 +842,7 @@ const styles = StyleSheet.create({
   profileFixedModalContent: {
     width: '80%',
     height: '70%',
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',

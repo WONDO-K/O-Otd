@@ -80,7 +80,7 @@ function Footerbar({ currentRoute }: { currentRoute: string }): React.JSX.Elemen
                         height={20} 
                         fill={isActive(['Battle', 'BattleDetail', 'BattleResult', 'MyFashion', 'Challenge', 'ChallengeDetail']) ? 'white' : '#949494'}
                     />
-                    <FooterText style={[styles.text, {color: isActive(['Battle', 'BattleDetail', 'BattleResult', 'MyFashion', 'Challenge', 'ChallengeDetail']) ? 'white' : '#949494'}]}>Battle</FooterText>
+                    <FooterText style={[styles.text, {color: isActive(['Battle', 'BattleDetail', 'BattleResult', 'MyFashion', 'Challenge', 'ChallengeDetail']) ? 'white' : '#949494'}]}>Duel</FooterText>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('ProfileView')}>
