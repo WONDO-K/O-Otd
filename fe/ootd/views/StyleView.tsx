@@ -159,18 +159,19 @@ function StyleView({ navigation, route }): React.JSX.Element {
                 </View>
 
                 <ContentText style={styles.textContents}>
-                    AI가 두 패션의 색깔을 더해,{"\n"}
-                    유사한 감각의 스타일을 제공합니다.{"\n"}
+                    AI가 메인 패션을 바탕으로{"\n"}
+                    서브 패션을 조합해,{"\n"}
+                    새로운 스타일링을 제공합니다.
                 </ContentText>
 
                 {/* 추천 받기 버튼 */}
                 <TouchableOpacity
                     style={[styles.recommendButton, isButtonDisabled ? styles.disabledButton : styles.enabledButton]}
-                    // disabled={isButtonDisabled} // 이미지가 둘 다 선택되지 않았으면 비활성화
+                    disabled={isButtonDisabled} // 이미지가 둘 다 선택되지 않았으면 비활성화
                     onPress={() => {
-                        // if (mainImage && subImage) {
+                        if (mainImage && subImage) {
                             fetchRecommendedImages(mainImage, subImage);
-                        // }
+                        }
                     }}
                 >
                     <ContentBoldText style={isButtonDisabled ? styles.disabledButtonText : styles.enabledButtonText}>
@@ -310,7 +311,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: '#ffffff',
         textAlign: 'center',
-        paddingTop: 20,
+        paddingVertical: 20,
         backgroundColor: 'rgba(255, 255, 255, 0.3)',
         elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
         shadowColor: 'black', // 그림자 색상

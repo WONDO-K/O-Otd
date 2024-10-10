@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Text, View, TouchableOpacity, Switch, StyleSheet, ScrollView, ImageBackground } from 'react-native'; 
+import { useFocusEffect } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import SendIcon from '../assets/Icons/Send_Icon'
 import { useLoginStore } from '../stores/LoginStore';
@@ -95,6 +96,12 @@ function Battle({ navigation }): React.JSX.Element {
     useEffect(() => {
             getBattleList(selectedCategory, selectedSort);
         }, [selectedCategory, selectedSort]);
+
+    useFocusEffect(
+        useCallback(() => {
+            getBattleList(selectedCategory, selectedSort);
+        }, [selectedCategory, selectedSort])
+    );
   
     return (
         <ImageBackground 
@@ -217,7 +224,11 @@ function Battle({ navigation }): React.JSX.Element {
                         selectedCategory === 'active' ? (
                             <BattleItemProgress
                                 item={item}
-                                onPress={() => navigation.navigate('BattleDetail', item)}
+                                onPress={() => {
+                                    if (item.myPickUserId === null) {
+                                        navigation.navigate('BattleDetail', item)
+                                    }
+                                }}
                                 calculateRemainingTime={calculateRemainingTime}
                                 nameSlice={nameSlice}
                             />

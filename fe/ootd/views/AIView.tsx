@@ -277,7 +277,7 @@ function AIView(): React.JSX.Element {
 
         <ContentText style={styles.textContents}>
           AI가 당신의 패션을 분석하고,{"\n"}
-          유사한 스타일을 추천합니다.{"\n"}
+          유사한 감각의 룩을 추천합니다
         </ContentText>
 
         <View style={styles.btnContainer}>
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#ffffff',
     textAlign: 'center',
-    paddingTop: 20,
+    paddingVertical: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
     elevation: 3,  // elevation 값을 조절하여 그림자의 크기와 강도를 변경
     shadowColor: 'black', // 그림자 색상

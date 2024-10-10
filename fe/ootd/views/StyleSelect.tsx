@@ -5,6 +5,7 @@ import WishIcon from '../assets/Icons/Wish_Icon.svg';
 import MyFashionIcon from '../assets/Icons/MyFashion_Icon.svg';
 import { ContentBoldText } from '../components/CustomTexts';
 import { useLoginStore } from '../stores/LoginStore';
+import axios from 'axios';
 
 function StyleSelect({ navigation, route }): React.JSX.Element {
 
@@ -16,22 +17,21 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
 
     const fetchAllData = async () => {
         try {
-            const [fashionResponse, collectionResponse] = await Promise.all([
-                axios.get(`https://j11e104.p.ssafy.io/gallery/my-collection/${userId}`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        "Content-Type": "application/json",
-                        "X-User-ID": userId,
-                    }
-                }),
-                axios.get(`https://j11e104.p.ssafy.io/gallery/my-fashion/${userId}`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        "Content-Type": "application/json",
-                        "X-User-ID": userId,
-                    }
-                })
-            ]);
+            const collectionResponse = await axios.get(`https://j11e104.p.ssafy.io/gallery/my-collection/${userId}`, {
+                headers: {
+                    Authorization: accessToken,
+                    "Content-Type": "application/json",
+                    "X-User-ID": userId,
+                }
+            })
+                
+            const fashionResponse = await axios.get(`https://j11e104.p.ssafy.io/gallery/myfashion/${userId}`, {
+                headers: {
+                    Authorization: accessToken,
+                    "Content-Type": "application/json",
+                    "X-User-ID": userId,
+                }
+            })
     
             // 각 응답에서 데이터를 추출합니다.
             const myCollection = collectionResponse.data;
@@ -47,91 +47,12 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
         } catch (error) {
             console.error('Error fetching data:', error);
         }
-        // const myFashion = [
-        //     { 
-        //         id: 1, 
-        //         imageUrl: "https://placekitten.com/200/300",
-        //         addedAt: "2024-06-02T12:30:00",
-        //         battleCount: 8,
-        //     },
-        //     { 
-        //         id: 2, 
-        //         imageUrl: "https://placedog.net/500", 
-        //         addedAt: "2024-06-02T12:31:00",
-        //         battleCount: 22
-        //     }, 
-        //     { 
-        //         id: 3, 
-        //         imageUrl: "https://placekitten.com/200/300",
-        //         addedAt: "2024-06-02T12:32:00",
-        //         battleCount: 17
-        //     },
-        //     { 
-        //         id: 4, 
-        //         imageUrl: "https://placedog.net/500",
-        //         addedAt: "2024-06-02T12:33:00",
-        //         battleCount: 3
-        //     },
-        //     { 
-        //         id: 5, 
-        //         imageUrl: "https://placekitten.com/200/300",  
-        //         addedAt: "2024-06-02T12:34:00",
-        //         battleCount: 5
-        //     },
-        //     { 
-        //         id: 6, 
-        //         imageUrl: "https://placedog.net/500",  
-        //         addedAt: "2024-06-02T12:35:00",
-        //         battleCount: 7
-        //     },
-        // ];
-
-        // const myCollection = [
-        //     { 
-        //         id: 1, 
-        //         imageUrl: "https://placedog.net/500", 
-        //         addedAt: "2024-06-02T12:30:00",
-        //         addedCount: 64
-        //     },
-        //     { 
-        //         id: 2, 
-        //         imageUrl: "https://placekitten.com/200/300",
-        //         addedAt: "2024-06-02T12:34:00",
-        //         addedCount: 6
-        //     },
-        //     { 
-        //         id: 3, 
-        //         imageUrl: "https://placedog.net/500",
-        //         addedAt: "2024-07-02T12:30:00",
-        //         addedCount: 44
-        //     },
-        //     { 
-        //         id: 4, 
-        //         imageUrl: "https://placekitten.com/200/300",
-        //         addedAt: "2024-07-14T12:35:00",
-        //         addedCount: 55
-        //     },
-        //     { 
-        //         id: 5, 
-        //         imageUrl: "https://placedog.net/500",
-        //         addedAt: "2024-07-16T12:35:00",
-        //         addedCount: 12
-        //     },
-        //     { 
-        //         id: 6, 
-        //         imageUrl: "https://placekitten.com/200/300",
-        //         addedAt: "2024-07-17T11:00:00",
-        //         addedCount: 7
-        //     },
-        // ];
-
-        // setAllFashionData({ myFashion, myCollection });
-        // setFashionList(myFashion);
     };
 
     function updateCategory(category: string) {
         setSelectedCategory(category);
         setSelectedSort('최신순');
+        setFashionList(category === 'myFashion' ? allFashionData.myFashion : allFashionData.myCollection);
     }
 
     useEffect(() => {
@@ -143,17 +64,21 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
     }, [selectedCategory, allFashionData]);
 
     
-    const sortFashionList = (sortType) => {
+    const sortFashionList = (sortType: string) => {
         let sortedList = [...fashionList];
 
         if (sortType === '최신순') {
-            sortedList.sort((a, b) => new Date(b.addedAt) - new Date(a.addedAt));
+            if (selectedCategory === 'myFashion') {
+                sortedList.sort((a, b) => new Date(b.createDate) - new Date(a.createDate));
+            } else {
+                sortedList.sort((a, b) => new Date(b.likeDateTime) - new Date(a.likeDateTime));
+            }
         } else if (sortType === '출전 수') {
-            sortedList.sort((a, b) => b.battleCount - a.battleCount); // 출전 수 기준 정렬
+            sortedList.sort((a, b) => b.wardrobeBattle - a.wardrobeBattle); // 출전 수 기준 정렬
         } else if (sortType === '승리 수') {
-            sortedList.sort((a, b) => b.winCount - a.winCount); // 승리 수 기준 정렬
+            sortedList.sort((a, b) => b.wardrobeWin - a.wardrobeWin); // 승리 수 기준 정렬
         } else if (sortType === '인기순') {
-            sortedList.sort((a, b) => b.addedCount - a.addedCount); // myCollection의 인기순(추가 수) 정렬
+            sortedList.sort((a, b) => b.likeCount - a.likeCount);
         }
 
         setFashionList(sortedList);
