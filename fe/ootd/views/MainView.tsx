@@ -1,3 +1,4 @@
+// src/views/MainView.tsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   StyleSheet,
@@ -19,6 +20,7 @@ import WishFullIcon from '../assets/Icons/WishFull_Icon.svg';
 import WishIcon from '../assets/Icons/Wish_Icon.svg';
 import { useLoginStore } from '../stores/LoginStore';
 import CategoryContext from '../components/CategoryContext'; // Context 가져오기
+import { ContentBoldText } from '../components/CustomTexts';
 
 // HeaderComponent는 Carousel과 CategoryButtons를 포함
 const HeaderComponent = React.memo(({ openModal }) => (
@@ -111,6 +113,25 @@ function MainView(): React.JSX.Element {
     }
   }, [isLoadingInitial, isLoadingMore, hasMore, currentPage, API_URL, accessToken, userId]);
 
+  const getTypeText = (type: string) => {
+    switch (type) {
+      case 'street_look':
+        return '# 스트릿 룩';
+      case 'casual_look':
+        return '# 캐주얼 룩';
+      case 'sporty_look':
+        return '# 스포티 룩';
+      case 'chic_look':
+        return '# 시크 룩';
+      case 'minimal_look':
+        return '# 미니멀 룩';
+      case 'classic_look':
+        return '# 클래식 룩';
+      default:
+        return '알 수 없는 스타일';
+    }
+  };
+
   const openModal = useCallback((item: any) => {
     const imageUrl = item.imageUrl || item.photoUrl;
     if (!imageUrl) {
@@ -178,7 +199,9 @@ function MainView(): React.JSX.Element {
   }, [isLoadingMore, hasMore, category, fetchGallery]);
 
   const onCategoryPress = useCallback((selectedCategory: string) => {
-    if (selectedCategory !== category.trim()) {
+    if (selectedCategory === category.trim()) {
+      setCategory(''); // 동일한 카테고리를 다시 누르면 '전체'로 설정
+    } else {
       setCategory(selectedCategory);
     }
   }, [category]);
@@ -259,9 +282,27 @@ function MainView(): React.JSX.Element {
             animationType="fade"
             onRequestClose={closeModal}
           >
+          {selectedImage && (
             <TouchableWithoutFeedback onPress={closeModal}>
               <View style={styles.modalContainer}>
-                {selectedImage && (
+              {(selectedImage.type && selectedImage.type !== 'Unknown') && (
+                  <ContentBoldText style={{
+                    paddingHorizontal: 10,
+                    paddingVertical: 5,
+                    borderRadius: 10,
+                    fontSize: 14,
+                    backgroundColor: 'white', 
+                    color: 'black',
+                    position: 'absolute', 
+                    bottom: '10%', 
+                    left: '50%',
+                    transform: [
+                      { translateX: -50 },
+                    ]
+                  }}>
+                    {getTypeText(selectedImage.type)}
+                  </ContentBoldText>
+              )}
                   <View style={styles.fixedModalContent}>
                     <Image
                       source={{ uri: selectedImage.imageUrl }}
@@ -276,9 +317,9 @@ function MainView(): React.JSX.Element {
                       )}
                     </TouchableOpacity>
                   </View>
-                )}
-              </View>
+                  </View>
             </TouchableWithoutFeedback>
+          )}
           </Modal>
         </View>
       </CategoryContext.Provider>
@@ -328,6 +369,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     overflow: 'hidden',
+    borderRadius: 20,
   },
   fixedModalImage: {
     flex: 1,

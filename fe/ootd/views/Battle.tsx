@@ -112,7 +112,7 @@ function Battle({ navigation }): React.JSX.Element {
                 {/* 배틀 헤더 */}
                 <View style={styles.battleHeader}>
                     <TitleBoldText style={styles.battleHeaderText}>
-                        Beyond U
+                        Style Duel
                     </TitleBoldText>
                 </View>
                 <TouchableOpacity style={styles.battleHeaderButton} onPress={() => navigation.navigate('Challenge')}>

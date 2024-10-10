@@ -103,9 +103,9 @@ function AIReport(): React.JSX.Element {
             <ContentText style={styles.noPhotoText}>저장된 이미지가 없습니다.</ContentText> // 이미지가 없을 때 표시
           )}
             <View style={styles.reportContents}>
-              <ContentText style={styles.reportName}>
+              <ContentBoldText style={styles.reportName}>
                 {title}
-              </ContentText>
+              </ContentBoldText>
               <ContentText style={styles.reportText}>
                 {description}
               </ContentText>
