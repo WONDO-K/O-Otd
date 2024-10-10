@@ -2,48 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { Text, View, TouchableOpacity, Image, StyleSheet, TextInput, ScrollView, FlatList } from 'react-native';
 import axios from 'axios';
 import UploadIcon from '../assets/Icons/Upload_Icon.svg';
+import { useLoginStore } from '../stores/LoginStore';
 
 function MyFashion({ navigation, route }): React.JSX.Element {
-
+    const { accessToken, userId } = useLoginStore();
     const [myFashion, setMyFashion] = useState([]);
 
     const getMyFashion = async () => {
-        // 실제 API 호출 부분
-        // try {
-        //     const response = await axios.get('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX');
-        //     setMyFashion(response.data);
-        // } catch (error) {
-        //     console.error('Error fetching my fashion:', error);
-        // }
-
-        // 테스트용 데이터
-        const data = [
-            {
-                id: 1,
-                src: "https://placekitten.com/200/300"
-            },
-            {
-                id: 2,
-                src: "https://placedog.net/500"
-            },
-            {
-                id: 3,
-                src: "https://placekitten.com/200/300"  
-            },
-            {
-                id: 4,
-                src: "https://placedog.net/500"
-            },
-            {
-                id: 5,
-                src: "https://placekitten.com/200/300"
-            },
-            {
-                id: 6,
-                src: "https://placedog.net/500"
-            },
-        ];
-        setMyFashion(data);  // 상태 업데이트
+        try {
+            const response = await axios.get(`https://j11e104.p.ssafy.io/gallery/myfashion/${userId}`, {
+                headers: {
+                    "Authorization": accessToken,
+                    "Content-Type": "application/json",
+                    "X-User-ID": userId,
+                }
+            });
+            console.log(response.data);
+            setMyFashion(response.data); // 상태 업데이트
+        } catch (error) {
+            console.error('Error fetching my fashion:', error);
+        }
     };
 
     useEffect(() => {
@@ -67,13 +45,13 @@ function MyFashion({ navigation, route }): React.JSX.Element {
                         style={styles.notificationItem}
                         onPress={() => {
                             if (route.params?.returnScreen) {
-                                navigation.navigate(route.params.returnScreen, { selectedImage: item.src });
+                                navigation.navigate(route.params.returnScreen, { selectedImage: item.imageUrl });
                             } else {
                                 navigation.goBack();
                             }
                         }}
                     >
-                        <Image style={styles.notificationImage} source={{uri: item.src}} />
+                        <Image style={styles.notificationImage} source={{uri: item.imageUrl}} />
                     </TouchableOpacity>
                 )}
                 numColumns={2}

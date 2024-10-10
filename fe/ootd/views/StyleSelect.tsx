@@ -17,28 +17,21 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
 
     const fetchAllData = async () => {
         try {
-            const [fashionResponse, collectionResponse] = await Promise.all([
-                axios.get(`https://j11e104.p.ssafy.io/gallery/my-collection/${userId}`, {
-                    headers: {
-                        Authorization: accessToken,
-                        "Content-Type": "application/json",
-                        "X-User-ID": userId,
-                    }
-                }).then((res)=>{
-                    console.log('aaa');
-                    console.log(res);
-                    console.log(res.data);
-                    console.log('bbb')
-                    return res.data;
-                }),
-                axios.get(`https://j11e104.p.ssafy.io/gallery/my-fashion/${userId}`, {
-                    headers: {
-                        Authorization: accessToken,
-                        "Content-Type": "application/json",
-                        "X-User-ID": userId,
-                    }
-                }),
-            ]);
+            const collectionResponse = await axios.get(`https://j11e104.p.ssafy.io/gallery/my-collection/${userId}`, {
+                headers: {
+                    Authorization: accessToken,
+                    "Content-Type": "application/json",
+                    "X-User-ID": userId,
+                }
+            })
+                
+            const fashionResponse = await axios.get(`https://j11e104.p.ssafy.io/gallery/myfashion/${userId}`, {
+                headers: {
+                    Authorization: accessToken,
+                    "Content-Type": "application/json",
+                    "X-User-ID": userId,
+                }
+            })
     
             // 각 응답에서 데이터를 추출합니다.
             const myCollection = collectionResponse.data;
@@ -59,6 +52,7 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
     function updateCategory(category: string) {
         setSelectedCategory(category);
         setSelectedSort('최신순');
+        setFashionList(category === 'myFashion' ? allFashionData.myFashion : allFashionData.myCollection);
     }
 
     useEffect(() => {
@@ -70,17 +64,21 @@ function StyleSelect({ navigation, route }): React.JSX.Element {
     }, [selectedCategory, allFashionData]);
 
     
-    const sortFashionList = (sortType) => {
+    const sortFashionList = (sortType: string) => {
         let sortedList = [...fashionList];
 
         if (sortType === '최신순') {
-            sortedList.sort((a, b) => new Date(b.likeDateTime) - new Date(a.likeDateTime));
+            if (selectedCategory === 'myFashion') {
+                sortedList.sort((a, b) => new Date(b.createDate) - new Date(a.createDate));
+            } else {
+                sortedList.sort((a, b) => new Date(b.likeDateTime) - new Date(a.likeDateTime));
+            }
         } else if (sortType === '출전 수') {
-            sortedList.sort((a, b) => b.battleCount - a.battleCount); // 출전 수 기준 정렬
+            sortedList.sort((a, b) => b.wardrobeBattle - a.wardrobeBattle); // 출전 수 기준 정렬
         } else if (sortType === '승리 수') {
-            sortedList.sort((a, b) => b.winCount - a.winCount); // 승리 수 기준 정렬
+            sortedList.sort((a, b) => b.wardrobeWin - a.wardrobeWin); // 승리 수 기준 정렬
         } else if (sortType === '인기순') {
-            sortedList.sort((a, b) => b.likeCount - a.likeCount); // myCollection의 인기순(추가 수) 정렬
+            sortedList.sort((a, b) => b.likeCount - a.likeCount);
         }
 
         setFashionList(sortedList);

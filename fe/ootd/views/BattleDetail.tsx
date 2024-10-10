@@ -57,11 +57,6 @@ function BattleDetail({ navigation, route }): React.JSX.Element {
                 }
             );
 
-            setBattleItem((prev) => ({
-                ...prev,
-                myPickUserId: candidate_id,
-            }));
-
             navigation.navigate('Battle');
         } catch (error) {
             console.error('Vote Error Vote:', error);
