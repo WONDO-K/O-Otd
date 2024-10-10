@@ -255,5 +255,11 @@ public class GalleryServiceImpl implements GalleryService {
         }
     }
 
-    
+    @Override
+    public List<MyFashion> getMyFashionList(int userId) {
+        List<MyFashion> result=myFashionRepository.findByUserId(userId);
+        return result;
+    }
+
+
 }

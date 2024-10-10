@@ -2,6 +2,7 @@ package com.threeheads.gallery.model.service;
 
 import com.threeheads.gallery.model.dto.GalleryListResponseDto;
 import com.threeheads.gallery.model.entity.Gallery;
+import com.threeheads.gallery.model.entity.MyFashion;
 import com.threeheads.gallery.model.entity.MyLike;
 import com.threeheads.gallery.model.dto.AddCollectionDto;
 import com.threeheads.gallery.model.dto.CollectionDto;
@@ -31,4 +32,6 @@ public interface GalleryService {
     Object getAiResult(List<String> image_urls);
 
     String uploadImage(int userId, MultipartFile file);
+
+    List<MyFashion> getMyFashionList(int userId);
 }
