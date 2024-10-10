@@ -1,3 +1,4 @@
+// src/views/MainView.tsx
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   StyleSheet,
@@ -178,7 +179,9 @@ function MainView(): React.JSX.Element {
   }, [isLoadingMore, hasMore, category, fetchGallery]);
 
   const onCategoryPress = useCallback((selectedCategory: string) => {
-    if (selectedCategory !== category.trim()) {
+    if (selectedCategory === category.trim()) {
+      setCategory(''); // 동일한 카테고리를 다시 누르면 '전체'로 설정
+    } else {
       setCategory(selectedCategory);
     }
   }, [category]);
