@@ -54,6 +54,7 @@ public class NotificationServiceImpl implements NotificationService {
     public void sendNotification(Long userId, NotificationDto notificationDto) {
         // 알림을 데이터베이스에 저장
         Notification notification = Notification.builder()
+                .id(notificationDto.getId())
                 .userId(userId)
                 .battleId(notificationDto.getBattleId())
                 .senderId(notificationDto.getSenderId())
