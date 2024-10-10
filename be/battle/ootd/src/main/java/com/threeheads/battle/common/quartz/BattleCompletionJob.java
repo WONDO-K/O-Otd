@@ -5,12 +5,14 @@ import com.threeheads.battle.dto.NotificationDto;
 import com.threeheads.battle.entity.Battle;
 import com.threeheads.battle.repository.BattleRepository;
 import com.threeheads.battle.service.NotificationService;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,14 +22,23 @@ import java.time.LocalDateTime;
  * 배틀 완료 작업 클래스
  * 배틀이 만료되거나 완료될 때 상태를 변경하고 알림을 전송
  */
+
 @Component
-@RequiredArgsConstructor
 public class BattleCompletionJob implements Job {
 
     private static final Logger logger = LoggerFactory.getLogger(BattleCompletionJob.class);
 
-    private final BattleRepository battleRepository;
-    private final NotificationService notificationService;
+    @Autowired
+    private BattleRepository battleRepository;
+
+    @Autowired
+    private NotificationService notificationService;
+
+    public BattleCompletionJob() {
+        // 기본 생성자가 필요합니다.
+    }
+
+
 
     /**
      * Quartz가 작업을 실행할 때 호출되는 메서드
@@ -57,7 +68,7 @@ public class BattleCompletionJob implements Job {
                         battleRepository.save(battle);
                         // 알림 전송
                         sendNotificationToUsers(battle.getRequesterId(), battle.getRequesterName(), battle.getResponderId(), battle.getResponderName(),
-                                "배틀 요청이 만료되었습니다.", "배틀 요청 만료");
+                                "배틀이 만료되었습니다.", "배틀 만료", battleId);
                         logger.info("배틀 ID {}의 상태가 EXPIRED로 변경되었습니다.", battleId);
                     }
                     break;
@@ -70,7 +81,7 @@ public class BattleCompletionJob implements Job {
                         battleRepository.save(battle);
                         // 알림 전송
                         sendNotificationToUsers(battle.getRequesterId(), battle.getRequesterName(), battle.getResponderId(), battle.getResponderName(),
-                                "배틀이 종료되었습니다.", "배틀 종료");
+                                "배틀이 완료되었습니다.", "배틀 완료", battleId);
                         logger.info("배틀 ID {}의 상태가 COMPLETED로 변경되었습니다.", battleId);
                     }
                     break;
@@ -95,9 +106,10 @@ public class BattleCompletionJob implements Job {
      * @param message 알림 메시지
      * @param title 알림 제목
      */
-    private void sendNotificationToUsers(Long requesterId,String requesterName, Long responderId, String responderName, String message, String title) {
+    private void sendNotificationToUsers(Long requesterId,String requesterName, Long responderId, String responderName, String message, String title, Long battleId) {
         NotificationDto notificationRequester = NotificationDto.builder()
                 .userId(requesterId)
+                .battleId(battleId)
                 .senderId(responderId)
                 .senderNickname(responderName)
                 .title(title)
@@ -109,6 +121,7 @@ public class BattleCompletionJob implements Job {
         NotificationDto notificationResponder = NotificationDto.builder()
                 .userId(responderId)
                 .senderId(requesterId)
+                .battleId(battleId)
                 .senderNickname(requesterName)
                 .title(title)
                 .message(message)

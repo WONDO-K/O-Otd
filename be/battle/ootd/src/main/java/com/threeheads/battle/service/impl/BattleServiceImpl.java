@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,6 +40,8 @@ import java.util.stream.Collectors;
 public class BattleServiceImpl implements BattleService {
 
     private static final Logger log = LoggerFactory.getLogger(BattleServiceImpl.class);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
 
     private final BattleRepository battleRepository;
     private final VoteRepository voteRepository;
@@ -53,6 +56,7 @@ public class BattleServiceImpl implements BattleService {
      */
     @Override
     public BattleDto createBattle(BattleRequestDto dto) {
+
         // 요청자와 응답자가 동일한지 검증
         log.info("요청자 ID: {}, 응답자 ID: {}", dto.getRequesterId(), dto.getResponderId());
         if (dto.getRequesterId().equals(dto.getResponderId())) {
@@ -73,6 +77,19 @@ public class BattleServiceImpl implements BattleService {
 
         // 배틀 정보 저장
         battleRepository.save(battle);
+
+        // 배틀 신청자에게 알림 전송
+        NotificationDto requesterNotification = NotificationDto.builder()
+                .userId(battle.getRequesterId())
+                .senderId(battle.getResponderId())
+                .senderNickname(battle.getResponderName()) // 보낸 사람 닉네임 반환
+                .battleId(battle.getId())
+                .title("request")
+                .message(battle.getResponderName() + " 님에게 배틀 요청이 전송되었습니다. 유효기간은 1주일이며 만료 시간은 "
+                        + battle.getExpiresAt().format(formatter) + "입니다.")
+                .timestamp(LocalDateTime.now())
+                .build();
+        notificationService.sendNotification(battle.getRequesterId(), requesterNotification);
 
         // 배틀 수신자에게 알림 전송
         NotificationDto notification = NotificationDto.builder()
@@ -179,7 +196,7 @@ public class BattleServiceImpl implements BattleService {
         battle.setStatus(BattleStatus.ACTIVE);
         battle.setResponderImageUrl(responseDto.getResponderImage());
         battle.setActiveAt(LocalDateTime.now());
-        battle.setExpiresAt(LocalDateTime.now().plusDays(1));
+        battle.setExpiresAt(LocalDateTime.now().plusDays(3));
 
         // 배틀 수락 알림 및 배틀 시작 알림
         sendNotification(battle.getRequesterId(), battle.getResponderId(), battle.getResponderName(), "alarm",
