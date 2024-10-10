@@ -1,3 +1,4 @@
+// src/components/Carousel.tsx
 import React, { useMemo, useRef, useState, useEffect } from 'react';
 import {
   View,
@@ -10,7 +11,7 @@ import {
   Text,
 } from 'react-native';
 import axios from 'axios';
-import { TitleText, TitleBoldText } from '../components/CustomTexts';
+import { TitleText, TitleBoldText } from './CustomTexts';
 import { useLoginStore } from '../stores/LoginStore';
 
 const windowWidth = Dimensions.get('window').width;
@@ -22,12 +23,13 @@ interface CarouselProps {
   openModal: (item: any) => void;
 }
 
-export default function Carousel({ openModal }: CarouselProps) {
+const Carousel: React.FC<CarouselProps> = ({ openModal }) => {
+  console.log('Carousel 렌더링'); // 리렌더링 확인용 로그
   const scrollX = useRef(new Animated.Value(0)).current; 
-  const flatListRef = useRef(null);
-  const [weeklyStyle, setWeeklyStyle] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const flatListRef = useRef<any>(null);
+  const [weeklyStyle, setWeeklyStyle] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const { accessToken, userId, API_URL } = useLoginStore();
 
@@ -40,8 +42,7 @@ export default function Carousel({ openModal }: CarouselProps) {
           "X-User-ID": userId,
         },
       });
-      console.log('weekly', response.data);
-      setWeeklyStyle(response.data.filter((item) => !item.isDelete));
+      setWeeklyStyle(response.data.filter((item: any) => !item.isDelete));
       setLoading(false);
     } catch (error) {
       console.error('Weekly Style Error:', error);
@@ -65,7 +66,7 @@ export default function Carousel({ openModal }: CarouselProps) {
     return infiniteData.map((_, index) => index * offset);
   }, [infiniteData]);
 
-  const handleScrollEnd = (e) => {
+  const handleScrollEnd = (e: any) => {
     const contentOffsetX = e.nativeEvent.contentOffset.x;
     const newIndex = Math.round(contentOffsetX / offset);
 
@@ -156,7 +157,12 @@ export default function Carousel({ openModal }: CarouselProps) {
       />
     </View>
   );
-}
+};
+
+// 커스텀 비교 함수: openModal이 변경되지 않으면 리렌더링 방지
+const areEqual = (prevProps: CarouselProps, nextProps: CarouselProps) => {
+  return prevProps.openModal === nextProps.openModal;
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -164,7 +170,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-between',
     width: windowWidth,
-    height: cardSize.height + 120,
+    height: cardSize.height + 120, // 캐러셀 높이에 맞게 조정
     paddingBottom: 10,
   },
   title: {
@@ -176,17 +182,19 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   loaderContainer: {
-    flex: 1,
+    width: cardSize.width,
+    height: cardSize.height,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000000', // 배경 색상
+    backgroundColor: '#000000', // 캐러셀 영역만 덮도록 설정
   },
   errorContainer: {
-    flex: 1,
+    width: cardSize.width,
+    height: cardSize.height,
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 20,
-    backgroundColor: '#000000', // 배경 색상
+    backgroundColor: '#000000', // 캐러셀 영역만 덮도록 설정
   },
   errorText: {
     color: '#ff0000',
@@ -194,3 +202,5 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
+export default React.memo(Carousel, areEqual);
