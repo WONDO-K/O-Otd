@@ -1,3 +1,4 @@
+// src/components/CategoryButtons.tsx
 import React from 'react';
 import { View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useCategory } from './CategoryContext'; // Context 훅 가져오기
@@ -8,13 +9,12 @@ interface Category {
 }
 
 const categories: Category[] = [
-  { value: '', label: '전체' },
-  { value: 'chic_look', label: '긱시크' },
-  { value: 'street_look', label: '스트릿' },
-  { value: 'casual_look', label: '캐주얼' },
-  { value: 'classic_look', label: '클래식' },
-  { value: 'minimal_look', label: '미니멀' },
-  { value: 'sporty_look', label: '스포티' },
+  { value: 'chic_look', label: '#  시크  ' },
+  { value: 'street_look', label: '# 스트릿' },
+  { value: 'casual_look', label: '# 캐주얼' },
+  { value: 'classic_look', label: '# 클래식' },
+  { value: 'minimal_look', label: '# 미니멀' },
+  { value: 'sporty_look', label: '# 스포티' },
 ];
 
 const CategoryButtons: React.FC = () => {
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'space-around',
     paddingVertical: 10,
-    backgroundColor: '#262626',
+    // backgroundColor: '#262626',
     borderRadius: 10,
     marginHorizontal: 10,
     marginBottom: 20,
@@ -62,8 +62,8 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     borderRadius: 22,
     borderWidth: 2,
-    borderColor: 'transparent',
-    backgroundColor: '#3a3a3a',
+    borderColor: 'white',
+    // backgroundColor: '#3a3a3a',
     paddingVertical: 8,
     paddingHorizontal: 15,
     justifyContent: 'center',
@@ -74,9 +74,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#595959',
   },
   categoryButtonText: {
-    fontSize: 16,
-    color: '#ffffff',
+    fontSize: 18,
+    color: 'white',
     textAlign: 'center',
+    marginBottom: 2,
+    fontWeight: 'bold',
   },
   activeCategoryButtonText: {
     fontWeight: 'bold',
