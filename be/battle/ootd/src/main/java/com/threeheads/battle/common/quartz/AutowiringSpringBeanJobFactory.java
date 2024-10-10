@@ -1,6 +1,8 @@
 package com.threeheads.battle.common.quartz;
 
 import org.quartz.spi.TriggerFiredBundle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.quartz.SpringBeanJobFactory;
@@ -11,6 +13,8 @@ import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 public class AutowiringSpringBeanJobFactory extends SpringBeanJobFactory {
 
     private AutowireCapableBeanFactory beanFactory;
+    Logger log = LoggerFactory.getLogger(AutowiringSpringBeanJobFactory.class);
+
 
     /**
      * ApplicationContext를 설정하여 스프링 빈의 의존성을 주입할 수 있도록 함
@@ -28,8 +32,8 @@ public class AutowiringSpringBeanJobFactory extends SpringBeanJobFactory {
      */
     @Override
     protected Object createJobInstance(TriggerFiredBundle bundle) throws Exception {
-        Object job = super.createJobInstance(bundle);
-        beanFactory.autowireBean(job);
-        return job;
+        Object jobInstance = super.createJobInstance(bundle);
+        beanFactory.autowireBean(jobInstance); // 의존성 주입
+        return jobInstance;
     }
 }
