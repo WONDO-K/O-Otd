@@ -77,11 +77,7 @@ function StyleView({ navigation, route }): React.JSX.Element {
         try {
             // API 요청을 보내는 부분
             const response = await axios.post('https://j11e104.p.ssafy.io/gallery/ai', 
-                // [mainImage, subImage],
-                [
-                    "https://ootd-ssafy.b-cdn.net/img_1.png",
-                    "https://ootd-ssafy.b-cdn.net/img_10.png"
-                ],
+                [mainImage, subImage],
                 {
                     headers: {
                         "Authorization": accessToken,

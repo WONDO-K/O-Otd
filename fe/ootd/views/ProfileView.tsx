@@ -130,53 +130,6 @@ function ProfileView(): React.JSX.Element {
     }
   }, [selectedSort, selectedCategory, fetchMyCollection]);
 
-  // 북마크 토글 함수
-  // const toggleBookmark = useCallback(async (id: string) => {
-  //   const isBookmarked = !!bookmarked[id];
-
-  //   setBookmarked((prevState) => ({
-  //     ...prevState,
-  //     [id]: !isBookmarked,
-  //   }));
-
-  //   const body = {
-  //     userId: userId,
-  //     clothesId: id,
-  //   };
-
-  //   try {
-  //     if (!isBookmarked) {
-  //       const bookmarkedResponse = await axios.post(`${API_URL}/gallery/my-collection`, body, {
-  //         headers: {
-  //           "Authorization": accessToken,
-  //           "Content-Type": "application/json",
-  //           "X-User-ID": userId,
-  //         },
-  //       });
-  //     } else {
-  //       await axios.delete(`${API_URL}/gallery/my-collection`, {
-  //         data: body,
-  //         headers: {
-  //           "Authorization": accessToken,
-  //           "Content-Type": "application/json",
-  //           "X-User-ID": userId,
-  //         },
-  //       });
-  //     }
-
-  //     // '마이 갤러리'일 경우, 북마크 토글 후 리스트를 다시 불러옴
-  //     if (selectedCategory === '마이 갤러리') {
-  //       fetchMyCollection();
-  //     }
-  //   } catch (error) {
-  //     console.error('Error toggling bookmark:', error);
-  //     setBookmarked((prevState) => ({
-  //       ...prevState,
-  //       [id]: isBookmarked,
-  //     }));
-  //   }
-  // }, [bookmarked, API_URL, accessToken, userId, selectedCategory, fetchMyCollection]);
-
   // 닉네임 변경 핸들러 (기존 코드 유지)
   const handleChangeNickname = async () => {
     if (!newNickname.trim()) {
@@ -196,7 +149,8 @@ function ProfileView(): React.JSX.Element {
         },
       });
 
-      if (checkResponse.data.exists) { // API 응답 형식에 따라 조정
+      console.log(checkResponse.data);
+      if (checkResponse.data) { // API 응답 형식에 따라 조정
         setErrorMessage('이미 존재하는 닉네임입니다.');
         triggerShake();
         return;
