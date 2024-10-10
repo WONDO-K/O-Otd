@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Text, View, TouchableOpacity, Switch, StyleSheet, ScrollView, ImageBackground } from 'react-native'; 
+import { Text, Alert, View, TouchableOpacity, Switch, StyleSheet, ScrollView, ImageBackground } from 'react-native'; 
 import { useFocusEffect } from '@react-navigation/native';
 import { FlatList } from 'react-native-gesture-handler';
 import SendIcon from '../assets/Icons/Send_Icon'
@@ -227,6 +227,8 @@ function Battle({ navigation }): React.JSX.Element {
                                 onPress={() => {
                                     if (item.myPickUserId === null) {
                                         navigation.navigate('BattleDetail', item)
+                                    } else {
+                                        Alert.alert('이미 진행한 투표입니다.')
                                     }
                                 }}
                                 calculateRemainingTime={calculateRemainingTime}
