@@ -116,7 +116,7 @@ public class GalleryRestController {
 
     }
 
-    @GetMapping("/myfashion")
+    @GetMapping("/myfashion/{userId}")
     public ResponseEntity<?> getMyFashionList(@PathVariable("userId") int userId){
         List<MyFashion> result = service.getMyFashionList(userId);
         return ResponseEntity.ok(result);
