@@ -93,22 +93,25 @@ function Navbar({ currentRoute, unreadCount }: { currentRoute: string }): React.
         if (isActive(['StyleView'])) {
             return (
                 <ContentText style={styles.modalText}>
-                    AI가 두 패션의 색깔을 더해,{"\n"}
-                    유사한 감각의 스타일을 제공합니다.{"\n"}    
+                    1. 메인이 되는 패션 이미지와 서브 패션 이미지를 업로드 하세요.{"\n"}
+                    2. Try! 버튼을 누르면 AI가 추천 스타일링을 제공합니다.
+   
                 </ContentText>
             );
         } else if (isActive(['AIView'])) {
             return (
                 <ContentText style={styles.modalText}>
-                    AI가 당신의 패션을 분석하고,{"\n"}
-                    유사한 스타일을 추천합니다.{"\n"}
+                    1. 궁금한 스타일 사진을 업로드하세요.{"\n"}
+                    2. Analyze! 버튼을 눌러 업로드한 사진 어떤 스타일인지 분석 받으세요.{"\n"}
+                    3. AI는 업로드한 패션과 유사한 감각의 룩도 추천합니다.
+ 
                 </ContentText>
             );
         } else if (isActive(['Battle'])) {
             return (
                 <ContentText style={styles.modalText}>
-                    설명 들어갈 공간{"\n"}
-                    배틀 설명을 적어주세요.{"\n"}
+                    1. Challenge! 버튼을 통해 원하는 상대와 스타일 대결을 할 수 있습니다.{"\n"}
+                    2. 진행중인 대결의 경우 다른 사람들의 스타일 대결도 평가 할 수 있습니다.
                 </ContentText>
             );
         }
