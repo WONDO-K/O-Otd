@@ -3,7 +3,7 @@ import joblib
 import pandas as pd
 import os
 import time
-import shutil
+import re
 from pyspark.sql import SparkSession
 from pyspark.ml.clustering import KMeans as SparkKMeans
 from pyspark.ml.linalg import Vectors
@@ -29,17 +29,21 @@ def compute_cluster_centers(embeddings, labels, n_clusters):
             cluster_centers[i] = cluster_data.mean(axis=0)
     return cluster_centers
 
-def save_cluster_data_with_indices(labels, data_vectors, n_clusters, directory):
+def save_cluster_data_with_indices(labels, data_vectors, image_filenames, n_clusters, directory):
     """
-    Save the cluster data along with their indices in separate files for each cluster.
+    Save the cluster data along with their indices and image filenames in separate files for each cluster.
     """
     if not os.path.exists(directory):
         os.makedirs(directory)
+    labels = np.array(labels)  # Ensure labels is a NumPy array
     for i in range(n_clusters):
-        cluster_indices = np.where(np.array(labels) == i)[0]  # Original indices of points in each cluster
-        cluster_points = data_vectors[labels == i]  # Original data points of each cluster
+        cluster_indices = np.where(labels == i)[0]  # Indices of data points in cluster i
+        cluster_points = data_vectors[cluster_indices]  # Data points in cluster i
+        cluster_image_indices = [int(re.search(r'\d+', image_filenames[idx]).group()) for idx in cluster_indices]
+
+        # 데이터 저장
         np.savez(os.path.join(directory, f'cluster_{i}_data_with_points.npz'),
-                cluster_indices=cluster_indices, original_data=cluster_points)
+                 cluster_indices=cluster_indices, original_data=cluster_points, image_indices=cluster_image_indices)
 
 def format_time(seconds):
     """
@@ -139,6 +143,7 @@ if __name__ == "__main__":
         f.write('Loading data from output_filter.csv...\n')
         print('Loading data from output_filter.csv...')
         output_filter_df = pd.read_csv('output_filter.csv')
+        image_filenames = output_filter_df.iloc[:, 0].values  # 첫 번째 열 (이미지 파일명)
         features = output_filter_df.drop(columns=['image']).values
         f.write('Data loading completed.\n')
         print('Data loading completed.')
@@ -175,7 +180,7 @@ if __name__ == "__main__":
 
         np.savez(data_file_path, cluster_labels=labels, original_data=features)
         np.save(cluster_centers_file_path, cluster_centers)
-        save_cluster_data_with_indices(labels, features, n_clusters, CLUSTER_DATA_DIR)
+        save_cluster_data_with_indices(labels, features, image_filenames, n_clusters, CLUSTER_DATA_DIR)
 
         f.write('Data saved.\n')
         print('Data saved.')

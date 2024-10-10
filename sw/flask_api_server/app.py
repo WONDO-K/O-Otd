@@ -39,7 +39,7 @@ def predict():
     file_path = os.path.join(CLUSTER_DATA_DIR, f'cluster_{closest_cluster_idx}_data_with_points.npz')
     cluster_data = np.load(file_path)
     same_cluster_points = cluster_data['original_data']
-    original_indices = cluster_data['cluster_indices']
+    original_indices = cluster_data['image_indices']
 
     # Calculate distances from the new point to each point in the same cluster and sort them
     distances = np.array([calculate_distance(image_point, point) for point in same_cluster_points])
@@ -47,7 +47,7 @@ def predict():
     closest_points_indices = sorted_indices[:20]
 
     # Get the original indices of the closest 20 points
-    closest_original_indices = original_indices[closest_points_indices]
+    closest_original_indices = original_indices[closest_points_indices].astype(int) 
 
     # Return the closest original indices as a JSON response
     response_json = closest_original_indices.tolist()
