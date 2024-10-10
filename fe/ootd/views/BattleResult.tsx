@@ -34,11 +34,16 @@ function BattleResult({ navigation, route }): React.JSX.Element {
     const strokeWidth = 15; // 선의 두께
     const radius = (size - strokeWidth) / 2; // 원의 반지름
     const circumference = 2 * Math.PI * radius; // 원의 둘레
-    const leftPercentage = (battleItem.requesterVotes / (battleItem.requesterVotes + battleItem.responderVotes)) * 100;
-    const rightPercentage = 100 - leftPercentage;
+    
+    let leftPercentage = 0;
+    let rightPercentage = 0;
 
-    const leftOffset = circumference - (leftPercentage / 100) * circumference;
-    const rightOffset = circumference - (rightPercentage / 100) * circumference;
+    if ((battleItem.requesterVotes + battleItem.responderVotes) > 0) {
+        leftPercentage = (battleItem.requesterVotes / (battleItem.requesterVotes + battleItem.responderVotes)) * 100;
+    }
+    if ((battleItem.requesterVotes + battleItem.responderVotes) > 0) {
+        rightPercentage = 100 - leftPercentage;
+    }
 
     return (
         <ImageBackground 

@@ -40,6 +40,7 @@ export default function Carousel({ openModal }: CarouselProps) {
           "X-User-ID": userId,
         },
       });
+      console.log('weekly', response.data);
       setWeeklyStyle(response.data.filter((item) => !item.isDelete));
       setLoading(false);
     } catch (error) {
