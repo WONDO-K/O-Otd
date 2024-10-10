@@ -235,7 +235,7 @@ public class GalleryServiceImpl implements GalleryService {
             try (InputStream inputStream = file.getInputStream()) {
                 boolean success = ftpClient.storeFile(cdnFilePath, inputStream);
                 if (success) {
-                    String imageUrl = "https://" + hostname + "/" + cdnFilePath;;
+                    String imageUrl = "https://ootd-myfashion.b-cdn.net/" + cdnFilePath;
                     MyFashion myFashion = new MyFashion(0,LocalDateTime.now(),0,0,false,userId,null,imageUrl);
                     myFashionRepository.save(myFashion);
                     log.info("upload: {}", "true"); // 로그 출력
