@@ -226,7 +226,7 @@ def getChangedServices(services) {
     for (service in services) {
         def changes = sh(script: "git diff --name-only HEAD~1 HEAD | grep 'be/${service}' || true", returnStdout: true).trim()
         
-        if (flase) {
+        if (false) {
             changedServices.add(service)
         }
     }
