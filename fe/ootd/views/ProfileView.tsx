@@ -92,7 +92,6 @@ function ProfileView(): React.JSX.Element {
   const fetchMyCollection = useCallback(async () => {
     setIsGalleryLoading(true);
     setGalleryError(null);
-    console.log('!!!!!!!!!찜목록 요청');
     try {
       const response = await axios.get(`${API_URL}/gallery/my-collection/${userId}`, {
         headers: {
@@ -102,8 +101,6 @@ function ProfileView(): React.JSX.Element {
         },
       });
       let fetchedData = response.data; // 응답 데이터 형식에 따라 조정 필요
-      
-      console.log('!!!!!!!!!찜목록 요청결과 : ', fetchedData);
 
       // 정렬 로직
       if (selectedSort === '최신순') {
@@ -134,54 +131,51 @@ function ProfileView(): React.JSX.Element {
   }, [selectedSort, selectedCategory, fetchMyCollection]);
 
   // 북마크 토글 함수
-  const toggleBookmark = useCallback(async (id: string) => {
-    const isBookmarked = !!bookmarked[id];
+  // const toggleBookmark = useCallback(async (id: string) => {
+  //   const isBookmarked = !!bookmarked[id];
 
-    setBookmarked((prevState) => ({
-      ...prevState,
-      [id]: !isBookmarked,
-    }));
+  //   setBookmarked((prevState) => ({
+  //     ...prevState,
+  //     [id]: !isBookmarked,
+  //   }));
 
-    const body = {
-      userId: userId,
-      clothesId: id,
-    };
+  //   const body = {
+  //     userId: userId,
+  //     clothesId: id,
+  //   };
 
-    console.log('!!!!!!!!!!!!!!!Toggling bookmark 요청 들어옴!');
+  //   try {
+  //     if (!isBookmarked) {
+  //       const bookmarkedResponse = await axios.post(`${API_URL}/gallery/my-collection`, body, {
+  //         headers: {
+  //           "Authorization": accessToken,
+  //           "Content-Type": "application/json",
+  //           "X-User-ID": userId,
+  //         },
+  //       });
+  //     } else {
+  //       await axios.delete(`${API_URL}/gallery/my-collection`, {
+  //         data: body,
+  //         headers: {
+  //           "Authorization": accessToken,
+  //           "Content-Type": "application/json",
+  //           "X-User-ID": userId,
+  //         },
+  //       });
+  //     }
 
-    try {
-      if (!isBookmarked) {
-        const bookmarkedResponse = await axios.post(`${API_URL}/gallery/my-collection`, body, {
-          headers: {
-            "Authorization": accessToken,
-            "Content-Type": "application/json",
-            "X-User-ID": userId,
-          },
-        });
-        console.log('!!!!!!!!!!!!!!!Toggling bookmark 요청 결과:', bookmarkedResponse.data);
-      } else {
-        await axios.delete(`${API_URL}/gallery/my-collection`, {
-          data: body,
-          headers: {
-            "Authorization": accessToken,
-            "Content-Type": "application/json",
-            "X-User-ID": userId,
-          },
-        });
-      }
-
-      // '마이 갤러리'일 경우, 북마크 토글 후 리스트를 다시 불러옴
-      if (selectedCategory === '마이 갤러리') {
-        fetchMyCollection();
-      }
-    } catch (error) {
-      console.error('Error toggling bookmark:', error);
-      setBookmarked((prevState) => ({
-        ...prevState,
-        [id]: isBookmarked,
-      }));
-    }
-  }, [bookmarked, API_URL, accessToken, userId, selectedCategory, fetchMyCollection]);
+  //     // '마이 갤러리'일 경우, 북마크 토글 후 리스트를 다시 불러옴
+  //     if (selectedCategory === '마이 갤러리') {
+  //       fetchMyCollection();
+  //     }
+  //   } catch (error) {
+  //     console.error('Error toggling bookmark:', error);
+  //     setBookmarked((prevState) => ({
+  //       ...prevState,
+  //       [id]: isBookmarked,
+  //     }));
+  //   }
+  // }, [bookmarked, API_URL, accessToken, userId, selectedCategory, fetchMyCollection]);
 
   // 닉네임 변경 핸들러 (기존 코드 유지)
   const handleChangeNickname = async () => {
@@ -202,8 +196,6 @@ function ProfileView(): React.JSX.Element {
         },
       });
 
-      console.log('!!!!!!!!!!!!!!!!!!!!!중복확인', checkResponse.data);
-
       if (checkResponse.data.exists) { // API 응답 형식에 따라 조정
         setErrorMessage('이미 존재하는 닉네임입니다.');
         triggerShake();
@@ -220,7 +212,6 @@ function ProfileView(): React.JSX.Element {
           "X-User-ID": userId,
         },
       });
-      console.log('!!!!!!!!!!!!!!!!!!!!바꾸고 싶은 닉네임:', newNickname);
 
       // 닉네임 변경 성공 후 최신 닉네임을 다시 가져오기
       await getNickname();
@@ -489,13 +480,11 @@ function ProfileView(): React.JSX.Element {
                 renderItem={({ item }) => (
                   <TouchableOpacity onPress={() => openModal(item)} style={styles.notificationItem}>
                     <ImageBackground source={{ uri: item.imageUrl }} style={styles.notificationImage} resizeMode="cover">
-                      <TouchableOpacity style={styles.bookmarkIcon} onPress={() => toggleBookmark(item.clothesId)}>
-                        {bookmarked[item.clothesId] ? (
-                          <WishFullIcon width={30} height={40} />
-                        ) : (
-                          <WishIcon width={30} height={40} fill="white" />
-                        )}
-                      </TouchableOpacity>
+                      {/* <TouchableOpacity style={styles.bookmarkIcon} onPress={() => toggleBookmark(item.clothesId)}> */}
+                      <View style={styles.bookmarkIcon}>
+                        <WishFullIcon width={30} height={40} fill="white" />
+                      </View>
+                      {/* </TouchableOpacity> */}
                     </ImageBackground>
                   </TouchableOpacity>
                 )}
@@ -513,13 +502,11 @@ function ProfileView(): React.JSX.Element {
                 renderItem={({ item }) => (
                   <TouchableOpacity onPress={() => openModal(item)} style={styles.notificationItem}>
                     <ImageBackground source={{ uri: item.imageUrl }} style={styles.notificationImage} resizeMode="cover">
-                      <TouchableOpacity style={styles.bookmarkIcon} onPress={() => toggleBookmark(item.clothesId)}>
-                        {bookmarked[item.clothesId] ? (
-                          <WishFullIcon width={30} height={40} />
-                        ) : (
-                          <WishIcon width={30} height={40} fill="white" />
-                        )}
-                      </TouchableOpacity>
+                      {/* <TouchableOpacity style={styles.bookmarkIcon} onPress={() => toggleBookmark(item.clothesId)}> */}
+                      <View style={styles.bookmarkIcon}>
+                        <WishFullIcon width={30} height={40} fill="white" />
+                      </View>
+                      {/* </TouchableOpacity> */}
                     </ImageBackground>
                   </TouchableOpacity>
                 )}
@@ -545,13 +532,11 @@ function ProfileView(): React.JSX.Element {
                       style={styles.profileFixedModalImage}
                       resizeMode="contain"
                     />
-                    <TouchableOpacity style={styles.profileModalBookmarkIcon} onPress={() => toggleBookmark(selectedImage.clothesId || selectedImage.imageId)}>
-                      {bookmarked[selectedImage.clothesId || selectedImage.imageId] ? (
-                        <WishFullIcon width={30} height={40} />
-                      ) : (
-                        <WishIcon width={30} height={40} fill="white" />
-                      )}
-                    </TouchableOpacity>
+                    {/* <TouchableOpacity style={styles.profileModalBookmarkIcon} onPress={() => toggleBookmark(selectedImage.clothesId || selectedImage.imageId)}> */}
+                    <View style={styles.bookmarkIcon}>
+                      <WishFullIcon width={30} height={40} fill="white" />
+                    </View>
+                    {/* </TouchableOpacity> */}
                   </View>
                 )}
               </View>
