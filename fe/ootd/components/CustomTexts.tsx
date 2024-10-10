@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     fontFamily: 'LeferiPointBlackOblique',
   },
   footer: {
-    fontFamily: 'NanumGothicExtraBold',
+    fontFamily: 'NanumGothicRegular',
   },
   content: {
     fontFamily: 'Pretendard-Regular',

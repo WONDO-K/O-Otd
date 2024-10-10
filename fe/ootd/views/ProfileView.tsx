@@ -148,6 +148,7 @@ function ProfileView(): React.JSX.Element {
 
       setMyGalleryList(fetchedData);
     } catch (error) {
+      console.log(userId, accessToken);
       console.error('Error fetching my collection:', error);
       setGalleryError('찜 목록을 불러오는 데 실패했습니다.');
     } finally {
@@ -612,15 +613,20 @@ function ProfileView(): React.JSX.Element {
               <FlatList
                 data={myBattleList}
                 keyExtractor={(item, index) => `${item.battleId}_${index}`}
-                renderItem={({ item }) => (
-                  item.status === 'ACTIVE' ? (
+                renderItem={({ item }) => {
+                  // "PENDING" 상태인 항목은 렌더링하지 않음
+                  if (item.status === 'PENDING') {
+                    return null;
+                  }
+
+                  return item.status === 'ACTIVE' ? (
                     <BattleItemProgress
                       item={item}
                       onPress={() => {
                         if (item.myPickUserId === null) {
                           navigation.navigate('BattleDetail', item);
                         } else {
-                          Alert.alert('이미 진행한 투표입니다.')
+                          Alert.alert('이미 진행한 투표입니다.');
                         }
                       }}
                       calculateRemainingTime={calculateRemainingTime}
@@ -633,8 +639,8 @@ function ProfileView(): React.JSX.Element {
                       calculateRemainingTime={calculateRemainingTime}
                       nameSlice={nameSlice}
                     />
-                  )
-                )}
+                  );
+                }}
                 numColumns={1} // 배틀 목록은 하나씩 세로로 표시
                 contentContainerStyle={styles.flatListContent}
               />

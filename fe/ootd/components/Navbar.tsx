@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#121212',
         minHeight: 60,
-        height: '10%',
+        height: '7%',
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -186,7 +186,7 @@ function Navbar({ currentRoute, unreadCount }: { currentRoute: string }): React.
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={() => navigation.navigate('MainView')}>
-                <LogoIcon width={120} height={60} />
+                <LogoIcon width={80} height={40} />
             </TouchableOpacity>
             <View style={styles.buttonContainer}>
                 {isActive(['StyleView', 'AIView', 'Battle']) && (

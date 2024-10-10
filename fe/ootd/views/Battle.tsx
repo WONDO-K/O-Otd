@@ -32,12 +32,12 @@ function Battle({ navigation }): React.JSX.Element {
     const [battleList, setBattleList] = useState([]);
     const {accessToken, userId} = useLoginStore();
 
-    const calculateRemainingTime = (createdAt: string): string => {
+    const calculateRemainingTime = (expireAt: string): string => {
         const now = new Date(); // 현재 시간
-        const startTime = new Date(createdAt);
+        const endTime = new Date(expireAt);
     
         // 경과 시간 (밀리초 단위)
-        const elapsedTime = now.getTime() - startTime.getTime();
+        const elapsedTime = endTime.getTime() - now.getTime();
     
         // 하루는 24시간, 즉 86,400,000 밀리초
         const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
@@ -52,7 +52,7 @@ function Battle({ navigation }): React.JSX.Element {
         // 남은 시간을 시(hour)와 분(minute) 단위로 변환
         const remainingHours = Math.floor((remainingTime / (1000 * 60 * 60)) % 24);
         const remainingMinutes = Math.floor((remainingTime / (1000 * 60)) % 60);
-        // ${remainingMinutes}m
+        // ${remainingMinutes}
         if (remainingHours > 0) {
             return `${remainingHours} 시간`;
         } else {
