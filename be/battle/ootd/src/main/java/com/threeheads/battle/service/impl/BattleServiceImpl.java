@@ -85,7 +85,7 @@ public class BattleServiceImpl implements BattleService {
                 .senderNickname(battle.getResponderName()) // 보낸 사람 닉네임 반환
                 .battleId(battle.getId())
                 .title("request")
-                .message(battle.getResponderName() + " 님에게 배틀 요청이 전송되었습니다.\n유효기간은 1주일이며 만료 시간은 "
+                .message(battle.getResponderName() + " 님에게 배틀 요청이 전송되었습니다. 유효기간은 1주일이며 만료 시간은 "
                         + battle.getExpiresAt().format(formatter) + "입니다.")
                 .timestamp(LocalDateTime.now())
                 .build();
