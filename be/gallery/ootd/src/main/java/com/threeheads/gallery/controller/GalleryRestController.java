@@ -2,6 +2,7 @@ package com.threeheads.gallery.controller;
 
 import com.threeheads.gallery.model.dto.GalleryListResponseDto;
 import com.threeheads.gallery.model.entity.Gallery;
+import com.threeheads.gallery.model.entity.MyFashion;
 import com.threeheads.gallery.model.entity.MyLike;
 import com.threeheads.gallery.model.dto.AddCollectionDto;
 import com.threeheads.gallery.model.dto.CollectionDto;
@@ -113,5 +114,11 @@ public class GalleryRestController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("upload_cdn, "+e.getMessage());
         }
 
+    }
+
+    @GetMapping("/myfashion")
+    public ResponseEntity<?> getMyFashionList(@PathVariable("userId") int userId){
+        List<MyFashion> result = service.getMyFashionList(userId);
+        return ResponseEntity.ok(result);
     }
 }
