@@ -15,7 +15,7 @@ public class GalleryListResponseDto {
 
     private String imageUrl;
 
-    private String category;
+    private String type;
 
     private LocalDateTime uploadedAt;
 }
