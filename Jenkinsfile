@@ -10,17 +10,31 @@ pipeline {
     stages {
         stage("CI: Checkout") {
             steps {
-                git branch: 'master',
+                git branch: 'develop',
                     url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21E104.git',
                     credentialsId: "ootd"
             }
         }
 
+        stage("CI: Determine Changed FE") {
+            steps {
+                script {
+                    // getChangedServices를 한 번만 호출하여 전역 변수에 저장
+                    isChangeFe = getChangedFe()
+                    echo "Changed Fe: ${isChangeFe}"
+                }
+            }
+        }
         stage('Install Dependencies for FE') {
             steps {
-                dir("fe/ootd"){
-                    // 프로젝트의 dependencies 설치
-                    sh 'npm install'
+                script{
+                    if(isChangeFe){
+                        dir("fe/ootd"){
+                            // 프로젝트의 dependencies 설치
+                            echo 'npm install'
+                            sh 'npm install'
+                        }
+                    }
                 }
             }
         }
@@ -28,9 +42,14 @@ pipeline {
         stage("CI: Front Build"){
             steps{
                 script{
-                    dir("fe/ootd/android"){
-                        sh 'chmod 777 gradlew'
-                       sh './gradlew assembleRelease'
+                    if(isChangeFe){
+                        dir("fe/ootd/android"){
+                            echo 'chmod 777 gradlew'
+                            sh 'chmod 777 gradlew'
+
+                            echo 'chmod 777 gradlew'
+                            sh './gradlew assembleRelease'
+                        }
                     }
                 }
             }
@@ -39,8 +58,12 @@ pipeline {
 
         stage('CI : Archive APK for FE') {
             steps {
-                // 빌드된 APK 파일을 Jenkins에 아카이브
-                archiveArtifacts artifacts: 'fe/ootd/android/app/build/outputs/apk/release/app-release.apk', fingerprint: true
+                script{
+                    if(isChangeFe){
+                        // 빌드된 APK 파일을 Jenkins에 아카이브
+                        archiveArtifacts artifacts: 'fe/ootd/android/app/build/outputs/apk/release/app-release.apk', fingerprint: true
+                    }
+                }
             }
         }
 
@@ -48,7 +71,7 @@ pipeline {
             steps {
                 script {
                     // getChangedServices를 한 번만 호출하여 전역 변수에 저장
-                    def services = ['user', 'battle', 'gallery']
+                    def services = ['eureka','apigateway','user', 'battle', 'gallery']
                     changedServices = getChangedServices(services)
                     echo "Changed Services: ${changedServices}"
                 }
@@ -63,12 +86,13 @@ pipeline {
                         dir("be/${service}/ootd") {
                             // 설정 파일 복사
                             withCredentials([file(credentialsId: "ootd-be-${service}-properties", variable: 'properties')]) {
-                                echo "Copying application.properties for ${service}"
+                                echo "Copying application.yml for ${service}"
                                 sh 'pwd'
                                 sh 'ls'
                                 sh 'chmod +r $properties'
                                 sh 'chmod -R 777 src/main/resources'
-                                sh 'cp $properties src/main/resources/application.properties'
+                                sh 'cp $properties src/main/resources/application.yml'
+                                sh 'cat src/main/resources/application.yml'
                                 sh 'ls'
                             }
                             //docker-compose.yml 복사
@@ -82,6 +106,34 @@ pipeline {
 
                                     // Docker Compose 파일을 프로젝트 루트로 복사 (여기서 목적지 경로를 명시)
                                     sh "cp $compose ."
+
+                                    // 복사 후 작업 디렉토리의 파일 목록 출력
+                                    sh 'ls'
+                                }
+                            }
+                            if(service=="user"){
+                                withCredentials([file(credentialsId: "ootd-be-${service}-oauth", variable: 'properties')]) {
+                                    echo "Copying oauth.yml for ${service}"
+                                    sh 'pwd'
+                                    sh 'ls'
+                                    sh 'chmod +r $properties'
+                                    sh 'chmod -R 777 src/main/resources'
+                                    sh 'cp $properties src/main/resources/application-oauth.yml'
+                                    sh 'ls'
+                                }
+
+
+                            }
+                            if(service=="user" || service=="battle"){
+                                withCredentials([file(credentialsId: "ootd-be-${service}-env", variable: 'envFile')]) {
+                                    // 현재 작업 디렉토리 출력
+                                    sh 'pwd'
+
+                                    // 작업 디렉토리의 파일 목록 출력
+                                    sh 'ls'
+
+                                    // .env 파일을 프로젝트 루트로 복사 (여기서 목적지 경로를 명시)
+                                    sh "cp $envFile ."
 
                                     // 복사 후 작업 디렉토리의 파일 목록 출력
                                     sh 'ls'
@@ -134,16 +186,57 @@ pipeline {
             }
         }// end Deploy Docker Container with docker compose
     }
+    post{
+        success {
+        	script {
+                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                mattermostSend (color: 'good', 
+                message: "# :jenkins1: \n ### 빌드 성공: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})(<${env.BUILD_URL}|Details>)", 
+                endpoint: 'https://meeting.ssafy.com/hooks/6az88d4jajgybgn5d6qhkyy8ma', 
+                channel: 'ootd_jenkins'
+                )
+            }
+        }
+        failure {
+        	script {
+                def Author_ID = sh(script: "git show -s --pretty=%an", returnStdout: true).trim()
+                def Author_Name = sh(script: "git show -s --pretty=%ae", returnStdout: true).trim()
+                mattermostSend (color: 'danger', 
+                message: "# :jenkins5: \n ### 빌드 실패: ${env.JOB_NAME} #${env.BUILD_NUMBER} by ${Author_ID}(${Author_Name})\n(<${env.BUILD_URL}|Details>)", 
+                endpoint: 'https://meeting.ssafy.com/hooks/6az88d4jajgybgn5d6qhkyy8ma', 
+                channel: 'ootd_jenkins'
+                )
+            }
+        }
+    }
 }
 
-// 함수 정의
+// be 변경사항 함수 정의
 def getChangedServices(services) {
     def changedServices = []
+    
+    // changedServices.add("eureka")
+    // changedServices.add("apigateway")
+    // changedServices.add("user")
+    //changedServices.add("user")
+    // changedServices.add("battle")
+    changedServices.add("gallery")
     for (service in services) {
         def changes = sh(script: "git diff --name-only HEAD~1 HEAD | grep 'be/${service}' || true", returnStdout: true).trim()
-        if (changes) {
+        
+        if (false) {
             changedServices.add(service)
         }
     }
     return changedServices
+}
+
+
+//fe
+def getChangedFe(){
+    if(sh(script: "git diff --name-only HEAD~1 HEAD | grep 'fe' || true", returnStdout: true).trim()){
+        return true
+    }
+    return false;
 }
