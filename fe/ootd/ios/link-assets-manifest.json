@@ -1,0 +1,125 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/Fonts/LeferiBaseBold.ttf",
+      "sha1": "f9998b5d62297a408d3a4ad9c236b4d8c38e7874"
+    },
+    {
+      "path": "assets/Fonts/LeferiBaseRegular.ttf",
+      "sha1": "52e203fdfd44632999b1d9118aec84bb4fbc5496"
+    },
+    {
+      "path": "assets/Fonts/LeferiPointBlack.ttf",
+      "sha1": "0235fd0850296ef546aa1583205c60c4c8ee6190"
+    },
+    {
+      "path": "assets/Fonts/LeferiPointBlackOblique.ttf",
+      "sha1": "13f7822d6c24bdec5cfec780a2b5ab26147d6692"
+    },
+    {
+      "path": "assets/Fonts/LeferiPointSpecial.ttf",
+      "sha1": "040f28a1037e352613b3b8315c338891e53bd1d9"
+    },
+    {
+      "path": "assets/Fonts/LeferiPointSpecialItalic.ttf",
+      "sha1": "7212caa005e598e33401112462e7e9cc1fd0d970"
+    },
+    {
+      "path": "assets/Fonts/LeferiPointWhite.ttf",
+      "sha1": "9dba58cf075dcc89056d802b0cd8179d450d42c3"
+    },
+    {
+      "path": "assets/Fonts/LeferiPointWhiteOblique.ttf",
+      "sha1": "f1f52c050c9082598587ca123c3994aed2d071a0"
+    },
+    {
+      "path": "assets/Fonts/NanumGothic.ttf",
+      "sha1": "6b61cdb4fe859e3932437d6d816c1944daeff1b2"
+    },
+    {
+      "path": "assets/Fonts/NanumGothicBold.ttf",
+      "sha1": "f892d26a11d118ca76a00901390f611c34bbf62d"
+    },
+    {
+      "path": "assets/Fonts/NanumGothicExtraBold.ttf",
+      "sha1": "974116089db0e8c0e19b62a6a280908cbe3fafba"
+    },
+    {
+      "path": "assets/Fonts/NanumGothicLight.ttf",
+      "sha1": "451faa2221d1613e646a95bc646cce556a7f1758"
+    },
+    {
+      "path": "assets/Fonts/Pretendard-Black.otf",
+      "sha1": "b9162985d25a21b393185c6139d283fba46fd739"
+    },
+    {
+      "path": "assets/Fonts/Pretendard-Bold.otf",
+      "sha1": "bd4ac82cc26cf93c89cfbfbbba8825c5198b5b99"
+    },
+    {
+      "path": "assets/Fonts/Pretendard-ExtraBold.otf",
+      "sha1": "ea07e7375c62c8386f77431f0f62a2cbdea34618"
+    },
+    {
+      "path": "assets/Fonts/Pretendard-ExtraLight.otf",
+      "sha1": "4cc979a7edca4de7b9c392529493cdd0409d9dd1"
+    },
+    {
+      "path": "assets/Fonts/Pretendard-Light.otf",
+      "sha1": "207a94ca77a34bba0b6cec41286bde3cbeecb7f1"
+    },
+    {
+      "path": "assets/Fonts/Pretendard-Medium.otf",
+      "sha1": "eba1a37734a9c4fe3d84f540ce8d812d366b2b22"
+    },
+    {
+      "path": "assets/Fonts/Pretendard-Regular.otf",
+      "sha1": "e205ef0a314d9da4e1a9382e0e65a25900a9ac7b"
+    },
+    {
+      "path": "assets/Fonts/Pretendard-SemiBold.otf",
+      "sha1": "916a62152b7fd08ff43d239de04303a465521fe6"
+    },
+    {
+      "path": "assets/Fonts/Pretendard-Thin.otf",
+      "sha1": "72cf55b4d2ea4adc75123f33ca839c10cabfaab4"
+    },
+    {
+      "path": "assets/Fonts/SUIT-Bold.ttf",
+      "sha1": "260f37817e53e956893d5444564685351c3f344d"
+    },
+    {
+      "path": "assets/Fonts/SUIT-ExtraBold.ttf",
+      "sha1": "18142924cde92e4044145027170278d06556d017"
+    },
+    {
+      "path": "assets/Fonts/SUIT-ExtraLight.ttf",
+      "sha1": "d6bf885fd51c079fde494231dcbf8de31ae9adda"
+    },
+    {
+      "path": "assets/Fonts/SUIT-Heavy.ttf",
+      "sha1": "e9276c72058de1826ada980e6290c5f301610032"
+    },
+    {
+      "path": "assets/Fonts/SUIT-Light.ttf",
+      "sha1": "1ec865181a4fbc45940ba1b6a17eebe51d8c1988"
+    },
+    {
+      "path": "assets/Fonts/SUIT-Medium.ttf",
+      "sha1": "1f8cc07eb00d6117f6b3ca52763d367fd20581f2"
+    },
+    {
+      "path": "assets/Fonts/SUIT-Regular.ttf",
+      "sha1": "cd14bef9e9e8e9cd81cff5ba720685eab860d754"
+    },
+    {
+      "path": "assets/Fonts/SUIT-SemiBold.ttf",
+      "sha1": "ab1bd61b305551638ca9d8e9d870f6bcc2c0c1c5"
+    },
+    {
+      "path": "assets/Fonts/SUIT-Thin.ttf",
+      "sha1": "3cb0fc31ddbd4664eacce7fedf2f26df6b58f587"
+    }
+  ]
+}

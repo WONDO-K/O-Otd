@@ -26,14 +26,13 @@
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-	  <!-- Do not change NSAllowsArbitraryLoads to true, or you will risk app rejection! -->
 		<key>NSAllowsArbitraryLoads</key>
 		<false/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -48,5 +47,38 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Pretendard-Black.otf</string>
+		<string>Pretendard-Bold.otf</string>
+		<string>Pretendard-ExtraBold.otf</string>
+		<string>Pretendard-ExtraLight.otf</string>
+		<string>Pretendard-Light.otf</string>
+		<string>Pretendard-Medium.otf</string>
+		<string>Pretendard-Regular.otf</string>
+		<string>Pretendard-SemiBold.otf</string>
+		<string>Pretendard-Thin.otf</string>
+		<string>SUIT-Bold.ttf</string>
+		<string>SUIT-ExtraBold.ttf</string>
+		<string>SUIT-ExtraLight.ttf</string>
+		<string>SUIT-Heavy.ttf</string>
+		<string>SUIT-Light.ttf</string>
+		<string>SUIT-Medium.ttf</string>
+		<string>SUIT-Regular.ttf</string>
+		<string>SUIT-SemiBold.ttf</string>
+		<string>SUIT-Thin.ttf</string>
+		<string>NanumGothic.ttf</string>
+		<string>NanumGothicBold.ttf</string>
+		<string>NanumGothicExtraBold.ttf</string>
+		<string>NanumGothicLight.ttf</string>
+		<string>LeferiBaseBold.ttf</string>
+		<string>LeferiBaseRegular.ttf</string>
+		<string>LeferiPointBlack.ttf</string>
+		<string>LeferiPointBlackOblique.ttf</string>
+		<string>LeferiPointSpecial.ttf</string>
+		<string>LeferiPointSpecialItalic.ttf</string>
+		<string>LeferiPointWhite.ttf</string>
+		<string>LeferiPointWhiteOblique.ttf</string>
+	</array>
 </dict>
 </plist>

@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage("CI: Checkout") {
             steps {
-                git branch: 'be',
+                git branch: 'develop',
                     url: 'https://lab.ssafy.com/s11-bigdata-dist-sub1/S11P21E104.git',
                     credentialsId: "ootd"
             }
@@ -186,7 +186,6 @@ pipeline {
             }
         }// end Deploy Docker Container with docker compose
     }
-
     post{
         success {
         	script {
@@ -233,11 +232,11 @@ def getChangedServices(services) {
     return changedServices
 }
 
+
 //fe
 def getChangedFe(){
-    // if(sh(script: "git diff --name-only HEAD~1 HEAD | grep 'fe' || true", returnStdout: true).trim()){
-    //     return true
-    // }
-    // return false;
+    if(sh(script: "git diff --name-only HEAD~1 HEAD | grep 'fe' || true", returnStdout: true).trim()){
+        return true
+    }
     return false;
 }
