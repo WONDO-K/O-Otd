@@ -135,19 +135,20 @@
 ## 5. 설계 문서
 
 ### 와이어 프레임 Web
-![와이어프레임](exec/resources/와이어프레임.png)
+![와이어프레임](exec/resources/와이어프레임.PNG)
 
 ### 시스템 아키텍쳐
+추후 추가 예정
 ![시스템](exec/resources/시스템.png)
 
 ### ERD
 ![ERD](exec/resources/ERD.png)
 
 ### 요구사항 정의서
-![요구사항정의서](exec/resources/요구사항정의서.png)
+![요구사항정의서](exec/resources/요구사항정의서.PNG)
 
 ### API명세서
-![API1](exec/resources/API명세서.png)
+![API1](exec/resources/API명세서.PNG)
 
 
 ## 6. 팀원 소개
