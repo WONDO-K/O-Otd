@@ -42,6 +42,18 @@ public class GalleryServiceImpl implements GalleryService {
     @Value("${spring.classificationFashion.service.url}")
     private String classificationFashionUrl;
 
+    @Value("${spring.cdn.username}")
+    private String username;
+
+    @Value("${spring.cdn.hostname}")
+    private String hostname;
+
+    @Value("${spring.cdn.port}")
+    private int port;
+
+    @Value("${spring.cdn.password}")
+    private String password;
+
     public GalleryServiceImpl(LikeRepository likeRepository, GalleryRepository galleryRepository, RestTemplateBuilder restTemplateBuilder, MyFashionRepository myFashionRepository){
         this.likeRepository = likeRepository;
         this.galleryRepository = galleryRepository;
@@ -213,10 +225,8 @@ public class GalleryServiceImpl implements GalleryService {
 
     @Override
     public String uploadImage(int userId, MultipartFile file) {
-        String username = "ootd-myfashion";
-        String hostname = "sg.storage.bunnycdn.com";
-        int port = 21;
-        String password = "2520bae7-9f1f-4830-bc7d67555674-f020-43c4";
+
+
 
         String timestamp = String.valueOf(System.currentTimeMillis());
 
