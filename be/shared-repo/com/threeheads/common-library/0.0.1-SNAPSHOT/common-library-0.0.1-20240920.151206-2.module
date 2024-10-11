@@ -1,0 +1,81 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "com.threeheads",
+    "module": "common-library",
+    "version": "0.0.1-SNAPSHOT",
+    "attributes": {
+      "org.gradle.status": "integration"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "8.10.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "common-library-0.0.1-SNAPSHOT-plain.jar",
+          "url": "common-library-0.0.1-SNAPSHOT-plain.jar",
+          "size": 22008,
+          "sha512": "561ce3b5a63223ae42b503cb40c1f79f737947eff4dfc30186077fca0e5a57755031c82d27a8bc741325f4f5347c1a15d1daaffcc06a247136ef4eaac8197636",
+          "sha256": "6625c5b0273767034199648c4c354538efe863caa7e81321d7b3f0617e166d9c",
+          "sha1": "035cbbf597440c605b1e71ebd6e5808f360258df",
+          "md5": "eda23e51fbad96be7988f5807b498bd6"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 17,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-security"
+        },
+        {
+          "group": "org.springframework.boot",
+          "module": "spring-boot-starter-validation"
+        },
+        {
+          "group": "com.fasterxml.jackson.core",
+          "module": "jackson-databind",
+          "version": {
+            "requires": "2.17.1"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "common-library-0.0.1-SNAPSHOT-plain.jar",
+          "url": "common-library-0.0.1-SNAPSHOT-plain.jar",
+          "size": 22008,
+          "sha512": "561ce3b5a63223ae42b503cb40c1f79f737947eff4dfc30186077fca0e5a57755031c82d27a8bc741325f4f5347c1a15d1daaffcc06a247136ef4eaac8197636",
+          "sha256": "6625c5b0273767034199648c4c354538efe863caa7e81321d7b3f0617e166d9c",
+          "sha1": "035cbbf597440c605b1e71ebd6e5808f360258df",
+          "md5": "eda23e51fbad96be7988f5807b498bd6"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+spring:
+  application:
+    name: gallery
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/gallery_db?autoReconnect=true&useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: root
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+      dialect: org.hibernate.dialect.MySQL8Dialect
+      format_sql: true
+
+  kafka:
+    bootstrap-servers: kafka1:9092
+
+    template:
+      from-gallery-to-user: from_gallery_to_user
+      from-gallery-to-battle: from_gallery_to_battle
+      from-user-to-gallery: from_user_to_gallery
+      from-battle-to-gallery: from_battle_to_gallery
+
+    consumer:
+      group-gallery: gallery
+
+  classificationFashion:
+    service:
+      url: http://j11e104.p.ssafy.io:8088/process_images
+
+eureka:
+  instance:
+    prefer-ip-address: true  # IP 주소를 우선 사용하여 Eureka에 등록
+  client:
+    service-url:
+      defaultZone: http://j11e104.p.ssafy.io:8086/eureka/  # TODO: 유레카 서버 주소를 환경변수로 관리 (EUREKA_URL)
+    register-with-eureka: true
+    fetch-registry: true
