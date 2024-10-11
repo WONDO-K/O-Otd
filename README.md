@@ -160,16 +160,21 @@
 
 
 
+
 **Backend**
-- 최동호 : 팀장 / 회원 및 인증 관련(OAuth, JWT) 유저, Beyond U API 개발 
+- **최동호** : 팀장 / 회원 및 인증 관련 (OAuth, JWT) / Beyond U API 개발
+
 **Frontend**
-- 정범수 : 웹/앱 전체적인 UI/UX 구현 / 화상 회의 관리 API 연동 / WebRTC 기반 환경 세팅 및 STT 데이터, 실시간 통신 처리
-- 조성인 : 프로젝트 기획 / 목업(피그마) 제작 / 시스템 아키텍쳐 등 산출물 제작 /유저 관리 및 인증(JWT, Oauth) 관련 api 연동 / 발표 자료 제작
+- **정범수** : 웹/앱 UI/UX 구현 / 화상 회의 관리 API 연동 / WebRTC 기반 환경 세팅 및 STT 데이터, 실시간 통신 처리
+- **조성인** : 프로젝트 기획 / 목업(피그마) 제작 / 시스템 아키텍처 등 산출물 제작 / 유저 관리 및 인증(JWT, OAuth) API 연동 / 발표 자료 제작
 
 **AI**
-- 김동현
+- **김동현**
 
 **BigData**
-- 손우혁
-**Infra**
-- 오성혁 : 개발환경 구축(프론트엔드&백엔드 도커 설정) / 배포환경 구축 / CI/CD자동배포-젠킨스 / 수동배포-쉘코드 / 포팅매뉴얼 및 기타 산출물 관리
+- **손우혁** : Hadoop·Spark 설정 / Data Clustering 기능 개발 / UMAP 차원 축소 기법 / Flask 서버 구축
+
+**Infra/Backend**
+- **오성혁** :  
+    - **인프라**: CI/CD 파이프라인 구축 / 클라우드 인프라 구축 및 관리 (MySQL, Kafka, Jenkins, Nginx, SSL 등)  
+    - **백엔드**: Gallery API / MyLike API / AI 서버 연결 / Kafka 프로듀서 및 컨슈머 구축
