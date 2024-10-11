@@ -40,3 +40,6 @@ out/
 
 ### application.propertise
 application.properties
+
+### application.yml
+application.yml
